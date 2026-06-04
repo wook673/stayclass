@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STAYCLASS Pakistan | 한국에서 단기임대로 월 수입 만들기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ─── RESET & VARS ─── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg:     #0B1220;
+  --card:   #111C2E;
+  --accent: #C9922A;
+  --gold:   #F0C060;
+  --text:   #F5F0E8;
+  --muted:  #6E8499;
+  --kakao:  #FEE500;
+  --radius: 16px;
+  --max-w:  1100px;
+  --col-gap: 32px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans KR', sans-serif;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ─── EARLYBIRD BANNER ─── */
+.earlybird {
+  background: linear-gradient(90deg, #C9922A, #E8B050);
+  text-align: center;
+  padding: 13px 24px;
+  font-size: 14px;
+  font-weight: 700;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+}
+.earlybird span { color: var(--gold); }
+
+/* ─── HERO ─── */
+.hero {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 24px 60px;
+  background: radial-gradient(ellipse at top, #162240 0%, #0B1220 65%);
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  width: 700px; height: 700px;
+  background: radial-gradient(circle, rgba(201,146,42,0.14) 0%, transparent 70%);
+  top: -120px; left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.badge {
+  display: inline-block;
+  background: rgba(108,92,231,0.25);
+  border: 1px solid var(--accent);
+  color: #C4BBFF;
+  font-size: 13px;
+  padding: 6px 18px;
+  border-radius: 999px;
+  margin-bottom: 28px;
+  letter-spacing: 0.5px;
+}
+
+.hero-urdu {
+  font-family: 'Noto Nastaliq Urdu', serif;
+  font-size: clamp(20px, 4.5vw, 32px);
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 14px;
+  direction: rtl;
+  line-height: 1.9;
+}
+
+.hero h1 {
+  font-size: clamp(30px, 6vw, 54px);
+  font-weight: 900;
+  line-height: 1.2;
+  margin-bottom: 18px;
+}
+.hero h1 span { color: var(--gold); }
+
+.hero-sub {
+  font-size: clamp(15px, 2.5vw, 18px);
+  color: var(--muted);
+  margin-bottom: 44px;
+  max-width: 500px;
+}
+
+.cta-group {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  max-width: 380px;
+}
+
+.btn-kakao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--kakao);
+  color: #3B1F00;
+  font-weight: 900;
+  font-size: 17px;
+  padding: 18px 24px;
+  border-radius: var(--radius);
+  text-decoration: none;
+  box-shadow: 0 6px 28px rgba(201,146,42,0.28);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.btn-kakao:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 36px rgba(201,146,42,0.38);
+}
+.btn-kakao:active { transform: scale(0.97); }
+.btn-kakao svg { width: 26px; height: 26px; flex-shrink: 0; }
+
+.btn-secondary {
+  display: block;
+  border: 1.5px solid var(--accent);
+  color: #C4BBFF;
+  font-size: 15px;
+  padding: 14px 24px;
+  border-radius: var(--radius);
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s;
+}
+.btn-secondary:hover {
+  background: rgba(108,92,231,0.15);
+  border-color: #9B8FFF;
+}
+
+/* ─── SECTION WRAPPER ─── */
+.section-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 80px 24px;
+}
+
+.section-label {
+  font-size: 12px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+h2 {
+  font-size: clamp(24px, 4vw, 36px);
+  font-weight: 900;
+  line-height: 1.3;
+  margin-bottom: 8px;
+}
+h2 span { color: var(--gold); }
+
+.section-urdu {
+  font-family: 'Noto Nastaliq Urdu', serif;
+  font-size: 17px;
+  color: var(--muted);
+  margin-bottom: 40px;
+  direction: rtl;
+  line-height: 2.1;
+}
+
+/* ─── STATS ─── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  background: var(--card);
+  border: 1px solid rgba(108,92,231,0.3);
+  border-radius: var(--radius);
+  padding: 24px 16px;
+  text-align: center;
+}
+.stat-num {
+  font-size: clamp(24px, 4vw, 34px);
+  font-weight: 900;
+  color: var(--gold);
+  display: block;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.stat-label { font-size: 12px; color: var(--muted); }
+
+/* income bars */
+.income-bars { display: flex; flex-direction: column; gap: 14px; }
+
+.income-card {
+  background: var(--card);
+  border: 1px solid rgba(108,92,231,0.22);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+}
+.income-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.income-label { font-size: 14px; color: var(--muted); }
+.income-amount { font-size: 19px; font-weight: 900; color: var(--gold); }
+.income-track {
+  height: 8px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.income-fill {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #C9922A, #F0C060);
+  border-radius: 99px;
+  transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.income-fill.animated { width: var(--target-width); }
+
+/* ─── DESKTOP STATS LAYOUT ─── */
+@media (min-width: 900px) {
+  .stats-section-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--col-gap);
+    align-items: start;
+  }
+  .stats-left { }
+  .stats-right { padding-top: 8px; }
+}
+
+/* ─── REVIEWS ─── */
+.reviews-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.review-card {
+  background: var(--card);
+  border: 1px solid rgba(108,92,231,0.2);
+  border-radius: 20px;
+  padding: 26px;
+}
+.review-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.avatar {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #C9922A, #E8B050);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(201,146,42,0.3);
+}
+.reviewer-name { font-weight: 700; font-size: 15px; }
+.reviewer-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.stars { color: var(--gold); font-size: 14px; margin-bottom: 10px; letter-spacing: 1px; }
+.review-text { font-size: 14px; color: #C4BBFF; line-height: 1.75; }
+.review-urdu {
+  font-family: 'Noto Nastaliq Urdu', serif;
+  font-size: 14px;
+  color: var(--muted);
+  direction: rtl;
+  margin-top: 10px;
+  line-height: 2.1;
+}
+
+@media (min-width: 900px) {
+  .reviews-grid { flex-direction: row; }
+  .review-card { flex: 1; }
+}
+
+/* ─── CURRICULUM ─── */
+.week-list { display: flex; flex-direction: column; gap: 12px; }
+
+.week-item {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  border: 1px solid rgba(255,255,255,0.06);
+  transition: border-color 0.2s, transform 0.2s;
+}
+.week-item:hover {
+  border-color: rgba(108,92,231,0.4);
+  transform: translateX(4px);
+}
+.week-num {
+  background: linear-gradient(135deg, #C9922A, #E8B050);
+  color: white;
+  font-weight: 900;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+.week-title { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+.week-desc { font-size: 13px; color: var(--muted); }
+
+@media (min-width: 900px) {
+  .week-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+}
+
+/* ─── PRICING ─── */
+.price-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.price-card {
+  background: var(--card);
+  border: 1px solid rgba(108,92,231,0.25);
+  border-radius: 20px;
+  padding: 30px 26px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.price-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(108,92,231,0.15);
+}
+.price-card.featured {
+  border-color: var(--gold);
+  box-shadow: 0 0 48px rgba(255,214,0,0.1);
+}
+.price-card.featured:hover {
+  box-shadow: 0 12px 48px rgba(255,214,0,0.2);
+}
+.price-card.featured::before {
+  content: '가장 인기';
+  position: absolute;
+  top: 0; right: 0;
+  background: var(--gold);
+  color: #1A0A00;
+  font-size: 12px;
+  font-weight: 900;
+  padding: 6px 18px;
+  border-radius: 0 20px 0 12px;
+}
+
+.plan-name {
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 10px;
+}
+.plan-price {
+  font-size: 38px;
+  font-weight: 900;
+  color: var(--gold);
+  margin-bottom: 4px;
+  line-height: 1.1;
+}
+.plan-price span { font-size: 16px; font-weight: 400; color: var(--muted); }
+.plan-urdu {
+  font-family: 'Noto Nastaliq Urdu', serif;
+  font-size: 14px;
+  color: var(--muted);
+  direction: rtl;
+  margin-bottom: 22px;
+  line-height: 2.1;
+}
+.plan-features { list-style: none; display: flex; flex-direction: column; gap: 11px; }
+.plan-features li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: #C4BBFF; }
+.check { color: #6EE7B7; font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+@media (min-width: 900px) {
+  .price-grid {
+    flex-direction: row;
+    align-items: stretch;
+  }
+  .price-card { flex: 1; }
+}
+
+/* ─── FAQ ─── */
+.faq-list { display: flex; flex-direction: column; }
+
+.faq-item {
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  padding: 22px 0;
+  cursor: pointer;
+}
+.faq-q {
+  font-weight: 700;
+  font-size: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.faq-toggle {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent);
+  font-size: 18px;
+  flex-shrink: 0;
+  transition: transform 0.3s, background 0.2s;
+  line-height: 1;
+}
+.faq-item.open .faq-toggle {
+  transform: rotate(45deg);
+  background: var(--accent);
+  color: white;
+}
+.faq-a {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.75;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding-top 0.3s;
+}
+.faq-item.open .faq-a {
+  max-height: 200px;
+  padding-top: 14px;
+}
+
+/* ─── CTA BOTTOM ─── */
+.cta-bottom {
+  background: linear-gradient(135deg, #0D1A2E, #162240);
+  border-top: 1px solid rgba(108,92,231,0.3);
+  padding: 80px 24px;
+  text-align: center;
+}
+.cta-bottom h2 { margin-bottom: 10px; }
+.cta-bottom p { color: var(--muted); margin-bottom: 36px; font-size: 15px; line-height: 1.8; }
+.cta-bottom .cta-group { margin: 0 auto; }
+
+/* ─── DIVIDER ─── */
+hr { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 0; }
+
+/* ─── FOOTER ─── */
+footer {
+  padding: 36px 24px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted);
+}
+footer a { color: var(--accent); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+footer p + p { margin-top: 8px; }
+
+/* ─── FADE-UP ANIMATION ─── */
+.fade-up {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.fade-up:nth-child(2) { transition-delay: 0.1s; }
+.fade-up:nth-child(3) { transition-delay: 0.2s; }
+.fade-up:nth-child(4) { transition-delay: 0.3s; }
+
+</style>
+</head>
+<body>
+
+<!-- ─── EARLYBIRD BANNER ─── -->
+<div class="earlybird">
+  🎯 1기수 얼리버드 — 신청 72시간 내 <span>10만원 할인</span> &nbsp;|&nbsp; 모집 마감 임박
+</div>
+
+<!-- ─── HERO ─── -->
+<section class="hero">
+  <div class="badge">🇵🇰 파키스탄인을 위한 한국 단기임대 강의</div>
+  <div class="hero-urdu">کوریا میں Passive Income بنائیں</div>
+  <h1>한국에서 <span>단기임대</span>로<br>월 수입 만들기</h1>
+  <p class="hero-sub">파키스탄 출신 수강생들이 실제로 증명한<br>한국 단기임대 수익화 시스템</p>
+  <div class="cta-group">
+    <a href="YOUR_KAKAO_LINK" class="btn-kakao">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M12 3C6.477 3 2 6.477 2 10.5c0 2.638 1.657 4.953 4.147 6.31L5 21l4.782-2.698C10.477 18.433 11.228 18.5 12 18.5c5.523 0 10-3.477 10-7.5S17.523 3 12 3z"/>
+      </svg>
+      카카오톡으로 무료 자료 받기
+    </a>
+    <a href="#pricing" class="btn-secondary">강의 신청 바로가기 →</a>
+  </div>
+</section>
+
+<hr>
+
+<!-- ─── STATS ─── -->
+<section>
+  <div class="section-inner">
+    <div class="stats-section-inner">
+      <div class="stats-left">
+        <p class="section-label fade-up">숫자로 보는 STAYCLASS</p>
+        <h2 class="fade-up">파키스탄 커뮤니티가<br><span>선택한 강의</span></h2>
+        <p class="section-urdu fade-up">ہمارے ساتھ کامیابی کے اعداد و شمار</p>
+        <div class="stats-grid fade-up">
+          <div class="stat-card">
+            <span class="stat-num">140K</span>
+            <div class="stat-label">YouTube 구독자</div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-num">6주</span>
+            <div class="stat-label">완성 커리큘럼</div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-num">200만+</span>
+            <div class="stat-label">수강생 월 수입</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-right">
+        <div class="income-bars">
+          <div class="income-card fade-up">
+            <div class="income-row">
+              <span class="income-label">방 1개 운영 시</span>
+              <span class="income-amount">월 80~120만원</span>
+            </div>
+            <div class="income-track">
+              <div class="income-fill" style="--target-width: 45%"></div>
+            </div>
+          </div>
+          <div class="income-card fade-up">
+            <div class="income-row">
+              <span class="income-label">방 2~3개 운영 시</span>
+              <span class="income-amount">월 200~350만원</span>
+            </div>
+            <div class="income-track">
+              <div class="income-fill" style="--target-width: 75%"></div>
+            </div>
+          </div>
+          <div class="income-card fade-up">
+            <div class="income-row">
+              <span class="income-label">위탁 포함 확장 시</span>
+              <span class="income-amount">월 500만원+</span>
+            </div>
+            <div class="income-track">
+              <div class="income-fill" style="--target-width: 100%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr>
+
+<!-- ─── REVIEWS ─── -->
+<section>
+  <div class="section-inner">
+    <p class="section-label fade-up">수강생 후기</p>
+    <h2 class="fade-up">실제로 <span>수익이 난</span><br>파키스탄 수강생들</h2>
+    <p class="section-urdu fade-up">ہمارے طالب علموں کی کامیابی کی کہانیاں</p>
+
+    <div class="reviews-grid">
+      <div class="review-card fade-up">
+        <div class="review-header">
+          <div class="avatar">🧔</div>
+          <div>
+            <div class="reviewer-name">Ali Hassan</div>
+            <div class="reviewer-sub">수원 거주 · 1기 수료</div>
+          </div>
+        </div>
+        <div class="stars">★★★★★</div>
+        <p class="review-text">처음엔 한국에서 파키스탄 사람이 임대를 할 수 있을지 몰랐어요. 강의 듣고 3개월 만에 수원에 방 2개 계약해서 지금 월 180만원 벌고 있습니다.</p>
+        <p class="review-urdu">پہلے سوچتا تھا کہ یہ ممکن نہیں — لیکن اب ماہانہ 180만원 کما رہا ہوں!</p>
+      </div>
+
+      <div class="review-card fade-up">
+        <div class="review-header">
+          <div class="avatar">👨‍💼</div>
+          <div>
+            <div class="reviewer-name">Usman Raza</div>
+            <div class="reviewer-sub">안산 거주 · 1기 수료</div>
+          </div>
+        </div>
+        <div class="stars">★★★★★</div>
+        <p class="review-text">Urdu로 강의를 들을 수 있어서 너무 좋았어요. 계약서 작성부터 청소 위탁까지 모두 알려줘서 혼자서도 운영할 수 있게 됐습니다.</p>
+        <p class="review-urdu">اردو میں لیکچر — سمجھنا بہت آسان تھا۔ اب خود چلا رہا ہوں!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr>
+
+<!-- ─── CURRICULUM ─── -->
+<section>
+  <div class="section-inner">
+    <p class="section-label fade-up">6주 커리큘럼</p>
+    <h2 class="fade-up">처음부터 <span>수익화까지</span><br>단계별 완성</h2>
+    <p class="section-urdu fade-up">6 ہفتوں میں مکمل گائیڈ — اردو سب ٹائٹل کے ساتھ</p>
+
+    <div class="week-list">
+      <div class="week-item fade-up">
+        <div class="week-num">1주</div>
+        <div>
+          <div class="week-title">한국 단기임대 시장 이해</div>
+          <div class="week-desc">삼삼엠투·에어비앤비 플랫폼, 수익 구조 파악</div>
+        </div>
+      </div>
+      <div class="week-item fade-up">
+        <div class="week-num">2주</div>
+        <div>
+          <div class="week-title">수익 나는 물건 찾는 법</div>
+          <div class="week-desc">지역 선택 공식, 집주인 협상법, 계약서 체크리스트</div>
+        </div>
+      </div>
+      <div class="week-item fade-up">
+        <div class="week-num">3주</div>
+        <div>
+          <div class="week-title">방 세팅 & 리스팅 작성</div>
+          <div class="week-desc">사진 촬영, 가격 책정, 후기 쌓는 초반 전략</div>
+        </div>
+      </div>
+      <div class="week-item fade-up">
+        <div class="week-num">4주</div>
+        <div>
+          <div class="week-title">운영 자동화</div>
+          <div class="week-desc">청소 위탁, 체크인 자동화, 메시지 템플릿 셋업</div>
+        </div>
+      </div>
+      <div class="week-item fade-up">
+        <div class="week-num">5주</div>
+        <div>
+          <div class="week-title">수익 최적화</div>
+          <div class="week-desc">시즌별 가격 전략, 후기 관리, 플랫폼 랭킹 올리기</div>
+        </div>
+      </div>
+      <div class="week-item fade-up">
+        <div class="week-num">6주</div>
+        <div>
+          <div class="week-title">스케일업 & 확장</div>
+          <div class="week-desc">2호점 전략, 위탁운영 구조, 투자자 유치 방법</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr>
+
+<!-- ─── PRICING ─── -->
+<section id="pricing">
+  <div class="section-inner">
+    <p class="section-label fade-up">수강 신청</p>
+    <h2 class="fade-up">1기수 <span>얼리버드</span><br>모집 중</h2>
+    <p class="section-urdu fade-up">ابھی رجسٹر کریں — محدود نشستیں</p>
+
+    <div class="price-grid">
+      <div class="price-card fade-up">
+        <div class="plan-name">Basic</div>
+        <div class="plan-price">39만원 <span>/ 일시불</span></div>
+        <p class="plan-urdu">بنیادی پلان</p>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> 6주 강의 영상 (Urdu 자막, 평생 소장)</li>
+          <li><span class="check">✓</span> PDF 자료 + 수익 계산 엑셀</li>
+          <li><span class="check">✓</span> 계약서/체크리스트 템플릿</li>
+        </ul>
+      </div>
+
+      <div class="price-card featured fade-up">
+        <div class="plan-name">Standard</div>
+        <div class="plan-price">69만원 <span>/ 일시불</span></div>
+        <p class="plan-urdu">سب سے مقبول پلان</p>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> Basic 전체 포함</li>
+          <li><span class="check">✓</span> 기수 단체 카카오방 (6개월)</li>
+          <li><span class="check">✓</span> 월간 Q&amp;A 라이브 참여권</li>
+          <li><span class="check">✓</span> 동문 네트워크 영구 접근</li>
+        </ul>
+      </div>
+
+      <div class="price-card fade-up">
+        <div class="plan-name">Premium</div>
+        <div class="plan-price">120만원 <span>/ 일시불</span></div>
+        <p class="plan-urdu">پریمیم پلان</p>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> Standard 전체 포함</li>
+          <li><span class="check">✓</span> 1:1 컨설팅 2회 (Urdu/한국어)</li>
+          <li><span class="check">✓</span> 실제 물건 탐색 현장 동행 1회</li>
+          <li><span class="check">✓</span> 계약 전 검토 서비스</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr>
+
+<!-- ─── FAQ ─── -->
+<section>
+  <div class="section-inner" style="max-width: 760px;">
+    <p class="section-label fade-up">자주 묻는 질문</p>
+    <h2 class="fade-up">궁금한 점이 <span>있으신가요?</span></h2>
+
+    <div class="faq-list" style="margin-top: 36px;">
+      <div class="faq-item fade-up">
+        <div class="faq-q">
+          🇵🇰 파키스탄 사람도 한국에서 단기임대를 할 수 있나요?
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-a">네, 외국인도 합법적으로 단기임대 운영이 가능합니다. 강의에서 외국인 기준 계약 방법을 별도로 다룹니다.</div>
+      </div>
+      <div class="faq-item fade-up">
+        <div class="faq-q">
+          💬 강의는 어떤 언어로 진행되나요?
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-a">한국어로 진행되며, 모든 영상에 Urdu 자막이 제공됩니다. Q&amp;A는 Urdu로도 가능합니다.</div>
+      </div>
+      <div class="faq-item fade-up">
+        <div class="faq-q">
+          💰 초기 자본이 얼마나 필요한가요?
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-a">부동산 중개비 포함 약 110~150만원으로 시작 가능합니다. 보증금은 별도이며, 강의에서 보증금 규모별 전략을 모두 설명합니다.</div>
+      </div>
+      <div class="faq-item fade-up">
+        <div class="faq-q">
+          📅 강의는 언제 시작하나요?
+          <span class="faq-toggle">+</span>
+        </div>
+        <div class="faq-a">모집 마감 후 다음 주 월요일 오픈 예정입니다. 카카오채널에서 정확한 일정을 확인하세요.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA BOTTOM ─── -->
+<div class="cta-bottom">
+  <h2>지금 바로 <span>시작하세요</span></h2>
+  <p>카카오톡 채널에서 무료 자료를 먼저 받아보세요.<br>Urdu로 1:1 상담도 가능합니다.</p>
+  <div class="cta-group">
+    <a href="YOUR_KAKAO_LINK" class="btn-kakao">
+      <svg viewBox="0 0 24 24" fill="currentColor" width="26" height="26" aria-hidden="true">
+        <path d="M12 3C6.477 3 2 6.477 2 10.5c0 2.638 1.657 4.953 4.147 6.31L5 21l4.782-2.698C10.477 18.433 11.228 18.5 12 18.5c5.523 0 10-3.477 10-7.5S17.523 3 12 3z"/>
+      </svg>
+      카카오톡 채널 무료 상담
+    </a>
+  </div>
+</div>
+
+<footer>
+  <p>STAYCLASS Pakistan Edition</p>
+  <p>수원시 권선구 금곡로 102번길 29, 옆커폰</p>
+  <p><a href="YOUR_KAKAO_LINK">카카오톡 채널</a></p>
+</footer>
+
+<!-- ─── SCRIPTS ─── -->
+<script>
+  /* Fade-up on scroll */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  /* Income bar animation */
+  const barObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.querySelectorAll('.income-fill').forEach(bar => {
+          bar.classList.add('animated');
+        });
+        barObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  document.querySelectorAll('.income-bars').forEach(el => barObserver.observe(el));
+
+  /* FAQ accordion */
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.querySelector('.faq-q').addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(o => o.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+</script>
+</body>
+</html>
