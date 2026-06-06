@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STAYCLASS — Color Palette Proposal</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@200;300;400;500&family=DM+Serif+Display:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: #070710;
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  padding: 0;
+}
+
+/* ── COVER ── */
+.cover {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #070710;
+  position: relative;
+  overflow: hidden;
+  page-break-after: always;
+}
+
+.cover-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+
+.cover-label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  margin-bottom: 32px;
+}
+
+.cover-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(48px, 8vw, 96px);
+  font-weight: 400;
+  line-height: 1;
+  text-align: center;
+  letter-spacing: -2px;
+  color: #fff;
+  margin-bottom: 16px;
+}
+
+.cover-title em {
+  font-style: italic;
+  color: rgba(255,255,255,0.4);
+}
+
+.cover-sub {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 0.5px;
+  margin-bottom: 80px;
+  text-align: center;
+}
+
+/* swatch row on cover */
+.cover-swatches {
+  display: flex;
+  gap: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.6);
+}
+.cover-swatch {
+  width: 80px;
+  height: 80px;
+}
+
+.cover-ref {
+  position: absolute;
+  bottom: 48px;
+  display: flex;
+  gap: 40px;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+}
+
+.cover-divider {
+  width: 1px;
+  height: 40px;
+  background: rgba(255,255,255,0.1);
+  position: absolute;
+  top: 0;
+}
+
+/* ── PAGES ── */
+.page {
+  width: 100%;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  position: relative;
+  overflow: hidden;
+}
+
+/* LEFT PANEL */
+.left-panel {
+  padding: 80px 48px 80px 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  z-index: 2;
+}
+
+.palette-index {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+  margin-bottom: 48px;
+}
+
+.palette-name {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(36px, 4vw, 52px);
+  font-weight: 400;
+  line-height: 1.1;
+  margin-bottom: 20px;
+  letter-spacing: -1px;
+}
+
+.palette-em {
+  font-style: italic;
+  opacity: 0.5;
+  display: block;
+  font-size: 0.85em;
+}
+
+.palette-desc {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 48px;
+  max-width: 260px;
+}
+
+/* color chips */
+.chips {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 48px;
+}
+.chip-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.chip-swatch {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.chip-info { }
+.chip-role {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+  margin-bottom: 2px;
+}
+.chip-hex {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 0.5px;
+}
+
+.persuasion-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.tag {
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.4);
+  font-weight: 300;
+}
+
+/* RIGHT PANEL — mock preview */
+.right-panel {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 60px 60px 40px;
+}
+
+.mock-phone {
+  width: 300px;
+  border-radius: 40px;
+  overflow: hidden;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.06);
+  position: relative;
+  z-index: 2;
+}
+
+.mock-inner {
+  padding: 32px 24px 28px;
+  position: relative;
+}
+
+.mock-badge {
+  display: inline-block;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  margin-bottom: 20px;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.mock-h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 26px;
+  line-height: 1.2;
+  margin-bottom: 10px;
+  letter-spacing: -0.5px;
+}
+
+.mock-sub {
+  font-size: 12px;
+  line-height: 1.6;
+  margin-bottom: 24px;
+  font-weight: 300;
+  opacity: 0.55;
+}
+
+.mock-btn {
+  width: 100%;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 10px;
+  font-family: 'Space Grotesk', sans-serif;
+  letter-spacing: 0.3px;
+}
+
+.mock-btn2 {
+  width: 100%;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 400;
+  text-align: center;
+  font-family: 'DM Sans', sans-serif;
+  opacity: 0.6;
+}
+
+.mock-card {
+  border-radius: 16px;
+  padding: 18px;
+  margin-top: 16px;
+}
+
+.mock-card-label { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; opacity: 0.5; margin-bottom: 4px; font-family: 'Space Grotesk', sans-serif; }
+.mock-card-val { font-family: 'DM Serif Display', serif; font-size: 22px; letter-spacing: -0.5px; }
+
+/* decorative bg ring on right */
+.bg-ring {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* ── DIVIDER BETWEEN PAGES ── */
+.page-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+}
+
+/* ── CLOSING PAGE ── */
+.closing {
+  width: 100%;
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #070710;
+  padding: 80px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.closing-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.closing-label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+  margin-bottom: 32px;
+  position: relative;
+}
+
+.closing-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(28px, 4vw, 48px);
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 16px;
+  letter-spacing: -1px;
+  position: relative;
+}
+
+.closing-sub {
+  font-size: 14px;
+  color: rgba(255,255,255,0.25);
+  font-weight: 300;
+  position: relative;
+}
+
+/* ── PALETTE SPECIFICS ── */
+
+/* A: Sovereign Gold */
+.pa-bg      { background: #0B1220; }
+.pa-card    { background: #111C2E; }
+.pa-accent  { background: #C9922A; }
+.pa-hi      { background: #F0C060; }
+.pa-text    { background: #F5F0E8; }
+.pa-muted   { background: #6E8499; }
+
+.pa-page { background: #0B1220; }
+.pa-left { background: #080E1A; border-right: 1px solid rgba(255,255,255,0.05); }
+
+.pa-badge { background: rgba(201,146,42,0.18); border: 1px solid rgba(201,146,42,0.35); color: #C9922A; }
+.pa-h1    { color: #F5F0E8; }
+.pa-h1 span { color: #F0C060; }
+.pa-cta-btn  { background: #C9922A; color: #fff; }
+.pa-cta-btn2 { border: 1px solid rgba(201,146,42,0.3); color: #C9922A; }
+.pa-mock-card { background: #111C2E; border: 1px solid rgba(201,146,42,0.15); }
+.pa-mock-card .mock-card-val { color: #F0C060; }
+.pa-ring1 { width: 600px; height: 600px; border: 1px solid rgba(201,146,42,0.07); top: -200px; right: -200px; }
+.pa-ring2 { width: 300px; height: 300px; border: 1px solid rgba(201,146,42,0.05); bottom: 40px; right: 80px; }
+.pa-name  { color: #F5F0E8; }
+.pa-phone { background: #111C2E; }
+
+/* B: Growth Emerald */
+.pb-bg      { background: #0A1512; }
+.pb-card    { background: #111E18; }
+.pb-accent  { background: #16A06B; }
+.pb-hi      { background: #F0B429; }
+.pb-text    { background: #E8F5F0; }
+.pb-muted   { background: #5D8A79; }
+
+.pb-page { background: #0A1512; }
+.pb-left { background: #070F0C; border-right: 1px solid rgba(255,255,255,0.05); }
+
+.pb-badge { background: rgba(22,160,107,0.15); border: 1px solid rgba(22,160,107,0.3); color: #16A06B; }
+.pb-h1    { color: #E8F5F0; }
+.pb-h1 span { color: #F0B429; }
+.pb-cta-btn  { background: #16A06B; color: #fff; }
+.pb-cta-btn2 { border: 1px solid rgba(22,160,107,0.3); color: #16A06B; }
+.pb-mock-card { background: #111E18; border: 1px solid rgba(22,160,107,0.15); }
+.pb-mock-card .mock-card-val { color: #F0B429; }
+.pb-ring1 { width: 550px; height: 550px; border: 1px solid rgba(22,160,107,0.06); top: -180px; right: -180px; }
+.pb-ring2 { width: 280px; height: 280px; border: 1px solid rgba(240,180,41,0.05); bottom: 60px; right: 100px; }
+.pb-name  { color: #E8F5F0; }
+.pb-phone { background: #111E18; }
+
+/* C: Imperial Midnight */
+.pc-bg      { background: #08071A; }
+.pc-card    { background: #100F28; }
+.pc-accent  { background: #7B68EE; }
+.pc-hi      { background: #E8B84B; }
+.pc-text    { background: #F0EEFF; }
+.pc-muted   { background: #6E6A9A; }
+
+.pc-page { background: #08071A; }
+.pc-left { background: #060514; border-right: 1px solid rgba(255,255,255,0.05); }
+
+.pc-badge { background: rgba(123,104,238,0.18); border: 1px solid rgba(123,104,238,0.35); color: #9B8FFF; }
+.pc-h1    { color: #F0EEFF; }
+.pc-h1 span { color: #E8B84B; }
+.pc-cta-btn  { background: #E8B84B; color: #1A0A00; }
+.pc-cta-btn2 { border: 1px solid rgba(123,104,238,0.35); color: #9B8FFF; }
+.pc-mock-card { background: #100F28; border: 1px solid rgba(123,104,238,0.2); }
+.pc-mock-card .mock-card-val { color: #E8B84B; }
+.pc-ring1 { width: 580px; height: 580px; border: 1px solid rgba(123,104,238,0.07); top: -190px; right: -190px; }
+.pc-ring2 { width: 260px; height: 260px; border: 1px solid rgba(232,184,75,0.06); bottom: 50px; right: 90px; }
+.pc-name  { color: #F0EEFF; }
+.pc-phone { background: #100F28; }
+</style>
+</head>
+<body>
+
+<!-- ── COVER ── -->
+<div class="cover">
+  <div class="cover-grid"></div>
+
+  <p class="cover-label">Sovereign Yield · Color Study</p>
+  <h1 class="cover-title">Three<br><em>Persuasions</em></h1>
+  <p class="cover-sub">STAYCLASS Pakistan · Landing Page · Color Direction</p>
+
+  <div class="cover-swatches">
+    <!-- A swatches -->
+    <div class="cover-swatch" style="background:#0B1220"></div>
+    <div class="cover-swatch" style="background:#C9922A"></div>
+    <div class="cover-swatch" style="background:#F0C060"></div>
+    <!-- separator -->
+    <div class="cover-swatch" style="background:#07090E; width:2px"></div>
+    <!-- B swatches -->
+    <div class="cover-swatch" style="background:#0A1512"></div>
+    <div class="cover-swatch" style="background:#16A06B"></div>
+    <div class="cover-swatch" style="background:#F0B429"></div>
+    <!-- separator -->
+    <div class="cover-swatch" style="background:#07090E; width:2px"></div>
+    <!-- C swatches -->
+    <div class="cover-swatch" style="background:#08071A"></div>
+    <div class="cover-swatch" style="background:#7B68EE"></div>
+    <div class="cover-swatch" style="background:#E8B84B"></div>
+  </div>
+
+  <div class="cover-ref">
+    <span>Option A · Sovereign Gold</span>
+    <span>Option B · Growth Emerald</span>
+    <span>Option C · Imperial Midnight</span>
+  </div>
+</div>
+
+<div class="page-divider"></div>
+
+<!-- ── OPTION A ── -->
+<div class="page pa-page">
+  <div class="left-panel pa-left">
+    <div>
+      <p class="palette-index">Option A</p>
+      <h2 class="palette-name pa-name">Sovereign<br><span class="palette-em">Gold</span></h2>
+      <p class="palette-desc">깊은 네이비 위에 웜 앰버 골드가 올라앉은 구성. Bloomberg·Forbes 급 금융 신뢰감을 전달하며, 방문자에게 "이미 검증된 시스템"이라는 인상을 심어줍니다.</p>
+
+      <div class="chips">
+        <div class="chip-row">
+          <div class="chip-swatch pa-bg"></div>
+          <div class="chip-info"><div class="chip-role">Background</div><div class="chip-hex">#0B1220</div></div>
+        </div>
+        <div class="chip-row">
+          <div class="chip-swatch pa-card"></div>
+          <div class="chip-info"><div class="chip-role">Card / Surface</div><div class="chip-hex">#111C2E</div></div>
+        </div>
+        <div class="chip-row">
+          <div class="chip-swatch pa-accent"></div>
+          <div class="chip-info"><div class="chip-role">Primary Accent</div><div class="chip-hex">#C9922A</div></div>
+        </div>
+        <div class="chip-row">
+          <div class="chip-swatch pa-hi"></div>
+          <div class="chip-info"><div class="chip-role">Highlight / CTA</div><div class="chip-hex">#F0C060</div></div>
+        </div>
+        <div class="chip-row">
+          <div class="chip-swatch pa-text"></div>
+          <div class="chip-info"><div class="chip-role">Text</div><div class="chip-hex">#F5F0E8</div></div>
+        </div>
+        <div class="chip-row">
+          <div class="chip-swatch pa-muted"></div>
+          <div class="chip-info"><div class="chip-role">Muted</div><div class="chip-hex">#6E8499</div></div>
+        </div>
+      </div>
+
+      <div class="persuasion-tags">
+        <span class="tag">신뢰</span>
+        <span class="tag">고급</span>
+        <span class="tag">금융</span>
+        <span class="tag">권위</span>
+        <span class="tag">안정</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="right-panel pa-page" style="position:relative;">
+    <div class="bg-ring pa-ring1"></div>
+    <div class="bg-ring pa-ring2"></div>
+
+    <div class="mock-phone pa-phone">
+      <div class="mock-inner">
+        <div class="mock-badge pa-badge">🇵🇰 파키스탄인을 위한 한국 단기임대</div>
+        <div class="mock-h1 pa-h1">한국에서<br><span>단기임대</span>로<br>월 수입 만들기</div>
+        <p class="mock-sub" style="color:rgba(245,240,232,0.5);">파키스탄 출신 수강생들이<br>실제로 증명한 수익화 시스템</p>
+        <div class="mock-btn pa-cta-btn">카카오톡으로 무료 자료 받기</div>
+        <div class="mock-btn2 pa-cta-btn2">강의 신청 바로가기 →</div>
+        <div class="mock-card pa-mock-card">
+          <div class="mock-card-label">수강생 월 수입</div>
+          <div class="mock-card-val" style="color:#F0C060;">200만원+</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page-divider"></div>
+
+<!-- ── OPTION B ── -->
+<div class="page pb-page">
+  <div class="left-panel pb-left">
+    <div>
+      <p class="palette-index">Option B</p>
+      <h2 class="palette-name pb-name">Growth<br><span class="palette-em">Emerald</span></h2>
+      <p class="palette-desc">에메랄드 그린 + 앰버. 성장·수익·번영의 색조 언어. "이 강의로 돈을 번다"는 메시지를 색상 자체가 먼저 전달합니다. 부동산·투자 업계의 글로벌 시각 언어와 일치합니다.</p>
+
+      <div class="chips">
+        <div class="chip-row">
+          <div class="chip-swatch pb-bg"></div>
+          <div class="chip-info"><div class="chip-role">Background</div><div class="chip-hex">#0A1512</div></div>
+        </div>
+        <div class="chip-row">
+          <div class="chip-swatch pb-card"></div>
+          <div class="chip-info"><div class="chip-role">Card / Surface</div><div class="chip-hex">#111E18</div></div>
+        </div>
+        <div class="chip-row">
+          <div class="chip-swatch pb-accent"></div>
+          <div class="chip-info"><div class="chip-role">Primary Accent</div><div class="chip-hex">#16A06B</div></div>
+        </div>
+        <div class="chip-row">
+          <div class="chip-swatch pb-hi"></div>
+          <div class="chip-info"><div class="chip-role">Highlight / CTA</div><div class="chip-hex">#F0B429</div></div>
+        </div>
+        <div class="chip-row">
+          <div class="chip-swatch pb-text"></div>
+          <div class="chip-info"><div class="chip-role">Text</div><div class="chip-hex">#E8F5F0</div></div>
+        </div>
+        <div class="chip-row">
+          <div class="chip-swatch pb-muted"></div>
+          <div class="chip-info"><div class="chip-role">Muted</div><div class="chip-hex">#5D8A79</div></div>
+        </div>
+      </div>
+
+      <div class="persuasion-tags">
+        <span class="tag">성장</span>
+        <span class="tag">수익</span>
+        <span class="tag">번영</span>
+        <span class="tag">부동산</span>
+        <span class="tag">투자</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="right-panel pb-page">
+    <div class="bg-ring pb-ring1"></div>
+    <div class="bg-ring pb-ring2"></div>
+
+    <div class="mock-phone pb-phone">
+      <div class="mock-inner">
+        <div class="mock-badge pb-badge">🇵🇰 파키스탄인을 위한 한국 단기임대</div>
+        <div class="mock-h1 pb-h1">한국에서<br><span>단기임대</span>로<br>월 수입 만들기</div>
+        <p class="mock-sub" style="color:rgba(232,245,240,0.5);">파키스탄 출신 수강생들이<br>실제로 증명한 수익화 시스템</p>
+        <div class="mock-btn pb-cta-btn">카카오톡으로 무료 자료 받기</div>
+        <div class="mock-btn2 pb-cta-btn2">강의 신청 바로가기 →</div>
+        <div class="mock-card pb-mock-card">
+          <div class="mock-card-label">수강생 월 수입</div>
+          <div class="mock-card-val" style="color:#F0B429;">200만원+</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page-divider"></div>
+
+<!-- ── OPTION C ── -->
+<div class="page pc-page">
+  <div class="left-panel pc-left">
+    <div>
+      <p class="palette-index">Option C  <span style="font-size:10px;color:rgba(255,255,255,0.2);margin-left:8px;">현재 색상 진화형</span></p>
+      <h2 class="palette-name pc-name">Imperial<br><span class="palette-em">Midnight</span></h2>
+      <p class="palette-desc">현재 퍼플+골드 구조를 유지하면서 네온 느낌을 제거한 버전. 보라를 더 깊고 왕실적으로, 노란색을 웜 앰버로 전환해 crypto 느낌을 걷어내고 고급감을 더합니다.</p>
+
+      <div class="chips">
+        <div class="chip-row">
+          <div class="chip-swatch pc-bg"></div>
+          <div class="chip-info"><div class="chip-role">Background</div><div class="chip-hex">#08071A</div></div>
+        </div>
+        <div class="chip-row">
+          <div class="chip-swatch pc-card"></div>
+          <div class="chip-info"><div class="chip-role">Card / Surface</div><div class="chip-hex">#100F28</div></div>
+        </div>
+        <div class="chip-row">
+          <div class="chip-swatch pc-accent"></div>
+          <div class="chip-info"><div class="chip-role">Primary Accent</div><div class="chip-hex">#7B68EE</div></div>
+        </div>
+        <div class="chip-row">
+          <div class="chip-swatch pc-hi"></div>
+          <div class="chip-info"><div class="chip-role">Highlight / CTA</div><div class="chip-hex">#E8B84B</div></div>
+        </div>
+        <div class="chip-row">
+          <div class="chip-swatch pc-text"></div>
+          <div class="chip-info"><div class="chip-role">Text</div><div class="chip-hex">#F0EEFF</div></div>
+        </div>
+        <div class="chip-row">
+          <div class="chip-swatch pc-muted"></div>
+          <div class="chip-info"><div class="chip-role">Muted</div><div class="chip-hex">#6E6A9A</div></div>
+        </div>
+      </div>
+
+      <div class="persuasion-tags">
+        <span class="tag">현재와 연속성</span>
+        <span class="tag">세련</span>
+        <span class="tag">야심</span>
+        <span class="tag">고급 리파인</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="right-panel pc-page">
+    <div class="bg-ring pc-ring1"></div>
+    <div class="bg-ring pc-ring2"></div>
+
+    <div class="mock-phone pc-phone">
+      <div class="mock-inner">
+        <div class="mock-badge pc-badge">🇵🇰 파키스탄인을 위한 한국 단기임대</div>
+        <div class="mock-h1 pc-h1">한국에서<br><span>단기임대</span>로<br>월 수입 만들기</div>
+        <p class="mock-sub" style="color:rgba(240,238,255,0.45);">파키스탄 출신 수강생들이<br>실제로 증명한 수익화 시스템</p>
+        <div class="mock-btn pc-cta-btn">카카오톡으로 무료 자료 받기</div>
+        <div class="mock-btn2 pc-cta-btn2">강의 신청 바로가기 →</div>
+        <div class="mock-card pc-mock-card">
+          <div class="mock-card-label">수강생 월 수입</div>
+          <div class="mock-card-val" style="color:#E8B84B;">200만원+</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page-divider"></div>
+
+<!-- ── CLOSING ── -->
+<div class="closing">
+  <div class="closing-grid"></div>
+  <p class="closing-label">Awaiting Direction</p>
+  <h2 class="closing-title">어느 방향으로<br>나아갈까요?</h2>
+  <p class="closing-sub">선택된 팔레트를 index.html 전체에 즉시 적용합니다</p>
+
+  <!-- comparison strip -->
+  <div style="display:flex;gap:2px;margin-top:56px;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.5);position:relative;">
+    <div style="width:180px;padding:24px 20px;background:#0B1220;text-align:center;">
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:16px;">A</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:18px;color:#F5F0E8;margin-bottom:6px;">Sovereign</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:18px;font-style:italic;color:#C9922A;">Gold</div>
+      <div style="margin-top:16px;display:flex;gap:6px;justify-content:center;">
+        <div style="width:16px;height:16px;border-radius:50%;background:#0B1220;border:1px solid rgba(255,255,255,0.15)"></div>
+        <div style="width:16px;height:16px;border-radius:50%;background:#C9922A;"></div>
+        <div style="width:16px;height:16px;border-radius:50%;background:#F0C060;"></div>
+      </div>
+    </div>
+    <div style="width:2px;background:rgba(255,255,255,0.04)"></div>
+    <div style="width:180px;padding:24px 20px;background:#0A1512;text-align:center;">
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:16px;">B</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:18px;color:#E8F5F0;margin-bottom:6px;">Growth</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:18px;font-style:italic;color:#16A06B;">Emerald</div>
+      <div style="margin-top:16px;display:flex;gap:6px;justify-content:center;">
+        <div style="width:16px;height:16px;border-radius:50%;background:#0A1512;border:1px solid rgba(255,255,255,0.15)"></div>
+        <div style="width:16px;height:16px;border-radius:50%;background:#16A06B;"></div>
+        <div style="width:16px;height:16px;border-radius:50%;background:#F0B429;"></div>
+      </div>
+    </div>
+    <div style="width:2px;background:rgba(255,255,255,0.04)"></div>
+    <div style="width:180px;padding:24px 20px;background:#08071A;text-align:center;">
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:16px;">C</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:18px;color:#F0EEFF;margin-bottom:6px;">Imperial</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:18px;font-style:italic;color:#7B68EE;">Midnight</div>
+      <div style="margin-top:16px;display:flex;gap:6px;justify-content:center;">
+        <div style="width:16px;height:16px;border-radius:50%;background:#08071A;border:1px solid rgba(255,255,255,0.15)"></div>
+        <div style="width:16px;height:16px;border-radius:50%;background:#7B68EE;"></div>
+        <div style="width:16px;height:16px;border-radius:50%;background:#E8B84B;"></div>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin-top:40px;font-size:12px;color:rgba(255,255,255,0.15);letter-spacing:1px;font-family:'Space Grotesk',sans-serif;">STAYCLASS Pakistan · Sovereign Yield Design Philosophy · 2026</p>
+</div>
+
+</body>
+</html>

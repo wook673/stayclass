@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "STAYCLASS Landing Page",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-c", "export PATH='/c/Program Files/nodejs:$PATH' && npx serve -p ${PORT:-3000} ."],
+      "port": 3000,
+      "autoPort": true
+    }
+  ]
+}
