@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "STAYCLASS Landing Page",
-      "runtimeExecutable": "bash",
-      "runtimeArgs": ["-c", "export PATH='/c/Program Files/nodejs:$PATH' && npx serve -p ${PORT:-3000} ."],
+      "runtimeExecutable": "C:\\Program Files\\nodejs\\node.exe",
+      "runtimeArgs": ["C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npx-cli.js", "serve", "-p", "3000", "."],
       "port": 3000,
       "autoPort": true
     }
