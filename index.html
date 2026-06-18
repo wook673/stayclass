@@ -185,13 +185,171 @@ h2 span { color: var(--gold); }
   line-height: 2.1;
 }
 
-/* ─── STATS ─── */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  margin-bottom: 40px;
+/* ─── LIVE PANEL ─── */
+.live-panel {
+  border: 1px solid rgba(110,231,183,0.2);
+  border-radius: var(--radius);
+  padding: 24px 26px;
+  margin-bottom: 22px;
+  position: relative;
+  overflow: hidden;
 }
+.live-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(110,231,183,0.7), rgba(110,231,183,0.05));
+}
+.live-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+}
+.live-indicator {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.live-dot {
+  width: 6px; height: 6px;
+  background: #6EE7B7;
+  border-radius: 50%;
+  animation: blink-dot 1.8s ease-in-out infinite;
+}
+@keyframes blink-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+.live-text {
+  font-size: 10px;
+  font-weight: 700;
+  color: #6EE7B7;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+.live-date { font-size: 10px; color: var(--muted); }
+
+.live-hero {
+  display: flex;
+  align-items: flex-end;
+  gap: 22px;
+  margin-bottom: 22px;
+}
+.hero-num {
+  font-size: clamp(42px, 7vw, 58px);
+  font-weight: 900;
+  color: var(--gold);
+  line-height: 1;
+}
+.hero-num sub {
+  font-size: 22px;
+  color: var(--accent);
+  font-weight: 700;
+  vertical-align: baseline;
+}
+.hero-caption {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+.hero-divider {
+  width: 1px;
+  height: 54px;
+  background: rgba(255,255,255,0.08);
+  flex-shrink: 0;
+}
+.hero-side { display: flex; flex-direction: column; gap: 12px; }
+.side-num {
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--text);
+  line-height: 1;
+}
+.side-lbl { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+.occ-bar-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 7px;
+}
+.occ-bar-lbl { font-size: 10px; color: var(--muted); }
+.occ-bar-val { font-size: 10px; color: #6EE7B7; }
+.occ-track {
+  height: 4px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.occ-fill {
+  height: 100%;
+  width: 90%;
+  background: linear-gradient(90deg, #6EE7B7, rgba(110,231,183,0.35));
+  border-radius: 99px;
+}
+
+/* ─── STATS ROW ─── */
+.stats-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.s-card {
+  background: var(--card);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: var(--radius);
+  padding: 20px 18px;
+}
+.s-card.featured { border-color: rgba(201,146,42,0.3); }
+.s-num {
+  font-size: clamp(22px, 3.5vw, 28px);
+  font-weight: 900;
+  color: var(--gold);
+  line-height: 1;
+}
+.s-lbl { font-size: 11px; color: var(--muted); margin-top: 6px; }
+.s-sub { font-size: 10px; color: var(--accent); margin-top: 3px; }
+
+/* ─── INCOME BARS ─── */
+.bars-title {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+.bar-item { margin-bottom: 16px; }
+.bar-item:last-child { margin-bottom: 0; }
+.bar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+.bar-lbl { font-size: 13px; color: var(--muted); }
+.bar-amt { font-size: 16px; font-weight: 900; color: var(--text); }
+.bar-amt .real {
+  font-size: 10px;
+  color: #6EE7B7;
+  font-weight: 400;
+  margin-left: 5px;
+}
+.bar-track {
+  height: 4px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #C9922A, #F0C060);
+  border-radius: 99px;
+  transition: width 1.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.bar-fill.animated { width: var(--tw); }
 
 .stat-card {
   background: var(--card);
@@ -525,53 +683,82 @@ footer p + p { margin-top: 8px; }
     <div class="stats-section-inner">
       <div class="stats-left">
         <p class="section-label fade-up">숫자로 보는 STAYCLASS</p>
-        <h2 class="fade-up">파키스탄 커뮤니티가<br><span>선택한 강의</span></h2>
-        <p class="section-urdu fade-up">ہمارے ساتھ کامیابی کے اعداد و شمار</p>
-        <div class="stats-grid fade-up">
-          <div class="stat-card">
-            <span class="stat-num">140K</span>
-            <div class="stat-label">YouTube 구독자</div>
+        <h2 class="fade-up">강사가 <span>직접 운영 중인</span><br>실제 포트폴리오</h2>
+        <p class="section-urdu fade-up">یہ صرف تھیوری نہیں — یہ اصل نتائج ہیں</p>
+
+        <!-- 라이브 운영 현황 패널 -->
+        <div class="live-panel fade-up">
+          <div class="live-top">
+            <div class="live-indicator">
+              <span class="live-dot"></span>
+              <span class="live-text">실시간 운영 현황</span>
+            </div>
+            <span class="live-date">Hostier · 2026년 6월</span>
           </div>
-          <div class="stat-card">
-            <span class="stat-num">6주</span>
-            <div class="stat-label">완성 커리큘럼</div>
+          <div class="live-hero">
+            <div>
+              <div class="hero-num">90<sub>%</sub></div>
+              <div class="hero-caption">이번 달 210박 중 188박 예약 확정</div>
+            </div>
+            <div class="hero-divider"></div>
+            <div class="hero-side">
+              <div>
+                <div class="side-num">381만원</div>
+                <div class="side-lbl">월 순수익 (7개 방 합산)</div>
+              </div>
+              <div>
+                <div class="side-num">12건</div>
+                <div class="side-lbl">이번 달 예약 건수</div>
+              </div>
+            </div>
           </div>
-          <div class="stat-card">
-            <span class="stat-num">200만+</span>
-            <div class="stat-label">수강생 월 수입</div>
+          <div class="occ-bar-labels">
+            <span class="occ-bar-lbl">예약 188박</span>
+            <span class="occ-bar-val">공실 22박 · 10%</span>
+          </div>
+          <div class="occ-track"><div class="occ-fill"></div></div>
+        </div>
+
+        <!-- 보조 스탯 -->
+        <div class="stats-row fade-up">
+          <div class="s-card featured">
+            <div class="s-num">7개</div>
+            <div class="s-lbl">직영 방 운영 중</div>
+            <div class="s-sub">상현동 · 수원역 · 동탄</div>
+          </div>
+          <div class="s-card">
+            <div class="s-num">6주</div>
+            <div class="s-lbl">완성 커리큘럼</div>
+          </div>
+          <div class="s-card">
+            <div class="s-num">140K</div>
+            <div class="s-lbl">YouTube 구독자</div>
           </div>
         </div>
       </div>
 
       <div class="stats-right">
-        <div class="income-bars">
-          <div class="income-card fade-up">
-            <div class="income-row">
-              <span class="income-label">방 1개 운영 시</span>
-              <span class="income-amount">월 80~120만원</span>
-            </div>
-            <div class="income-track">
-              <div class="income-fill" style="--target-width: 45%"></div>
-            </div>
+        <div class="bars-title fade-up">수익 시뮬레이션</div>
+        <div class="bar-item fade-up">
+          <div class="bar-header">
+            <span class="bar-lbl">방 1개 운영 시</span>
+            <span class="bar-amt">월 84~165만원 <span class="real">실측 기준</span></span>
           </div>
-          <div class="income-card fade-up">
-            <div class="income-row">
-              <span class="income-label">방 2~3개 운영 시</span>
-              <span class="income-amount">월 200~350만원</span>
-            </div>
-            <div class="income-track">
-              <div class="income-fill" style="--target-width: 75%"></div>
-            </div>
+          <div class="bar-track"><div class="bar-fill" style="--tw:43%"></div></div>
+        </div>
+        <div class="bar-item fade-up">
+          <div class="bar-header">
+            <span class="bar-lbl">방 3~5개 운영 시</span>
+            <span class="bar-amt">월 200~380만원</span>
           </div>
-          <div class="income-card fade-up">
-            <div class="income-row">
-              <span class="income-label">위탁 포함 확장 시</span>
-              <span class="income-amount">월 500만원+</span>
-            </div>
-            <div class="income-track">
-              <div class="income-fill" style="--target-width: 100%"></div>
-            </div>
+          <div class="bar-track"><div class="bar-fill" style="--tw:72%"></div></div>
+        </div>
+        <div class="bar-item fade-up">
+          <div class="bar-header">
+            <span class="bar-lbl">7개 직영 운영 시</span>
+            <span class="bar-amt">월 381만원 <span class="real">6월 실측</span></span>
           </div>
+          <div class="bar-track"><div class="bar-fill" style="--tw:100%"></div></div>
         </div>
       </div>
     </div>
@@ -796,19 +983,17 @@ footer p + p { margin-top: 8px; }
 
   document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-  /* Income bar animation */
+  /* Bar animation */
   const barObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        entry.target.querySelectorAll('.income-fill').forEach(bar => {
-          bar.classList.add('animated');
-        });
+        entry.target.querySelectorAll('.bar-fill').forEach(bar => bar.classList.add('animated'));
         barObserver.unobserve(entry.target);
       }
     });
   }, { threshold: 0.3 });
 
-  document.querySelectorAll('.income-bars').forEach(el => barObserver.observe(el));
+  document.querySelectorAll('.stats-right').forEach(el => barObserver.observe(el));
 
   /* FAQ accordion */
   document.querySelectorAll('.faq-item').forEach(item => {
