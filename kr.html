@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>STAYCLASS | 직장인을 위한 단기임대 수익 시스템</title>
+<title>STAYCLASS | 단기임대 자산 수익 시스템</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
@@ -35,17 +35,19 @@ body {
 
 /* ─── BANNER ─── */
 .banner {
-  background: linear-gradient(90deg, #C9922A, #E8B050);
+  background: #0D1A2E;
+  border-bottom: 1px solid rgba(201,146,42,0.3);
   text-align: center;
   padding: 13px 24px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   position: sticky;
   top: 0;
   z-index: 200;
+  color: var(--muted);
+  letter-spacing: 0.3px;
 }
-.banner span { color: #1A0A00; }
-.banner em { color: #1A0A00; font-style: normal; font-weight: 900; }
+.banner em { color: var(--gold); font-style: normal; }
 
 /* ─── HERO ─── */
 .hero {
@@ -56,55 +58,68 @@ body {
   justify-content: center;
   text-align: center;
   padding: 80px 24px 60px;
-  background: radial-gradient(ellipse at top, #162240 0%, #0B1220 65%);
+  background: radial-gradient(ellipse at top, #0E1B30 0%, #0B1220 70%);
   position: relative;
   overflow: hidden;
 }
 .hero::before {
   content: '';
   position: absolute;
-  width: 700px; height: 700px;
-  background: radial-gradient(circle, rgba(201,146,42,0.12) 0%, transparent 70%);
-  top: -120px; left: 50%;
+  width: 600px; height: 400px;
+  background: radial-gradient(ellipse, rgba(201,146,42,0.09) 0%, transparent 70%);
+  top: 60px; left: 50%;
   transform: translateX(-50%);
   pointer-events: none;
 }
 
 .badge {
   display: inline-block;
-  background: rgba(201,146,42,0.15);
-  border: 1px solid rgba(201,146,42,0.5);
-  color: var(--gold);
-  font-size: 13px;
+  border: 1px solid rgba(201,146,42,0.35);
+  color: var(--muted);
+  font-size: 12px;
   padding: 6px 18px;
   border-radius: 999px;
-  margin-bottom: 28px;
+  margin-bottom: 32px;
+  letter-spacing: 1px;
+}
+
+.hero-eyebrow {
+  font-size: clamp(13px, 1.8vw, 16px);
+  color: var(--muted);
+  margin-bottom: 14px;
   letter-spacing: 0.5px;
-  font-weight: 700;
 }
 
 .hero h1 {
-  font-size: clamp(28px, 5.5vw, 52px);
+  font-size: clamp(30px, 6vw, 58px);
   font-weight: 900;
-  line-height: 1.2;
-  margin-bottom: 18px;
+  line-height: 1.15;
+  margin-bottom: 20px;
+  letter-spacing: -0.5px;
 }
-.hero h1 span { color: var(--gold); }
+.hero h1 .hl { color: var(--gold); }
+.hero h1 .dim { color: var(--muted); font-weight: 400; }
 
-.hero-sub {
-  font-size: clamp(15px, 2.2vw, 18px);
-  color: var(--muted);
-  margin-bottom: 16px;
-  max-width: 520px;
-  line-height: 1.75;
+.hero-annual {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  background: rgba(201,146,42,0.08);
+  border: 1px solid rgba(201,146,42,0.22);
+  border-radius: 12px;
+  padding: 14px 26px;
+  margin-bottom: 14px;
 }
+.hero-annual .num { font-size: clamp(36px, 6vw, 52px); font-weight: 900; color: var(--gold); line-height: 1; }
+.hero-annual .unit { font-size: 16px; color: var(--accent); font-weight: 700; }
+.hero-annual .lbl { font-size: 12px; color: var(--muted); margin-left: 4px; }
+
 .hero-proof {
-  font-size: 14px;
-  color: var(--green);
+  font-size: 13px;
+  color: var(--muted);
   margin-bottom: 44px;
-  font-weight: 700;
 }
-.hero-proof span { color: var(--gold); }
+.hero-proof span { color: var(--green); font-weight: 700; }
 
 .cta-group {
   display: flex;
@@ -126,7 +141,7 @@ body {
   padding: 18px 24px;
   border-radius: var(--radius);
   text-decoration: none;
-  transition: transform 0.15s, box-shadow 0.15s;
+  transition: transform 0.15s;
 }
 .btn-kakao:hover { transform: translateY(-2px); }
 .btn-kakao:active { transform: scale(0.97); }
@@ -134,7 +149,7 @@ body {
 
 .btn-secondary {
   display: block;
-  border: 1.5px solid var(--accent);
+  border: 1.5px solid rgba(201,146,42,0.4);
   color: var(--gold);
   font-size: 15px;
   padding: 14px 24px;
@@ -143,39 +158,58 @@ body {
   text-decoration: none;
   transition: background 0.2s;
 }
-.btn-secondary:hover { background: rgba(201,146,42,0.12); }
+.btn-secondary:hover { background: rgba(201,146,42,0.08); }
 
-/* ─── PAIN POINTS ─── */
-.pain-section {
-  background: var(--card);
-  border-top: 1px solid rgba(255,255,255,0.06);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+/* ─── REALITY CHECK ─── */
+.reality {
+  background: linear-gradient(180deg, #0D1A2E 0%, var(--card) 100%);
+  border-top: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
 }
-.pain-grid {
+.reality-inner {
   max-width: var(--max-w);
   margin: 0 auto;
-  padding: 60px 24px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  padding: 64px 24px;
 }
-@media (max-width: 700px) { .pain-grid { grid-template-columns: 1fr; gap: 16px; } }
-.pain-card {
-  text-align: center;
-  padding: 28px 20px;
-  border-radius: var(--radius);
-  border: 1px solid rgba(255,255,255,0.06);
-}
-.pain-icon { font-size: 28px; margin-bottom: 14px; }
-.pain-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
-.pain-desc { font-size: 13px; color: var(--muted); line-height: 1.7; }
-.pain-arrow {
-  display: block;
+.reality-label {
   font-size: 11px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
   color: var(--accent);
   font-weight: 700;
-  margin-top: 12px;
-  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+.reality-title {
+  font-size: clamp(22px, 3.5vw, 32px);
+  font-weight: 900;
+  margin-bottom: 40px;
+  line-height: 1.3;
+}
+.reality-title span { color: var(--gold); }
+.reality-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+@media (max-width: 700px) { .reality-grid { grid-template-columns: 1fr; } }
+.r-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: var(--radius);
+  padding: 24px 20px;
+}
+.r-icon { font-size: 22px; margin-bottom: 14px; }
+.r-q { font-size: 15px; font-weight: 700; margin-bottom: 10px; line-height: 1.4; }
+.r-a { font-size: 13px; color: var(--muted); line-height: 1.75; }
+.r-pivot {
+  display: inline-block;
+  font-size: 11px;
+  color: var(--accent);
+  border: 1px solid rgba(201,146,42,0.35);
+  border-radius: 99px;
+  padding: 3px 12px;
+  margin-top: 14px;
+  font-weight: 700;
 }
 
 /* ─── SECTION WRAPPER ─── */
@@ -194,7 +228,7 @@ body {
 }
 h2 { font-size: clamp(24px, 4vw, 36px); font-weight: 900; line-height: 1.3; margin-bottom: 8px; }
 h2 span { color: var(--gold); }
-.section-sub { font-size: 15px; color: var(--muted); margin-bottom: 44px; line-height: 1.75; max-width: 560px; }
+.section-sub { font-size: 15px; color: var(--muted); margin-bottom: 44px; line-height: 1.8; max-width: 580px; }
 
 /* ─── LIVE PANEL ─── */
 .live-panel {
@@ -237,7 +271,25 @@ h2 span { color: var(--gold); }
 .occ-track { height: 4px; background: rgba(255,255,255,0.06); border-radius: 99px; overflow: hidden; }
 .occ-fill { height: 100%; width: 90%; background: linear-gradient(90deg, var(--green), rgba(110,231,183,0.3)); border-radius: 99px; }
 
-/* ─── STATS ROW ─── */
+/* ─── ANNUAL BREAKDOWN ─── */
+.annual-row {
+  background: rgba(201,146,42,0.07);
+  border: 1px solid rgba(201,146,42,0.2);
+  border-radius: var(--radius);
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.annual-item { text-align: center; }
+.annual-num { font-size: 20px; font-weight: 900; color: var(--gold); line-height: 1; }
+.annual-lbl { font-size: 10px; color: var(--muted); margin-top: 4px; }
+.annual-sep { width: 1px; height: 36px; background: rgba(255,255,255,0.08); }
+
+/* ─── STATS SECTION ─── */
 .stats-section-inner {
   max-width: var(--max-w);
   margin: 0 auto;
@@ -246,13 +298,15 @@ h2 span { color: var(--gold); }
 @media (min-width: 900px) {
   .stats-section-inner { display: grid; grid-template-columns: 1fr 1fr; gap: var(--col-gap); align-items: start; }
 }
-.stats-row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; margin-bottom: 0; }
+.stats-row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; margin-top: 20px; }
 .s-card { background: var(--card); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius); padding: 20px 18px; }
 .s-card.featured { border-color: rgba(201,146,42,0.3); }
 .s-num { font-size: clamp(22px, 3.5vw, 28px); font-weight: 900; color: var(--gold); line-height: 1; }
 .s-lbl { font-size: 11px; color: var(--muted); margin-top: 6px; }
 .s-sub { font-size: 10px; color: var(--accent); margin-top: 3px; }
-.bars-title { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
+
+/* ─── INCOME SIMULATOR ─── */
+.sim-title { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
 .bar-item { margin-bottom: 16px; }
 .bar-item:last-child { margin-bottom: 0; }
 .bar-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
@@ -263,87 +317,82 @@ h2 span { color: var(--gold); }
 .bar-fill { height: 100%; width: 0; background: linear-gradient(90deg, #C9922A, #F0C060); border-radius: 99px; transition: width 1.3s cubic-bezier(0.22,1,0.36,1); }
 .bar-fill.animated { width: var(--tw); }
 
-/* ─── HOW IT WORKS ─── */
-.steps { display: flex; flex-direction: column; gap: 0; }
+/* ─── ACCUMULATION ─── */
+.accum-box {
+  margin-top: 26px;
+  background: var(--card);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+}
+.accum-title { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
+.accum-rows { display: flex; flex-direction: column; gap: 10px; }
+.accum-row { display: flex; justify-content: space-between; align-items: center; }
+.accum-yr { font-size: 12px; color: var(--muted); }
+.accum-val { font-size: 16px; font-weight: 900; color: var(--text); }
+.accum-val.peak { color: var(--gold); }
+.accum-divider { height: 1px; background: rgba(255,255,255,0.06); }
+
+/* ─── COMPARE ─── */
+.wealth-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 640px) { .wealth-grid { grid-template-columns: 1fr; } }
+.w-card {
+  background: var(--card);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+.w-card.hl { border-color: rgba(201,146,42,0.35); }
+.w-tag { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; font-weight: 700; }
+.w-title { font-size: 17px; font-weight: 900; margin-bottom: 18px; }
+.w-title span { color: var(--gold); }
+.w-rows { display: flex; flex-direction: column; gap: 10px; }
+.w-row { display: flex; gap: 10px; font-size: 13px; color: var(--muted); align-items: flex-start; }
+.mk { flex-shrink: 0; margin-top: 1px; }
+.mk.yes { color: var(--green); }
+.mk.no { color: #FF6B6B; }
+
+/* ─── STEPS ─── */
+.steps { display: flex; flex-direction: column; }
 .step {
-  display: flex;
-  gap: 22px;
-  align-items: flex-start;
+  display: flex; gap: 22px; align-items: flex-start;
   padding: 24px 0;
   border-bottom: 1px solid rgba(255,255,255,0.06);
-  position: relative;
 }
 .step:last-child { border-bottom: none; }
 .step-num {
-  width: 40px; height: 40px;
-  border-radius: 50%;
+  width: 40px; height: 40px; border-radius: 50%;
   background: linear-gradient(135deg, #C9922A, #E8B050);
   display: flex; align-items: center; justify-content: center;
-  font-weight: 900; font-size: 14px;
-  flex-shrink: 0;
-  color: #1A0A00;
+  font-weight: 900; font-size: 14px; flex-shrink: 0; color: #1A0A00;
 }
 .step-title { font-weight: 700; font-size: 16px; margin-bottom: 6px; }
 .step-desc { font-size: 13px; color: var(--muted); line-height: 1.7; }
 .step-tag {
-  display: inline-block;
-  font-size: 10px;
-  color: var(--accent);
+  display: inline-block; font-size: 10px; color: var(--accent);
   border: 1px solid rgba(201,146,42,0.4);
-  border-radius: 99px;
-  padding: 2px 10px;
-  margin-top: 8px;
-  font-weight: 700;
+  border-radius: 99px; padding: 2px 10px; margin-top: 8px; font-weight: 700;
 }
 @media (min-width: 900px) {
   .steps { display: grid; grid-template-columns: 1fr 1fr; gap: 0 32px; }
-  .step { border-bottom: none; border-right: none; }
+  .step { border-bottom: none; }
 }
-
-/* ─── COMPARE ─── */
-.compare-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-@media (max-width: 600px) { .compare-grid { grid-template-columns: 1fr; } }
-.compare-card {
-  background: var(--card);
-  border-radius: var(--radius);
-  padding: 26px;
-  border: 1px solid rgba(255,255,255,0.07);
-}
-.compare-card.highlight {
-  border-color: rgba(201,146,42,0.4);
-}
-.compare-tag { font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; font-weight: 700; }
-.compare-title { font-size: 18px; font-weight: 900; margin-bottom: 16px; }
-.compare-title span { color: var(--gold); }
-.compare-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-.compare-list li { font-size: 13px; color: var(--muted); display: flex; gap: 10px; align-items: flex-start; }
-.compare-list li .ck { flex-shrink: 0; margin-top: 1px; }
-.ck.yes { color: var(--green); }
-.ck.no { color: #FF6B6B; }
 
 /* ─── PRICING ─── */
 .price-grid { display: flex; flex-direction: column; gap: 16px; }
 .price-card {
   background: var(--card);
   border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 20px;
-  padding: 30px 26px;
-  position: relative;
-  overflow: hidden;
+  border-radius: 20px; padding: 30px 26px;
+  position: relative; overflow: hidden;
   transition: transform 0.2s;
 }
 .price-card:hover { transform: translateY(-4px); }
 .price-card.featured { border-color: var(--gold); }
 .price-card.featured::before {
-  content: '가장 인기';
-  position: absolute; top: 0; right: 0;
+  content: '가장 인기'; position: absolute; top: 0; right: 0;
   background: var(--gold); color: #1A0A00;
-  font-size: 12px; font-weight: 900;
-  padding: 6px 18px;
+  font-size: 12px; font-weight: 900; padding: 6px 18px;
   border-radius: 0 20px 0 12px;
 }
 @media (min-width: 900px) { .price-grid { flex-direction: row; } .price-card { flex: 1; } }
@@ -351,8 +400,8 @@ h2 span { color: var(--gold); }
 .plan-price { font-size: 38px; font-weight: 900; color: var(--gold); margin-bottom: 4px; line-height: 1.1; }
 .plan-price span { font-size: 16px; font-weight: 400; color: var(--muted); }
 .plan-features { list-style: none; display: flex; flex-direction: column; gap: 11px; margin-top: 20px; }
-.plan-features li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: #C4BBFF; }
-.check { color: var(--green); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.plan-features li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--muted); }
+.ck { color: var(--green); font-size: 15px; flex-shrink: 0; margin-top: 1px; }
 
 /* ─── FAQ ─── */
 .faq-list { display: flex; flex-direction: column; }
@@ -366,26 +415,27 @@ h2 span { color: var(--gold); }
   transition: transform 0.3s, background 0.2s; line-height: 1;
 }
 .faq-item.open .faq-toggle { transform: rotate(45deg); background: var(--accent); color: white; }
-.faq-a { font-size: 14px; color: var(--muted); line-height: 1.75; max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding-top 0.3s; }
+.faq-a { font-size: 14px; color: var(--muted); line-height: 1.8; max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding-top 0.3s; }
 .faq-item.open .faq-a { max-height: 200px; padding-top: 14px; }
 
 /* ─── CTA BOTTOM ─── */
 .cta-bottom {
-  background: linear-gradient(135deg, #0D1A2E, #162240);
-  border-top: 1px solid rgba(201,146,42,0.2);
-  padding: 80px 24px; text-align: center;
+  background: linear-gradient(135deg, #0D1A2E, #0B1220);
+  border-top: 1px solid rgba(201,146,42,0.15);
+  padding: 90px 24px; text-align: center;
 }
-.cta-bottom h2 { margin-bottom: 10px; }
-.cta-bottom p { color: var(--muted); margin-bottom: 36px; font-size: 15px; line-height: 1.8; }
+.cta-eyebrow { font-size: 12px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; }
+.cta-bottom h2 { margin-bottom: 12px; }
+.cta-bottom p { color: var(--muted); margin-bottom: 40px; font-size: 15px; line-height: 1.85; }
 .cta-bottom .cta-group { margin: 0 auto; }
 
 /* ─── UTILS ─── */
-hr { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 0; }
+hr { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 0; }
 footer { padding: 36px 24px; text-align: center; font-size: 13px; color: var(--muted); }
 footer a { color: var(--accent); text-decoration: none; }
 footer p + p { margin-top: 8px; }
 
-.fade-up { opacity: 0; transform: translateY(32px); transition: opacity 0.65s ease, transform 0.65s ease; }
+.fade-up { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
 .fade-up.visible { opacity: 1; transform: translateY(0); }
 .fade-up:nth-child(2) { transition-delay: 0.1s; }
 .fade-up:nth-child(3) { transition-delay: 0.2s; }
@@ -396,46 +446,59 @@ footer p + p { margin-top: 8px; }
 
 <!-- ─── BANNER ─── -->
 <div class="banner">
-  📌 1기 얼리버드 마감 임박 &nbsp;—&nbsp; <em>선착순 20명 한정 · 10만원 할인</em>
+  1기 모집 마감 시 가격 인상 예정 &nbsp;·&nbsp; <em>선착순 20명 한정</em>
 </div>
 
 <!-- ─── HERO ─── -->
 <section class="hero">
-  <div class="badge">직장인 · 자영업자 · N잡러를 위한 단기임대 시스템</div>
-  <h1>월급 외 수입,<br><span>단기임대</span>로 만드세요</h1>
-  <p class="hero-sub">보증금 없이, 내 집 없이도 가능한<br>자동화 단기임대 수익 시스템</p>
-  <p class="hero-proof">강사 직접 운영 중 · 가동률 <span>90%</span> · 7개 방 · 월 순수익 <span>381만원</span> 실증</p>
+  <div class="badge">경제적 자유를 원하는 직장인을 위한 시스템</div>
+  <p class="hero-eyebrow">지금 이 순간에도 회사 없이 돈이 들어오는 구조가 있습니다</p>
+  <h1>
+    회사 월급이<br>
+    <span class="hl">전부여서는</span><br>
+    <span class="dim">안 됩니다</span>
+  </h1>
+  <div class="hero-annual">
+    <div class="num">4,572</div>
+    <div class="unit">만원</div>
+    <div class="lbl">/ 연간 임대 순수익 (7개 방 · 실증)</div>
+  </div>
+  <p class="hero-proof">직접 운영 중 · 가동률 <span>90%</span> · Hostier 2026년 6월 기준</p>
   <div class="cta-group">
     <a href="https://pf.kakao.com/_APzxbX/chat" class="btn-kakao">
       <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
         <path d="M12 3C6.477 3 2 6.477 2 10.5c0 2.638 1.657 4.953 4.147 6.31L5 21l4.782-2.698C10.477 18.433 11.228 18.5 12 18.5c5.523 0 10-3.477 10-7.5S17.523 3 12 3z"/>
       </svg>
-      카카오톡으로 무료 자료 받기
+      수익 구조 자료 무료로 받기
     </a>
     <a href="#pricing" class="btn-secondary">수강 신청 바로가기 →</a>
   </div>
 </section>
 
-<!-- ─── PAIN POINTS ─── -->
-<div class="pain-section">
-  <div class="pain-grid">
-    <div class="pain-card fade-up">
-      <div class="pain-icon">📉</div>
-      <div class="pain-title">물가는 오르는데 월급은 그대로</div>
-      <div class="pain-desc">2024년 실질임금 상승률 0.9%. 저축만으로는 자산을 늘리기 어렵습니다.</div>
-      <span class="pain-arrow">→ 자산 소득이 필요한 이유</span>
-    </div>
-    <div class="pain-card fade-up">
-      <div class="pain-icon">🕐</div>
-      <div class="pain-title">퇴근 후 남는 시간을 수입으로</div>
-      <div class="pain-desc">단기임대는 자동화가 가능합니다. 체크인·청소·응대 모두 위탁 운영 가능.</div>
-      <span class="pain-arrow">→ 직장 병행 가능한 이유</span>
-    </div>
-    <div class="pain-card fade-up">
-      <div class="pain-icon">🏠</div>
-      <div class="pain-title">내 집 없어도, 자본 적어도 된다</div>
-      <div class="pain-desc">임차인 구조로 운영. 초기비용 110~150만원(중개비 포함)으로 시작 가능.</div>
-      <span class="pain-arrow">→ 진입 장벽이 낮은 이유</span>
+<!-- ─── REALITY CHECK ─── -->
+<div class="reality">
+  <div class="reality-inner">
+    <p class="reality-label fade-up">자산 소득이 필요한 이유</p>
+    <h2 class="reality-title fade-up">월급만으로는<br><span>자산이 만들어지지 않습니다</span></h2>
+    <div class="reality-grid">
+      <div class="r-card fade-up">
+        <div class="r-icon">📊</div>
+        <div class="r-q">25년 직장을 다녀도<br>손에 남는 게 없다면</div>
+        <div class="r-a">월급은 매달 들어오지만 지출도 같이 늘어납니다. 실질 자산을 쌓으려면 월급 외 소득 구조가 반드시 필요합니다.</div>
+        <span class="r-pivot">→ 자산 소득 구조가 필요한 이유</span>
+      </div>
+      <div class="r-card fade-up">
+        <div class="r-icon">🏦</div>
+        <div class="r-q">예적금 금리 3%로는<br>인플레이션을 못 따라간다</div>
+        <div class="r-a">연 3% 예금에 1억을 넣으면 10년 후 1억 3,440만원. 단기임대 7개 방 운영 시 같은 기간 4억 5,720만원 순수익.</div>
+        <span class="r-pivot">→ 임대 수익이 압도적인 이유</span>
+      </div>
+      <div class="r-card fade-up">
+        <div class="r-icon">🕐</div>
+        <div class="r-q">노후 준비를 시작하기<br>가장 좋은 때는 지금</div>
+        <div class="r-a">단기임대는 자동화가 가능한 구조입니다. 지금 시스템을 갖춰 놓으면 퇴직 이후에도 수익이 계속됩니다.</div>
+        <span class="r-pivot">→ 시작 타이밍이 중요한 이유</span>
+      </div>
     </div>
   </div>
 </div>
@@ -446,9 +509,9 @@ footer p + p { margin-top: 8px; }
 <section>
   <div class="stats-section-inner">
     <div>
-      <p class="section-label fade-up">강사 직접 운영 실적</p>
-      <h2 class="fade-up">이론이 아닌<br><span>실제 운영 중인</span> 데이터</h2>
-      <p class="section-sub fade-up">강의 판매자가 아닙니다. 지금도 7개 방을 직접 운영하면서 얻은 시스템을 그대로 전달합니다.</p>
+      <p class="section-label fade-up">강사 직접 운영 실증</p>
+      <h2 class="fade-up">이론이 아니라<br><span>지금 운영 중인</span> 수치입니다</h2>
+      <p class="section-sub fade-up">강의를 팔기 위해 만든 숫자가 아닙니다. 지금 이 순간에도 7개 방이 돌아가고 있습니다.</p>
 
       <div class="live-panel fade-up">
         <div class="live-top">
@@ -467,7 +530,7 @@ footer p + p { margin-top: 8px; }
           <div class="hero-side">
             <div>
               <div class="side-num">381만원</div>
-              <div class="side-lbl">월 순수익 (7개 방 합산)</div>
+              <div class="side-lbl">이달 순수익 (7개 방 합산)</div>
             </div>
             <div>
               <div class="side-num">12건</div>
@@ -480,6 +543,23 @@ footer p + p { margin-top: 8px; }
           <span class="occ-bar-val">공실 22박 · 10%</span>
         </div>
         <div class="occ-track"><div class="occ-fill"></div></div>
+      </div>
+
+      <div class="annual-row fade-up">
+        <div class="annual-item">
+          <div class="annual-num">381만원</div>
+          <div class="annual-lbl">이달 순수익</div>
+        </div>
+        <div class="annual-sep"></div>
+        <div class="annual-item">
+          <div class="annual-num">4,572만원</div>
+          <div class="annual-lbl">연간 환산</div>
+        </div>
+        <div class="annual-sep"></div>
+        <div class="annual-item">
+          <div class="annual-num">1억 3,716만</div>
+          <div class="annual-lbl">3년 누적 환산</div>
+        </div>
       </div>
 
       <div class="stats-row fade-up">
@@ -500,49 +580,69 @@ footer p + p { margin-top: 8px; }
     </div>
 
     <div style="padding-top: 8px;">
-      <div class="bars-title fade-up">방 수별 예상 수익</div>
+      <div class="sim-title fade-up">방 수별 연간 수익 시뮬레이션</div>
       <div class="bar-item fade-up">
         <div class="bar-header">
           <span class="bar-lbl">방 1개 운영 시</span>
-          <span class="bar-amt">월 84~165만원 <span class="real">실측 기준</span></span>
+          <span class="bar-amt">연 1,008~1,980만원 <span class="real">실측 기준</span></span>
         </div>
         <div class="bar-track"><div class="bar-fill" style="--tw:43%"></div></div>
       </div>
       <div class="bar-item fade-up">
         <div class="bar-header">
           <span class="bar-lbl">방 3~5개 운영 시</span>
-          <span class="bar-amt">월 200~380만원</span>
+          <span class="bar-amt">연 2,400~4,560만원</span>
         </div>
         <div class="bar-track"><div class="bar-fill" style="--tw:72%"></div></div>
       </div>
       <div class="bar-item fade-up">
         <div class="bar-header">
           <span class="bar-lbl">7개 직영 운영 시</span>
-          <span class="bar-amt">월 381만원 <span class="real">6월 실측</span></span>
+          <span class="bar-amt">연 4,572만원 <span class="real">6월 실측</span></span>
         </div>
         <div class="bar-track"><div class="bar-fill" style="--tw:100%"></div></div>
       </div>
 
-      <div style="margin-top: 32px;">
-        <div class="bars-title fade-up">단기임대 vs 월세 임대</div>
-        <div class="compare-grid fade-up" style="margin-top: 0;">
-          <div class="compare-card">
-            <div class="compare-tag">일반 월세 임대</div>
-            <div class="compare-title">방 1개 <span>30~40만원</span></div>
-            <ul class="compare-list">
-              <li><span class="ck no">✗</span> 수익 상한 고정</li>
-              <li><span class="ck no">✗</span> 공실 시 수입 0</li>
-              <li><span class="ck no">✗</span> 장기 계약 리스크</li>
-            </ul>
+      <div class="accum-box fade-up">
+        <div class="accum-title">자산 누적 시뮬레이션 (7개 방 기준)</div>
+        <div class="accum-rows">
+          <div class="accum-row">
+            <span class="accum-yr">1년 차</span>
+            <span class="accum-val">+4,572만원</span>
           </div>
-          <div class="compare-card highlight">
-            <div class="compare-tag">단기임대 (STAYCLASS)</div>
-            <div class="compare-title">방 1개 <span>84~165만원</span></div>
-            <ul class="compare-list">
-              <li><span class="ck yes">✓</span> 가동률에 따라 수익 상승</li>
-              <li><span class="ck yes">✓</span> 플랫폼 다각화로 공실 최소화</li>
-              <li><span class="ck yes">✓</span> 위탁운영으로 자동화 가능</li>
-            </ul>
+          <div class="accum-divider"></div>
+          <div class="accum-row">
+            <span class="accum-yr">2년 차</span>
+            <span class="accum-val">+9,144만원</span>
+          </div>
+          <div class="accum-divider"></div>
+          <div class="accum-row">
+            <span class="accum-yr">3년 차</span>
+            <span class="accum-val peak">+1억 3,716만원</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 24px;">
+        <div class="sim-title fade-up">월급쟁이 vs 자산 소득자</div>
+        <div class="wealth-grid fade-up">
+          <div class="w-card">
+            <div class="w-tag">회사만 다니는 경우</div>
+            <div class="w-title">10년 후 <span>남는 것</span></div>
+            <div class="w-rows">
+              <div class="w-row"><span class="mk no">✗</span> 연차 쌓여도 월급 상한 존재</div>
+              <div class="w-row"><span class="mk no">✗</span> 퇴직 즉시 수입 중단</div>
+              <div class="w-row"><span class="mk no">✗</span> 자산이 아닌 소비로 귀결</div>
+            </div>
+          </div>
+          <div class="w-card hl">
+            <div class="w-tag">단기임대 자산 소득</div>
+            <div class="w-title">10년 후 <span>쌓이는 것</span></div>
+            <div class="w-rows">
+              <div class="w-row"><span class="mk yes">✓</span> 방 수 늘릴수록 수익 배수 증가</div>
+              <div class="w-row"><span class="mk yes">✓</span> 자동화 구조로 퇴직 후에도 유지</div>
+              <div class="w-row"><span class="mk yes">✓</span> 수익이 자산으로 전환되는 구조</div>
+            </div>
           </div>
         </div>
       </div>
@@ -556,15 +656,15 @@ footer p + p { margin-top: 8px; }
 <section>
   <div class="section-inner">
     <p class="section-label fade-up">강의 구성</p>
-    <h2 class="fade-up">직장 다니면서<br><span>6주 만에 완성</span>하는 구조</h2>
-    <p class="section-sub fade-up">주 2~3시간 투자로 첫 방 계약까지. 현장 동행 옵션 포함.</p>
+    <h2 class="fade-up">직장을 다니면서<br><span>수익 구조</span>를 만드는 6주</h2>
+    <p class="section-sub fade-up">주 2~3시간 투자로 첫 방 계약까지. 시스템을 만들면 이후는 자동으로 돌아갑니다.</p>
 
     <div class="steps">
       <div class="step fade-up">
         <div class="step-num">1</div>
         <div>
-          <div class="step-title">시장 이해 & 수익 구조 파악</div>
-          <div class="step-desc">삼삼엠투·에어비앤비 플랫폼 비교, 지역별 수요 공식, 경쟁 분석 방법</div>
+          <div class="step-title">수익 구조 파악 & 시장 분석</div>
+          <div class="step-desc">삼삼엠투·에어비앤비 수익 구조 비교, 지역별 수요 공식, 내 자본 규모에 맞는 진입 전략 수립</div>
           <span class="step-tag">1주차</span>
         </div>
       </div>
@@ -580,31 +680,31 @@ footer p + p { margin-top: 8px; }
         <div class="step-num">3</div>
         <div>
           <div class="step-title">방 세팅 & 리스팅 최적화</div>
-          <div class="step-desc">사진 촬영 가이드, 첫 예약 빠르게 받는 초반 가격 전략, 후기 유도법</div>
+          <div class="step-desc">사진 가이드, 초반 예약 유입 전략, 첫 후기 빠르게 받는 가격 설정법</div>
           <span class="step-tag">3주차</span>
         </div>
       </div>
       <div class="step fade-up">
         <div class="step-num">4</div>
         <div>
-          <div class="step-title">운영 자동화 셋업</div>
-          <div class="step-desc">청소 위탁 업체 선정, 비대면 체크인 구축, 메시지 자동화 템플릿 일체 제공</div>
+          <div class="step-title">운영 자동화 구축</div>
+          <div class="step-desc">비대면 체크인 설계, 청소 위탁 업체 선정, 메시지 자동화 템플릿 일체 제공</div>
           <span class="step-tag">4주차</span>
         </div>
       </div>
       <div class="step fade-up">
         <div class="step-num">5</div>
         <div>
-          <div class="step-title">수익 최적화</div>
-          <div class="step-desc">시즌별 가격 조정, 플랫폼 랭킹 올리기, 후기 관리, 공실 0% 전략</div>
+          <div class="step-title">수익 최적화 & 공실 제로 전략</div>
+          <div class="step-desc">시즌별 가격 조정, 플랫폼 랭킹 관리, 공실을 채우는 다채널 전략</div>
           <span class="step-tag">5주차</span>
         </div>
       </div>
       <div class="step fade-up">
         <div class="step-num">6</div>
         <div>
-          <div class="step-title">2호점 & 위탁운영 확장</div>
-          <div class="step-desc">2호점 타이밍 공식, 위탁운영 구조 설계, 수익 자동화 완성 단계</div>
+          <div class="step-title">2호점 확장 & 자산 시스템 완성</div>
+          <div class="step-desc">확장 타이밍 공식, 위탁운영 구조 설계, 자본 없이 방 수를 늘리는 전략</div>
           <span class="step-tag">6주차</span>
         </div>
       </div>
@@ -619,38 +719,36 @@ footer p + p { margin-top: 8px; }
   <div class="section-inner">
     <p class="section-label fade-up">수강 신청</p>
     <h2 class="fade-up">1기 <span>얼리버드</span> 모집 중</h2>
-    <p class="section-sub fade-up">마감 후 가격 인상 예정. 선착순 20명 한정.</p>
+    <p class="section-sub fade-up">마감 후 가격 인상 예정. 선착순 20명 한정. 자산 구조를 먼저 만드는 사람이 먼저 씁니다.</p>
 
     <div class="price-grid">
       <div class="price-card fade-up">
         <div class="plan-name">Basic</div>
         <div class="plan-price">39만원 <span>/ 일시불</span></div>
         <ul class="plan-features">
-          <li><span class="check">✓</span> 6주 강의 영상 (평생 소장)</li>
-          <li><span class="check">✓</span> PDF 자료 + 수익 계산 엑셀</li>
-          <li><span class="check">✓</span> 계약서·체크리스트 템플릿</li>
+          <li><span class="ck">✓</span> 6주 강의 영상 (평생 소장)</li>
+          <li><span class="ck">✓</span> PDF 자료 + 수익 계산 엑셀</li>
+          <li><span class="ck">✓</span> 계약서·체크리스트 템플릿</li>
         </ul>
       </div>
-
       <div class="price-card featured fade-up">
         <div class="plan-name">Standard</div>
         <div class="plan-price">69만원 <span>/ 일시불</span></div>
         <ul class="plan-features">
-          <li><span class="check">✓</span> Basic 전체 포함</li>
-          <li><span class="check">✓</span> 1기 전용 단체 카카오방 (6개월)</li>
-          <li><span class="check">✓</span> 월간 Q&amp;A 라이브 참여권</li>
-          <li><span class="check">✓</span> 수강생 동문 네트워크 영구 접근</li>
+          <li><span class="ck">✓</span> Basic 전체 포함</li>
+          <li><span class="ck">✓</span> 1기 전용 단체 카카오방 (6개월)</li>
+          <li><span class="ck">✓</span> 월간 Q&amp;A 라이브 참여권</li>
+          <li><span class="ck">✓</span> 수강생 동문 네트워크 영구 접근</li>
         </ul>
       </div>
-
       <div class="price-card fade-up">
         <div class="plan-name">Premium</div>
         <div class="plan-price">120만원 <span>/ 일시불</span></div>
         <ul class="plan-features">
-          <li><span class="check">✓</span> Standard 전체 포함</li>
-          <li><span class="check">✓</span> 1:1 컨설팅 2회</li>
-          <li><span class="check">✓</span> 실제 물건 탐색 현장 동행 1회</li>
-          <li><span class="check">✓</span> 계약 전 검토 서비스</li>
+          <li><span class="ck">✓</span> Standard 전체 포함</li>
+          <li><span class="ck">✓</span> 1:1 컨설팅 2회</li>
+          <li><span class="ck">✓</span> 실제 물건 탐색 현장 동행 1회</li>
+          <li><span class="ck">✓</span> 계약 전 검토 서비스</li>
         </ul>
       </div>
     </div>
@@ -663,28 +761,28 @@ footer p + p { margin-top: 8px; }
 <section>
   <div class="section-inner" style="max-width: 760px;">
     <p class="section-label fade-up">자주 묻는 질문</p>
-    <h2 class="fade-up">궁금한 점이 <span>있으신가요?</span></h2>
+    <h2 class="fade-up">시작 전에 <span>확인하세요</span></h2>
 
     <div class="faq-list" style="margin-top: 36px;">
       <div class="faq-item fade-up">
-        <div class="faq-q">직장을 다니면서 병행할 수 있나요?<span class="faq-toggle">+</span></div>
-        <div class="faq-a">가능합니다. 체크인 자동화·청소 위탁 구조를 갖추면 하루 30분~1시간 이내로 운영할 수 있습니다. 강의 4주차에서 자동화 셋업을 집중적으로 다룹니다.</div>
-      </div>
-      <div class="faq-item fade-up">
         <div class="faq-q">내 집이 없어도 되나요?<span class="faq-toggle">+</span></div>
-        <div class="faq-a">네. STAYCLASS에서 다루는 모델은 임차인 구조입니다. 집주인으로부터 방을 빌려 단기로 전대하는 방식으로, 내 명의 부동산이 없어도 됩니다.</div>
+        <div class="faq-a">네. 임차인 구조로 운영합니다. 보증금과 월세를 내고 단기로 재운영하는 방식으로, 내 명의 부동산 없이도 가능합니다. 초기 자본은 보증금 포함 110~150만원 수준입니다.</div>
       </div>
       <div class="faq-item fade-up">
-        <div class="faq-q">초기 자본이 얼마나 필요한가요?<span class="faq-toggle">+</span></div>
-        <div class="faq-a">부동산 중개비 포함 약 110~150만원으로 시작 가능합니다. 보증금은 별도이며, 강의에서 보증금 규모별 전략을 모두 설명합니다.</div>
+        <div class="faq-q">직장을 그만두지 않아도 되나요?<span class="faq-toggle">+</span></div>
+        <div class="faq-a">그렇습니다. 자동화 셋업 이후에는 하루 30분 내외로 운영이 가능합니다. 직장을 유지하면서 자산 구조를 먼저 갖추는 것이 이 과정의 핵심입니다.</div>
       </div>
       <div class="faq-item fade-up">
-        <div class="faq-q">수익이 나지 않으면 어떻게 되나요?<span class="faq-toggle">+</span></div>
-        <div class="faq-a">강의 수료 후 90일 내 첫 예약이 발생하지 않을 경우 1:1 컨설팅을 무료로 제공합니다 (Standard·Premium 한정). 강사 직접 운영 데이터로 검증된 시스템입니다.</div>
+        <div class="faq-q">수익이 정말 월 381만원 수준인가요?<span class="faq-toggle">+</span></div>
+        <div class="faq-a">7개 방 기준 2026년 6월 Hostier 실측 데이터입니다. 방 1개 기준 월 84~165만원이며, 운영 지역과 가동률에 따라 차이가 있습니다. 강의에서 수익 계산기를 제공합니다.</div>
       </div>
       <div class="faq-item fade-up">
-        <div class="faq-q">수원·경기 외 지역도 가능한가요?<span class="faq-toggle">+</span></div>
-        <div class="faq-a">네. 병원·법원·역세권이 있는 지역이라면 전국 어디서나 동일한 방식으로 적용됩니다. 강의에서 지역 선정 공식을 별도로 다룹니다.</div>
+        <div class="faq-q">수원·경기 외 지역도 적용됩니까?<span class="faq-toggle">+</span></div>
+        <div class="faq-a">병원·법원·역세권이 있는 지역이라면 전국 어디서나 동일하게 적용됩니다. 강의에서 지역 선정 공식을 별도로 다룹니다.</div>
+      </div>
+      <div class="faq-item fade-up">
+        <div class="faq-q">강의 수료 후 지원이 있나요?<span class="faq-toggle">+</span></div>
+        <div class="faq-a">Standard·Premium 수강생은 수료 후 90일 내 첫 예약이 발생하지 않을 경우 1:1 컨설팅을 무료로 제공합니다. 수강생 단체방을 통한 지속적인 피드백도 포함됩니다.</div>
       </div>
     </div>
   </div>
@@ -692,33 +790,41 @@ footer p + p { margin-top: 8px; }
 
 <!-- ─── CTA BOTTOM ─── -->
 <div class="cta-bottom">
-  <h2>지금 시작하면 <span>다음 달부터</span> 달라집니다</h2>
-  <p>카카오채널에서 무료 자료를 먼저 받아보세요.<br>강의 내용, 수익 계산기 포함 즉시 발송.</p>
+  <div class="cta-eyebrow">자산을 만드는 가장 빠른 방법</div>
+  <h2>지금 구조를 만들면<br><span>내년이 달라집니다</span></h2>
+  <p>카카오채널에서 무료 자료를 먼저 받아보세요.<br>수익 계산기·지역 선정 공식·계약서 체크리스트 즉시 발송.</p>
   <div class="cta-group">
     <a href="https://pf.kakao.com/_APzxbX/chat" class="btn-kakao">
       <svg viewBox="0 0 24 24" fill="currentColor" width="26" height="26" aria-hidden="true">
         <path d="M12 3C6.477 3 2 6.477 2 10.5c0 2.638 1.657 4.953 4.147 6.31L5 21l4.782-2.698C10.477 18.433 11.228 18.5 12 18.5c5.523 0 10-3.477 10-7.5S17.523 3 12 3z"/>
       </svg>
-      카카오톡 채널 무료 상담
+      카카오톡 채널 무료 자료 받기
     </a>
     <a href="#pricing" class="btn-secondary">수강 신청 바로가기 →</a>
   </div>
 </div>
 
 <footer>
-  <p>STAYCLASS — 한국 단기임대 수익 시스템</p>
+  <p>STAYCLASS — 단기임대 자산 수익 시스템</p>
   <p>수원시 권선구 금곡로 102번길 29, 옆커폰</p>
   <p><a href="https://pf.kakao.com/_APzxbX/chat">카카오톡 채널</a></p>
 </footer>
 
 <script>
   const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
-  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
   const barObserver = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.querySelectorAll('.bar-fill').forEach(b => b.classList.add('animated')); barObserver.unobserve(e.target); } });
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.bar-fill').forEach(b => b.classList.add('animated'));
+        barObserver.unobserve(e.target);
+      }
+    });
   }, { threshold: 0.3 });
   document.querySelectorAll('.stats-section-inner').forEach(el => barObserver.observe(el));
 
