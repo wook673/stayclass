@@ -17,6 +17,7 @@
   --text:    #F0ECE4;
   --muted:   #666;
   --lime:    #C8FF57;
+  --blue:    #38BDF8;
   --kakao:   #FEE500;
   --red:     #FF4D4D;
 }
@@ -65,30 +66,31 @@ body {
 /* ─── HERO ─── */
 .hero {
   min-height: 100svh;
-  padding: 80px 28px 64px;
+  padding: 100px 28px 60px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: center;
   border-bottom: 1px solid var(--border);
   position: relative;
+  overflow: hidden;
 }
 .hero-tag {
   font-size: 12px;
   color: var(--lime);
   letter-spacing: 2px;
   font-weight: 700;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
   text-transform: uppercase;
 }
 .hero-h1 {
   font-family: 'Black Han Sans', sans-serif;
-  font-size: clamp(52px, 12vw, 120px);
-  line-height: 0.95;
-  letter-spacing: -2px;
-  margin-bottom: 32px;
+  font-size: clamp(44px, 10vw, 110px);
+  line-height: 1.0;
+  letter-spacing: -1px;
+  margin-bottom: 28px;
 }
 .hero-h1 .accent { color: var(--lime); }
-.hero-h1 .muted { color: #333; }
+.hero-h1 .dim { color: #3a3a3a; }
 
 .hero-sub {
   font-size: clamp(15px, 2vw, 18px);
@@ -109,7 +111,7 @@ body {
 .live-dot {
   width: 5px; height: 5px;
   border-radius: 50%;
-  background: var(--lime);
+  background: var(--blue);
   animation: blink 1.8s ease-in-out infinite;
   flex-shrink: 0;
 }
@@ -167,7 +169,7 @@ body {
   font-size: 11px;
   color: var(--muted);
 }
-.data-live { display: flex; align-items: center; gap: 6px; color: var(--lime); font-weight: 700; letter-spacing: 1.5px; }
+.data-live { display: flex; align-items: center; gap: 6px; color: var(--blue); font-weight: 700; letter-spacing: 1.5px; }
 .data-nums {
   display: grid;
   grid-template-columns: 2fr 1px 1fr 1px 1fr;
@@ -179,13 +181,13 @@ body {
 .data-item { padding: 0 20px; }
 .data-item:first-child { padding-left: 0; }
 .data-n { font-family: 'Black Han Sans', sans-serif; font-size: clamp(28px, 5vw, 44px); line-height: 1; color: var(--text); letter-spacing: -1px; }
-.data-n .unit { font-size: 16px; color: var(--lime); }
+.data-n .unit { font-size: 16px; color: var(--blue); }
 .data-l { font-size: 10px; color: var(--muted); margin-top: 6px; }
 .occ-wrap { margin-top: 0; }
 .occ-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 6px; }
 .occ-meta span:last-child { color: var(--lime); }
 .occ-track { height: 3px; background: #222; border-radius: 99px; overflow: hidden; }
-.occ-bar { height: 100%; width: 90%; background: var(--lime); border-radius: 99px; }
+.occ-bar { height: 100%; width: 90%; background: var(--blue); border-radius: 99px; }
 
 /* ─── INCOME BARS ─── */
 .income-grid {
