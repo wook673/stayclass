@@ -7,6 +7,12 @@
       "runtimeArgs": ["C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npx-cli.js", "serve", "-p", "3000", "."],
       "port": 3000,
       "autoPort": true
+    },
+    {
+      "name": "static",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8777"],
+      "port": 8777
     }
   ]
 }

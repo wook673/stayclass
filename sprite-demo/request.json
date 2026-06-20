@@ -1,0 +1,6 @@
+{
+  "states": {
+    "idle": { "frames": 4, "fps": 4, "loop": true, "action": "subtle breathing and one blink" },
+    "jump": { "frames": 4, "fps": 8, "loop": false, "action": "simple jump arc: crouch, takeoff, airborne, landing" }
+  }
+}
