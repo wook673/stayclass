@@ -13,6 +13,12 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "8777"],
       "port": 8777
+    },
+    {
+      "name": "영상메이커",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["video-maker/app.py"],
+      "port": 5000
     }
   ]
 }

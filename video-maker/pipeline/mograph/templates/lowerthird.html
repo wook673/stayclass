@@ -1,0 +1,30 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+  html,body{margin:0;width:1920px;height:1080px;background:transparent;overflow:hidden}
+  #bar{position:absolute;left:90px;bottom:150px;display:flex;align-items:stretch;
+       font-family:"Malgun Gothic",sans-serif;opacity:0}
+  #accent{width:10px;background:#FFD700;border-radius:3px}
+  #txt{background:rgba(12,16,24,.82);padding:18px 34px 20px 24px;
+       border-radius:0 10px 10px 0;display:flex;flex-direction:column;justify-content:center}
+  #title{color:#fff;font-size:44px;font-weight:700;letter-spacing:1px}
+  #sub{color:#FFD700;font-size:26px;margin-top:6px}
+</style></head><body>
+<div id="bar"><div id="accent"></div><div id="txt">
+  <div id="title"></div><div id="sub"></div></div></div>
+<script>
+const q = new URLSearchParams(location.search);
+document.getElementById('title').textContent = q.get('title') || '';
+document.getElementById('sub').textContent = q.get('sub') || '';
+if(!q.get('sub')) document.getElementById('sub').style.display='none';
+const DUR = parseFloat(q.get('dur') || '4');
+const ease = p => 1 - Math.pow(1 - p, 3);          // easeOutCubic
+// seek(t): 시각 t초의 상태를 결정적으로 그린다 (프레임 캡처용)
+window.seek = t => {
+  const bar = document.getElementById('bar');
+  const IN = .5, OUT = .4;
+  let op = 1, x = 0;
+  if (t < IN) { const p = ease(t / IN); op = p; x = -60 * (1 - p); }
+  else if (t > DUR - OUT) { const p = Math.max(0, (DUR - t) / OUT); op = p; }
+  bar.style.opacity = op;
+  bar.style.transform = `translateX(${x}px)`;
+};
+</script></body></html>

@@ -1,1 +1,5 @@
 sprite-gen/
+__pycache__/
+video-maker/projects/
+video-maker/config.json
+video-maker/music/

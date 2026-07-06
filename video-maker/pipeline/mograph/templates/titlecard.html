@@ -1,0 +1,32 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+  html,body{margin:0;width:1920px;height:1080px;background:transparent;overflow:hidden}
+  #shade{position:absolute;inset:0;background:radial-gradient(ellipse at center,
+         rgba(8,10,16,.45) 0%, rgba(8,10,16,.78) 100%);opacity:0}
+  #box{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);
+       text-align:center;font-family:"Malgun Gothic",sans-serif;opacity:0}
+  #line{width:120px;height:5px;background:#FFD700;margin:0 auto 28px;border-radius:3px}
+  #title{color:#fff;font-size:88px;font-weight:800;letter-spacing:4px;
+         text-shadow:0 4px 20px rgba(0,0,0,.6)}
+  #sub{color:#e8e2cf;font-size:36px;margin-top:18px;letter-spacing:8px}
+</style></head><body>
+<div id="shade"></div>
+<div id="box"><div id="line"></div><div id="title"></div><div id="sub"></div></div>
+<script>
+const q = new URLSearchParams(location.search);
+document.getElementById('title').textContent = q.get('title') || '';
+document.getElementById('sub').textContent = q.get('sub') || '';
+if(!q.get('sub')) document.getElementById('sub').style.display='none';
+const DUR = parseFloat(q.get('dur') || '3.5');
+const ease = p => 1 - Math.pow(1 - p, 3);
+window.seek = t => {
+  const IN = .6, OUT = .6;
+  let op = 1;
+  if (t < IN) op = ease(t / IN);
+  else if (t > DUR - OUT) op = Math.max(0, (DUR - t) / OUT);
+  document.getElementById('shade').style.opacity = op * .9;
+  const box = document.getElementById('box');
+  box.style.opacity = op;
+  const rise = t < IN ? 26 * (1 - ease(t / IN)) : 0;
+  box.style.transform = `translateY(calc(-50% + ${rise}px))`;
+};
+</script></body></html>

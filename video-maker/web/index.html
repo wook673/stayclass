@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>영상메이커</title>
+<style>
+  :root{ --green:#1f8a4c; --green-d:#176b3b; --bg:#f4f6f5; --line:#e3e7e5; --ink:#1c2420; --mut:#6b7670; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; font-family:"Malgun Gothic",system-ui,sans-serif; background:var(--bg); color:var(--ink); }
+  header{ background:var(--green); color:#fff; padding:14px 22px; font-weight:700; font-size:18px; display:flex; align-items:center; gap:10px; }
+  header .dot{ width:22px;height:22px;background:#fff;border-radius:6px;display:inline-block; }
+  .wrap{ display:flex; min-height:calc(100vh - 50px); }
+  aside{ width:240px; background:#fff; border-right:1px solid var(--line); padding:16px; }
+  aside h2{ font-size:13px; color:var(--mut); margin:0 0 10px; letter-spacing:.5px; }
+  .proj{ padding:10px 12px; border-radius:8px; cursor:pointer; margin-bottom:4px; font-size:14px; display:flex; justify-content:space-between; align-items:center; }
+  .proj:hover{ background:#eef3f0; }
+  .proj.on{ background:var(--green); color:#fff; }
+  .proj .tag{ font-size:11px; opacity:.7; }
+  .btn{ border:0; border-radius:8px; padding:10px 14px; font-size:14px; cursor:pointer; font-weight:600; }
+  .btn.pri{ background:var(--green); color:#fff; } .btn.pri:hover{ background:var(--green-d); }
+  .btn.ghost{ background:#eef3f0; color:var(--ink); } .btn.ghost:hover{ background:#e2eae6; }
+  .btn:disabled{ opacity:.45; cursor:not-allowed; }
+  .btn.full{ width:100%; }
+  main{ flex:1; padding:24px 28px; max-width:760px; }
+  .empty{ color:var(--mut); margin-top:60px; text-align:center; }
+  .card{ background:#fff; border:1px solid var(--line); border-radius:12px; padding:18px; margin-bottom:18px; }
+  .card h3{ margin:0 0 12px; font-size:15px; }
+  textarea{ width:100%; min-height:220px; resize:vertical; border:1px solid var(--line); border-radius:8px; padding:12px; font:14px/1.6 "Malgun Gothic",sans-serif; }
+  .meta{ display:flex; gap:16px; color:var(--mut); font-size:13px; margin-top:8px; }
+  .meta b{ color:var(--ink); }
+  .row{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  .voice-state{ font-size:13px; margin-top:10px; }
+  .ok{ color:var(--green); font-weight:600; }
+  .steps{ display:flex; gap:6px; margin:6px 0 12px; }
+  .step{ flex:1; text-align:center; font-size:11px; color:var(--mut); padding:8px 4px; border-radius:6px; background:#eef3f0; }
+  .step.act{ background:var(--green); color:#fff; }
+  .step.done{ background:#cfe7d9; color:var(--green-d); }
+  video{ width:100%; border-radius:10px; background:#000; margin-top:6px; }
+  .err{ color:#c0392b; font-size:13px; margin-top:8px; }
+  .hint{ color:var(--mut); font-size:12px; margin-top:6px; }
+  input[type=file]{ font-size:13px; }
+  .spin{ display:inline-block; width:14px; height:14px; border:2px solid #fff; border-top-color:transparent; border-radius:50%; animation:s .7s linear infinite; vertical-align:-2px; }
+  @keyframes s{ to{ transform:rotate(360deg); } }
+</style>
+</head>
+<body>
+<header><span class="dot"></span> 영상메이커 <span style="font-weight:400;font-size:13px;opacity:.85">· 대본 → 자막·스톡·음성 자동 영상</span></header>
+<div class="wrap">
+  <aside>
+    <h2>프로젝트</h2>
+    <div id="list"></div>
+    <button class="btn ghost full" style="margin-top:10px" onclick="newProject()">+ 새 프로젝트</button>
+  </aside>
+  <main id="main"><div class="empty">왼쪽에서 프로젝트를 선택하거나<br>새로 만들어 시작하세요.</div></main>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+let cur = null;          // 현재 프로젝트 이름
+let poll = null;         // 상태 폴링 타이머
+
+const STEPS = ["자막","장면·키워드","스톡 다운로드","클립 생성","합성"];
+
+async function api(path, opts){ const r = await fetch(path, opts); return r; }
+async function jget(path){ return (await fetch(path)).json(); }
+async function jpost(path, body){
+  return fetch(path, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body||{})});
+}
+
+function estimateClient(text){
+  const c = text.replace(/^#[^\n]*$/gm,"").replace(/\s+/g,"").length;
+  const sec = Math.round(c/300*60), m = Math.floor(sec/60), s = sec%60;
+  return {chars:c, label:(m?`${m}분 `:"")+`${s}초`};
+}
+
+async function loadProjects(){
+  const ps = await jget("/api/projects");
+  $("#list").innerHTML = ps.map(p =>
+    `<div class="proj ${p.name===cur?'on':''}" onclick="selectProject('${p.name}')">
+       <span>${p.name}</span><span class="tag">${p.has_video?'🎬':p.has_voice?'🎙️':'✏️'}</span>
+     </div>`).join("") || `<div class="hint">아직 없음</div>`;
+}
+
+async function newProject(){
+  const name = prompt("새 프로젝트 이름 (예: 자기소개, 여행후기)");
+  if(!name) return;
+  const r = await jpost("/api/projects", {name});
+  const d = await r.json();
+  if(d.error){ alert(d.error); return; }
+  cur = name; await loadProjects(); selectProject(name);
+}
+
+let saveTimer = null;
+function onScriptInput(){
+  const text = $("#script").value;
+  const e = estimateClient(text);
+  $("#chars").textContent = e.chars;
+  $("#estim").textContent = e.label;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(()=> jpost(`/api/project/${cur}/script`, {text}), 600);
+}
+
+async function selectProject(name){
+  cur = name;
+  if(poll){ clearInterval(poll); poll=null; }
+  await loadProjects();
+  const d = await jget(`/api/project/${name}`);
+  renderMain(d);
+  if(d.job && d.job.state==="running") startPolling();
+}
+
+function renderMain(d){
+  const e = estimateClient(d.script||"");
+  const st = d.settings || {style:"docu", highlights:[], topic:""};
+  $("#main").innerHTML = `
+    <h2 style="margin:0 0 16px">${d.name}</h2>
+
+    <div class="card">
+      <h3>0. 주제로 대본 만들기 <span class="hint" style="font-weight:400">(선택 · 추가비용 0원)</span></h3>
+      <div class="row">
+        <input id="topic" type="text" value="${(st.topic||"").replace(/"/g,"&quot;")}"
+               placeholder="예: 여행 중 생긴 사고, 무자본 숙소 창업 후기"
+               style="flex:1;min-width:220px;border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:14px"
+               onchange="saveSettings()">
+        <select id="genChars" style="padding:9px;border:1px solid var(--line);border-radius:8px;font-size:13px">
+          <option value="300">300자 (약 1분)</option>
+          <option value="500">500자 (약 1분 40초)</option>
+          <option value="800">800자 (약 2분 40초)</option>
+          <option value="1200">1200자 (약 4분)</option>
+        </select>
+        <button class="btn pri" id="genBtn" onclick="genScript()">🤖 대본 자동 생성</button>
+      </div>
+      <div class="hint">버튼 한 번이면 Claude가 대본을 써서 아래 1번 칸에 채웁니다 (Max 구독 포함, 20초~1분).
+        <a href="#" onclick="copyPrompt();return false">수동으로 요청문 복사</a>도 가능.</div>
+      <div id="copyMsg" class="hint" style="color:var(--green)"></div>
+    </div>
+
+    <div class="card">
+      <h3>1. 대본</h3>
+      <textarea id="script" oninput="onScriptInput()" placeholder="여기에 대본을 작성하세요. 문장 단위로 자막이 만들어집니다.">${(d.script||"").replace(/</g,"&lt;")}</textarea>
+      <div class="meta">글자수 <b id="chars">${e.chars}</b>자 · 예상 길이 <b id="estim">${e.label}</b> <span class="hint">(자동 저장됨)</span></div>
+    </div>
+
+    <div class="card">
+      <h3>2. 음성</h3>
+      <div class="row">
+        <button class="btn ghost" onclick="genTTS('InJoon')">🔊 TTS 남성 목소리</button>
+        <button class="btn ghost" onclick="genTTS('SunHi')">🔊 TTS 여성 목소리</button>
+        <label class="btn ghost" style="cursor:pointer">🎙️ 녹음 올리기
+          <input type="file" accept="audio/*" style="display:none" onchange="upload(this)">
+        </label>
+      </div>
+      <div class="voice-state" id="vstate">${d.has_voice
+        ? `<span class="ok">✔ 음성 준비됨</span> <span class="hint">(${d.voice_name})</span>`
+        : `<span class="hint">아직 음성이 없습니다. TTS로 만들거나 녹음을 올리세요.</span>`}</div>
+    </div>
+
+    <div class="card">
+      <h3>2.5 연출 설정</h3>
+      <div class="row" style="margin-bottom:10px">
+        <label style="font-size:13px">스타일
+          <select id="style" onchange="saveSettings()" style="margin-left:6px;padding:8px;border:1px solid var(--line);border-radius:8px;font-size:13px">
+            ${["docu","vlog","info","brand"].map(s=>
+              `<option value="${s}" ${st.style===s?"selected":""}>${
+                {docu:"docu · 다큐(느린 줌·암전)",vlog:"vlog · 발랄(슬라이드)",
+                 info:"info · 정보(깔끔)",brand:"brand · 브랜드(고급)"}[s]}</option>`).join("")}
+          </select>
+        </label>
+        <input id="hl" type="text" value="${(st.highlights||[]).join(", ").replace(/"/g,"&quot;")}"
+               placeholder="강조 단어 (쉼표로. 예: 92%, 420만 원)"
+               style="flex:1;min-width:200px;border:1px solid var(--line);border-radius:8px;padding:9px 12px;font-size:13px"
+               onchange="saveSettings()">
+      </div>
+      <div class="row">
+        <label style="font-size:13px">🎵 배경음악
+          <select id="bgmTrack" onchange="saveSettings()" ${d.bgm_name?"disabled":""}
+                  style="margin-left:6px;max-width:280px;padding:8px;border:1px solid var(--line);border-radius:8px;font-size:13px">
+            <option value="">없음</option>
+            ${(d.music_library||[]).map(m=>
+              `<option value="${m.replace(/"/g,"&quot;")}" ${st.bgm_track===m?"selected":""}>${m}</option>`).join("")}
+          </select>
+        </label>
+        <label class="btn ghost" style="cursor:pointer">직접 올리기
+          <input type="file" accept="audio/*" style="display:none" onchange="uploadBgm(this)">
+        </label>
+        <span id="bgmState" class="hint">${d.bgm_name
+          ? `♪ ${d.bgm_name} (업로드 우선) <a href="#" onclick="removeBgm();return false">삭제</a>`
+          : d.bgm_resolved ? `♪ ${d.bgm_resolved} 사용 · 내레이션 중엔 자동으로 작아집니다`
+          : "선택 시 자동 믹스+덕킹"}</span>
+      </div>
+      <div class="hint">라이브러리에 곡 추가: 음악 파일을 <b>video-maker\\music\\</b> 폴더에 넣으면 모든 프로젝트에서 선택 가능</div>
+      <div class="hint" style="margin-top:8px">
+        고급 연출(장면별 전환·중앙 타이틀·카운트업 등)은 프로젝트 폴더의 <b>direction.json</b>으로 제어됩니다 — Claude에게 부탁하면 만들어 줍니다.
+        ${d.mograph_ready ? "" : "<br>⚠ 모션그래픽(카운트업 등)은 Playwright 설치 후 사용 가능"}
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>3. 영상 만들기</h3>
+      <button class="btn pri full" id="buildBtn" onclick="build()" ${d.has_voice?"":"disabled"}>🎬 영상 만들기</button>
+      <div class="steps" id="steps" style="display:none">
+        ${STEPS.map((s,i)=>`<div class="step" id="st${i+1}">${i+1}. ${s}</div>`).join("")}
+      </div>
+      <div id="buildMsg" class="hint" style="margin-top:8px"></div>
+      <div id="errBox" class="err" style="display:none"></div>
+    </div>
+
+    <div class="card" id="resultCard" style="display:${d.has_video?'block':'none'}">
+      <h3>4. 결과</h3>
+      <video id="player" controls ${d.has_video?'':'hidden'} src="${d.has_video?`/api/project/${d.name}/video?t=${Date.now()}`:''}"></video>
+      <div class="row" style="margin-top:10px">
+        <a class="btn pri" id="dl" href="/api/project/${d.name}/video" download="${d.name}.mp4">⬇ 다운로드</a>
+      </div>
+    </div>`;
+}
+
+async function saveSettings(){
+  const body = {
+    topic: $("#topic") ? $("#topic").value : "",
+    style: $("#style") ? $("#style").value : "docu",
+    highlights: $("#hl") ? $("#hl").value.split(",").map(s=>s.trim()).filter(Boolean) : [],
+  };
+  if($("#bgmTrack")) body.bgm_track = $("#bgmTrack").value;
+  await jpost(`/api/project/${cur}/settings`, body);
+  if($("#bgmTrack") && !$("#bgmTrack").disabled){
+    const t = $("#bgmTrack").value;
+    $("#bgmState").textContent = t ? `♪ ${t} 사용 · 내레이션 중엔 자동으로 작아집니다` : "선택 시 자동 믹스+덕킹";
+  }
+}
+
+let genPoll = null;
+async function genScript(){
+  await saveSettings();
+  const topic = $("#topic").value.trim();
+  if(!topic){ alert("주제를 먼저 입력하세요."); return; }
+  const chars = parseInt($("#genChars").value)||300;
+  $("#genBtn").disabled = true;
+  $("#copyMsg").innerHTML = `<span class="spin" style="border-color:#1f8a4c;border-top-color:transparent"></span> Claude가 대본을 쓰는 중... (20초~1분)`;
+  const r = await jpost(`/api/project/${cur}/gen_script`, {topic, chars});
+  const d = await r.json();
+  if(d.error){ $("#copyMsg").innerHTML = `<span class="err">${d.error}</span>`; $("#genBtn").disabled=false; return; }
+  if(genPoll) clearInterval(genPoll);
+  genPoll = setInterval(async ()=>{
+    const s = await jget(`/api/project/${cur}/gen_status`);
+    if(s.state==="done"){ clearInterval(genPoll); genPoll=null; await refresh();
+      $("#copyMsg").textContent = "✔ 대본이 완성됐습니다 — 1번 칸에서 확인·수정하세요."; }
+    else if(s.state==="error"){ clearInterval(genPoll); genPoll=null;
+      $("#genBtn").disabled=false;
+      $("#copyMsg").innerHTML = `<span class="err">${s.error||"생성 실패"}</span>`; }
+  }, 2000);
+}
+
+async function copyPrompt(){
+  await saveSettings();
+  const topic = $("#topic").value.trim();
+  if(!topic){ alert("주제를 먼저 입력하세요."); return; }
+  const prompt =
+`[영상메이커 대본 요청]
+video-maker 프로젝트 "${cur}"에 아래 주제로 유튜브 롱폼 영상을 준비해줘.
+
+주제: ${topic}
+분량: 300자 내외 (약 1분)  ← 원하면 수정
+
+해줄 일:
+1. 대본을 작성해서 projects/${cur}/script.txt 에 저장
+2. 대본에 어울리는 연출(장면 전환·강조 단어·중앙 타이틀, 숫자가 있으면 카운트업)을 projects/${cur}/direction.json 으로 작성
+3. 끝나면 "영상메이커 UI에서 TTS → 영상 만들기 누르면 된다"고 알려줘`;
+  try{ await navigator.clipboard.writeText(prompt); }
+  catch(e){ prompt && window.prompt("아래 내용을 복사하세요", prompt); }
+  $("#copyMsg").textContent = "✔ 복사됐습니다 — Claude Code 채팅에 붙여넣으세요.";
+  setTimeout(()=>{ const m=$("#copyMsg"); if(m) m.textContent=""; }, 5000);
+}
+
+async function uploadBgm(input){
+  if(!input.files[0]) return;
+  $("#bgmState").innerHTML = `<span class="spin" style="border-color:#1f8a4c;border-top-color:transparent"></span> 업로드 중...`;
+  const fd = new FormData(); fd.append("file", input.files[0]);
+  const r = await fetch(`/api/project/${cur}/bgm`, {method:"POST", body:fd});
+  const d = await r.json();
+  if(d.error){ $("#bgmState").innerHTML = `<span class="err">${d.error}</span>`; return; }
+  await refresh();
+}
+
+async function removeBgm(){
+  await fetch(`/api/project/${cur}/bgm`, {method:"DELETE"});
+  await refresh();
+}
+
+async function genTTS(voice){
+  $("#vstate").innerHTML = `<span class="hint"><span class="spin" style="border-color:#1f8a4c;border-top-color:transparent"></span> 음성 생성 중...</span>`;
+  const r = await jpost(`/api/project/${cur}/tts`, {voice});
+  const d = await r.json();
+  if(d.error){ $("#vstate").innerHTML = `<span class="err">${d.error}</span>`; return; }
+  await refresh();
+}
+
+async function upload(input){
+  if(!input.files[0]) return;
+  $("#vstate").innerHTML = `<span class="hint"><span class="spin" style="border-color:#1f8a4c;border-top-color:transparent"></span> 업로드 중...</span>`;
+  const fd = new FormData(); fd.append("file", input.files[0]);
+  const r = await fetch(`/api/project/${cur}/upload`, {method:"POST", body:fd});
+  const d = await r.json();
+  if(d.error){ $("#vstate").innerHTML = `<span class="err">${d.error}</span>`; return; }
+  await refresh();
+}
+
+async function refresh(){
+  const d = await jget(`/api/project/${cur}`);
+  renderMain(d);
+  if(d.job && d.job.state==="running") startPolling();
+}
+
+async function build(){
+  $("#errBox").style.display = "none";
+  $("#buildBtn").disabled = true;
+  $("#steps").style.display = "flex";
+  $("#buildMsg").innerHTML = `<span class="spin" style="border-color:#1f8a4c;border-top-color:transparent"></span> 제작 중... (1~2분 걸릴 수 있어요)`;
+  await jpost(`/api/project/${cur}/build`);
+  startPolling();
+}
+
+function paintSteps(step){
+  for(let i=1;i<=5;i++){
+    const el = $("#st"+i); if(!el) continue;
+    el.className = "step" + (i<step?" done":i===step?" act":"");
+  }
+}
+
+function startPolling(){
+  if(poll) clearInterval(poll);
+  $("#steps") && ($("#steps").style.display="flex");
+  $("#buildBtn") && ($("#buildBtn").disabled = true);
+  poll = setInterval(async ()=>{
+    const s = await jget(`/api/project/${cur}/status`);
+    if(s.state==="running"){ paintSteps(s.step||0); $("#buildMsg").innerHTML =
+      `<span class="spin" style="border-color:#1f8a4c;border-top-color:transparent"></span> [${s.step||0}/5] ${s.label||""}`; }
+    else if(s.state==="done"){ clearInterval(poll); poll=null; paintSteps(6);
+      $("#buildMsg").innerHTML = "✅ 완성됐습니다!"; await loadProjects(); await refresh(); }
+    else if(s.state==="error"){ clearInterval(poll); poll=null;
+      $("#buildBtn").disabled = false; $("#buildMsg").textContent = "";
+      $("#errBox").style.display="block"; $("#errBox").textContent = "오류: " + (s.error||"알 수 없음"); }
+  }, 1500);
+}
+
+loadProjects();
+</script>
+</body>
+</html>

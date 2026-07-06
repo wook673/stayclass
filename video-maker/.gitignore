@@ -1,0 +1,13 @@
+config.json
+__pycache__/
+
+# 프로젝트별 무거운 산출물(중간파일·다운로드·완성본)은 깃에 안 올림
+projects/*/work/
+projects/*/assets/
+projects/*/final.mp4
+
+# 옛 평면 구조 잔재(사용 안 함)
+inputs/
+output/
+assets/
+work/

@@ -1,0 +1,11 @@
+{
+  "pexels_api_key": "여기에_Pexels_무료_API키_붙여넣기",
+  "resolution": "1920x1080",
+  "fps": 30,
+  "font_name": "Malgun Gothic",
+  "font_size": 42,
+  "whisper_model": "small",
+  "whisper_language": "ko",
+  "bgm_path": "",
+  "bgm_volume": 0.12
+}
