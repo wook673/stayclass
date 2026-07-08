@@ -1,0 +1,22 @@
+/* ============================================================
+   다니엘스테이 — Webfonts
+   Pretendard (한글 고딕 본문/제목 워크호스)
+   Variable font, 자동 서브셋. 한글 가독성 최우선.
+   ============================================================ */
+
+@font-face {
+  font-family: "Pretendard Variable";
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  src: url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/woff2/PretendardVariable.woff2") format("woff2-variations");
+}
+
+/* 숫자/데이터 강조용 모노 — 수익·운영 지표 표기에 사용 */
+@font-face {
+  font-family: "Spline Sans Mono";
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+  src: url("https://cdn.jsdelivr.net/fontsource/fonts/spline-sans-mono:vf@latest/latin-wght-normal.woff2") format("woff2-variations");
+}

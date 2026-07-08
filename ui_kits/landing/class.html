@@ -1,0 +1,378 @@
+<!-- @dsCard group="강의 랜딩" viewport="1280x760" name="실전반 랜딩" subtitle="4주 실전반 1기 — 커리큘럼/혜택/대상/신청 폼" -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<style data-omelette-injected>html,body{background:transparent}</style><script data-omelette-injected>(()=>{{const W=new URLSearchParams(location.search).get("theme");if(W==="light"||W==="dark"){document.documentElement.dataset.theme=W}}{const W=()=>{try{if(document.querySelector('meta[name="color-scheme"]'))return;const V=getComputedStyle(document.documentElement).getPropertyValue("color-scheme").trim();if(V&&V!=="normal")return;const z=(j)=>{if(!j)return null;const H=getComputedStyle(j).backgroundColor.match(/^rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,\s/]+([\d.]+%?))?\s*\)$/);if(!H)return null;const F=H[4]==null?1:parseFloat(H[4])/(H[4].endsWith("%")?100:1);if(F<0.99)return null;return[+H[1],+H[2],+H[3]]};const G=z(document.body)||z(document.documentElement);if(!G)return;const K=(j)=>{const H=j/255;return H<=0.04045?H/12.92:((H+0.055)/1.055)**2.4};const D=0.2126*K(G[0])+0.7152*K(G[1])+0.0722*K(G[2]);document.documentElement.style.setProperty("color-scheme",D<0.4?"dark":"light")}catch{}};if(document.readyState==="complete")W();else window.addEventListener("load",W)}var b=[];var p=false;var O=30000;var n=3000;document.addEventListener("DOMContentLoaded",()=>{const W=window.Babel;const V="om-src-id";if(W&&W.registerPlugin&&!(W.availablePlugins&&W.availablePlugins[V])){W.registerPlugin(V,({types:D})=>({visitor:{JSXOpeningElement(j,H){const F=j.node;if(F.name&&F.name.type==="JSXMemberExpression")return;for(let Q=0;Q<F.attributes.length;Q++){const $=F.attributes[Q];if($.type==="JSXAttribute"&&$.name&&$.name.name==="data-om-id")return}const P=H.file&&H.file.opts&&H.file.opts.filename||"?";const R=F.loc&&F.loc.start;const J=`jsx:${P}:${F.start??0}:${R?R.line:0}:${R?R.column+1:0}`;F.attributes.push(D.jsxAttribute(D.jsxIdentifier("data-om-id"),D.stringLiteral(J)))}}}))}const z="om-text-extract";let G=false;if(p&&W&&W.registerPlugin&&!(W.availablePlugins&&W.availablePlugins[z])){const D=window.React;if(D&&D.useSyncExternalStore&&D.createElement){G=true;const j={};const H=new Set;let F=0;window.__omTextO=j;window.__omTextSet=(J)=>{for(const Q in J){const $=J[Q];if($==null)delete j[Q];else j[Q]=$}F++;H.forEach((Q)=>Q())};const P=(J)=>{H.add(J);return()=>H.delete(J)};const R=()=>F;window.__OmT=function J(Q){D.useSyncExternalStore(P,R,R);return D.createElement("span",{"data-om-text":Q.i,className:"__om-t"},Q.i in j?j[Q.i]:Q.children)};W.registerPlugin(z,({types:J})=>{const Q={style:1,script:1,noscript:1,textarea:1,title:1,option:1,text:1,tspan:1,textPath:1};const $={placeholder:1,alt:1,title:1,label:1,"aria-label":1,"aria-description":1,"aria-placeholder":1};const Y=(q,M)=>J.logicalExpression("??",J.memberExpression(J.logicalExpression("||",J.memberExpression(J.identifier("window"),J.identifier("__omTextO")),J.objectExpression([])),J.stringLiteral(q),true),M);const Z=(q)=>q.file&&q.file.opts&&q.file.opts.filename||"?";const B=(q)=>q.file&&q.file.code||"";const U=(q,M)=>{const L=(X)=>X&&X.start!=null&&X.end!=null&&(X.type==="StringLiteral"||X.type==="TemplateLiteral"&&X.expressions.length===0)?[X.start,X.end]:null;const N=L(M);if(N)return N;if(M&&M.type==="Identifier"){const X=q.scope.getBinding(M.name);if(X&&X.constant&&X.path.node.type==="VariableDeclarator"){return L(X.path.node.init)}}return null};const x=(q,M,L)=>{const N=q.node;let X=false;const f=(w,A)=>{X=true;return J.jsxElement(J.jsxOpeningElement(J.jsxIdentifier("__OmT"),[J.jsxAttribute(J.jsxIdentifier("i"),J.stringLiteral(w))],false),J.jsxClosingElement(J.jsxIdentifier("__OmT")),[A],false)};const C=N.children.map((w)=>{if(w.type==="JSXText"){if(w.start==null||w.end==null)return w;const A=L.slice(w.start,w.end);const k=A.length-A.trimStart().length;const u=A.length-A.trimEnd().length;if(k+u>=A.length)return w;return f(`txt:${M}:${w.start+k}:${w.end-u}`,w)}if(w.type==="JSXExpressionContainer"){const A=U(q,w.expression);if(A)return f(`str:${M}:${A[0]}:${A[1]}`,w)}return w});if(X)N.children=C};return{visitor:{JSXOpeningElement(q,M){const L=q.node;const N=Z(M);const X={};for(let f=0;f<L.attributes.length;f++){const C=L.attributes[f];if(C.type!=="JSXAttribute"||!C.name)continue;const w=C.name.name;if(!$[w])continue;if(!C.value||C.value.type!=="StringLiteral")continue;if(C.value.start==null||C.value.end==null)continue;const A=`txt:${N}:${C.value.start}:${C.value.end}`;X[w]=A;C.value=J.jsxExpressionContainer(Y(A,J.stringLiteral(C.value.value)))}if(Object.keys(X).length){L.attributes.push(J.jsxAttribute(J.jsxIdentifier("data-om-text-attrs"),J.stringLiteral(JSON.stringify(X))))}},JSXElement(q,M){const L=q.node.openingElement;const N=L&&L.name&&L.name.name;if(N==="__OmT")return;if(typeof N==="string"&&Q[N])return;x(q,Z(M),B(M))},JSXFragment(q,M){x(q,Z(M),B(M))}}}})}}const K=G?["transform-react-jsx-source",V,z]:["transform-react-jsx-source",V];document.querySelectorAll('script[type="text/babel"],script[type="text/jsx"]').forEach((D,j)=>{const H=D.getAttribute("data-plugins")||"";const F=K.filter((P)=>H.indexOf(P)<0);if(F.length){D.setAttribute("data-plugins",H?`${H},${F.join(",")}`:F.join(","))}if(!D.hasAttribute("data-filename")){D.setAttribute("data-filename",D.getAttribute("src")||`inline-${j}`)}})});var v=window.parent;var g="not editable here — open the project in the Claude Design editor to save";var d=()=>Promise.resolve({persisted:false,noHost:true,reason:g});var S=d;var h="data/storage.json";var i=()=>{try{const W=new URL(document.baseURI);const V=W.pathname.match(/\/projects\/([^/]+)\/serve\//);if(V)return V[1];return W.hostname.split(".")[0]||""}catch{return location.hostname.split(".")[0]||""}};var o=()=>{try{const W=new URL(document.baseURI);const V=W.pathname.indexOf("/serve/");if(V>=0)return W.origin+W.pathname.slice(0,V+"/serve/".length)+h}catch{}return"./"+h};var I=null;var _=()=>{if(!I){I=fetch(o(),{cache:"no-store"}).then((W)=>{if(W.ok)return W.text();return W.status===404?"":null}).catch(()=>null).then((W)=>{if(W===null){I=null;return null}const V=new Map;if(!W)return V;let z;try{z=JSON.parse(W)}catch{console.warn("[omelette.storage] "+h+" is not valid JSON; treating the store as unreadable so a save cannot overwrite the "+"hand-edited bytes. Fix the JSON (or delete the file) to re-enable persistence.");I=null;return null}if(z===null||typeof z!=="object"||Array.isArray(z)){console.warn("[omelette.storage] "+h+" doesn't hold a JSON object; treating the store as unreadable so a save cannot "+"overwrite the hand-edited bytes. Make the top level a JSON object to re-enable persistence.");I=null;return null}const G=z;if("data"in G){const K=G.data;if(K===null||typeof K!=="object"||Array.isArray(K)){console.warn("[omelette.storage] "+h+' has a "data" field that is not a JSON object; treating the store as unreadable so a '+'save cannot overwrite the hand-edited bytes. Make "data" a JSON object to re-enable persistence.');I=null;return null}const D=G._meta;const j=D!==null&&typeof D==="object"?D.project:undefined;if(typeof j==="string"&&j!==""&&j!==i())return V;for(const H of Object.keys(K))V.set(H,K[H]);return V}for(const K of Object.keys(G)){if(K!=="_meta")V.set(K,G[K])}return V})}return I};var y=(W)=>S(h,JSON.stringify({_meta:{project:i(),version:1},data:Object.fromEntries(W)},null,2));var m=Promise.resolve();var T=(W)=>{const V=m.then(W);m=V.then(()=>{return},()=>{return});return V};var s=/sk-(?:ant-)?[A-Za-z0-9_-]{16,}|AKIA[0-9A-Z]{16}|gh[pousr]_[A-Za-z0-9]{20,}|xox[a-z]-[A-Za-z0-9][A-Za-z0-9-]{9,}|AIza[0-9A-Za-z_-]{30,}|-----BEGIN [A-Z ]*PRIVATE KEY-----/;var a=/password|passwd|secret|api[_-]?key|access[_-]?token|auth[_-]?token|credential/i;var r=(W,V,z)=>{if(s.test(V)||a.test(W)&&typeof z==="string"&&z.length>=8){console.warn('[omelette.storage] the value for "'+W+'" looks like a credential. The storage file is a plaintext project file — visible to '+"everyone with project access and copied when the project is duplicated. Do not store secrets here.")}};var l={persisted:false,reason:"could not load the existing store — not overwriting it"};var c={persisted:false,reason:"stored value changed since a failed read — re-read this key before saving"};var E=new Set;var t={get:(W)=>{if(typeof W!=="string"){return Promise.reject(new TypeError("storage.get: key must be a string"))}return T(_).then((V)=>{if(V===null){E.add(W);return null}E.delete(W);if(!V.has(W))return null;const z=V.get(W);return z==null?null:JSON.parse(JSON.stringify(z))})},set:(W,V)=>{if(typeof W!=="string"){return Promise.reject(new TypeError("storage.set: key must be a string"))}let z;try{z=JSON.stringify(V)}catch(K){return Promise.reject(new TypeError("storage.set: value must be JSON-serializable ("+String(K)+")"))}if(z===undefined){return Promise.reject(new TypeError("storage.set: value must be JSON-serializable"))}r(W,z,V);const G=JSON.parse(z);return T(()=>_().then((K)=>{if(K===null)return l;if(E.has(W)){if(K.has(W))return c;E.delete(W)}K.set(W,G);return y(K)}))},delete:(W)=>{if(typeof W!=="string"){return Promise.reject(new TypeError("storage.delete: key must be a string"))}return T(()=>_().then((V)=>{if(V===null)return l;if(E.has(W)){if(V.has(W))return c;E.delete(W)}V.delete(W);return y(V)}))},keys:()=>T(_).then((W)=>W===null?[]:Array.from(W.keys()))};window.omelette={writeFile:(W,V)=>S(W,V).then((z)=>{if(!z.persisted&&!z.noHost){throw new Error(z.reason||"write failed")}}),storage:t};if(v&&v!==window){const W=(J,Q)=>{try{v.postMessage({__omelette_log:true,type:J,data:Q},"*")}catch{}};["log","warn","error"].forEach((J)=>{const Q=console[J];console[J]=(...$)=>{const Y=$.map((Z)=>{try{return typeof Z==="object"?JSON.stringify(Z):String(Z)}catch{try{return String(Z)}catch{return"[unstringifiable]"}}}).join(" ");W(J,Y);Q.apply(console,$)}});window.addEventListener("error",(J)=>{const Q=J.target;if(Q&&Q!==window&&Q.tagName){const $=Q.src||Q.href||"";W("resource_error",`${Q.tagName} failed to load: ${$}`)}else{W("error",`${J.message||"Unknown error"} at ${J.filename||"?"}:${J.lineno||0}:${J.colno||0}`)}},true);window.addEventListener("unhandledrejection",(J)=>{const Q=J.reason;const $=Q instanceof Error?`${Q.message} ${Q.stack}`:String(Q);W("error",`Unhandled rejection: ${$}`)});window.addEventListener("click",(J)=>{if(J.defaultPrevented||J.button!==0)return;if(J.metaKey||J.ctrlKey||J.shiftKey||J.altKey)return;const Q=J.composedPath?J.composedPath():[];const $=["button","input","select","textarea","summary","label"];let Y=null;for(const x of Q){if(!(x instanceof Element))continue;if(x.localName==="a"){if(!(x instanceof HTMLAnchorElement))return;Y=x;break}if($.indexOf(x.localName)!==-1)return}if(!Y)return;if(Y.isContentEditable)return;const Z=Y.closest("[contenteditable]");if(Z&&Z.getAttribute("contenteditable")!=="false")return;const B=(Y.getAttribute("target")||"_self").toLowerCase();if(B!=="_self"&&B!=="_top"&&B!=="_parent")return;let U;try{U=new URL(Y.href)}catch{return}if(U.protocol!=="http:"&&U.protocol!=="https:")return;if(location.origin==="null")return;if(U.origin===location.origin)return;J.preventDefault();window.open(U.href,"_blank","noopener,noreferrer")});const V=()=>{try{v.postMessage({type:"omelette:height",height:document.documentElement.scrollHeight},"*")}catch{}};if(window.ResizeObserver)new ResizeObserver(V).observe(document.documentElement);const z=()=>{V();if(!document.querySelector('script[type="text/babel"],script[type="text/jsx"]'))return;const J=()=>document.getElementById("root")||document.querySelector("body > div[id]");const Q=J()?.firstElementChild??null;let $=0;const Y=()=>{const Z=J();if(Z&&Z.firstElementChild!==Q||++$>30){V();return}setTimeout(Y,100)};setTimeout(Y,100)};if(document.readyState==="complete")z();else window.addEventListener("load",z);const G={};let K=0;const D=(J)=>new Promise((Q,$)=>{if(!b.length){$(new Error("claude.complete: no parent origin"));return}const Y=`c${++K}`;const Z=()=>setTimeout(()=>{delete G[Y];$(new Error(`claude.complete: no data for ${O/1000}s`))},O);const B=Z();G[Y]={resolve:Q,reject:$,text:"",t:B,arm:Z};try{for(const U of b){v.postMessage({__om_api:true,id:Y,body:J},U)}}catch(U){clearTimeout(B);delete G[Y];$(U)}});const j=8;const H=async(J,Q)=>{if(!Array.isArray(J.messages)){throw new Error("claude.complete: tools require a messages array")}const $=J.messages.slice();const Y={...J,tools:J.tools.map((U)=>{if(U===null||typeof U!=="object")return U;const x={};for(const q of Object.keys(U)){if(typeof U[q]!=="function")x[q]=U[q]}return x})};const Z=Y.tool_choice;const B=Z!=null&&(Z.type==="any"||Z.type==="tool")?{...Y,tool_choice:Z.disable_parallel_tool_use!==undefined?{type:"auto",disable_parallel_tool_use:Z.disable_parallel_tool_use}:{type:"auto"}}:Y;for(let U=0;U<j;U++){const x=await D({...U===0?Y:B,messages:$});const q=x.message;const M=q&&Array.isArray(q.content)?q.content:null;const L=M?M.filter((X)=>X?.type==="tool_use"):[];if(q?.stop_reason!=="tool_use"||L.length===0){return x.text}const N=[];for(const X of L){const f=Q.get(X.name);if(!f){N.push({type:"tool_result",tool_use_id:X.id,content:`no handler for tool "${X.name}"`,is_error:true});continue}try{const C=await f(X.input);const w=typeof C==="string"?C:R(C)??"";N.push({type:"tool_result",tool_use_id:X.id,content:w})}catch(C){N.push({type:"tool_result",tool_use_id:X.id,content:String(C?.message??C??"tool handler failed"),is_error:true})}}$.push({role:"assistant",content:M},{role:"user",content:N})}throw new Error(`claude.complete: exceeded ${j} tool turns`)};window.claude={complete(J){const Q=J;if(Q!==null&&typeof Q==="object"&&Array.isArray(Q.tools)&&Q.tools.some(($)=>$!==null&&typeof $==="object"&&typeof $.run==="function")){const $=new Map;for(const Y of Q.tools){if(Y!==null&&typeof Y==="object"&&typeof Y.run==="function"){$.set(String(Y.name),Y.run)}}return H(Q,$)}return D(J).then(($)=>$.text)}};const F={};let P=0;S=(J,Q)=>new Promise(($)=>{if(!b.length){$({persisted:false,noHost:true,reason:g});return}const Y=`f${++P}`;const Z=setTimeout(()=>{delete F[Y];$({persisted:false,noHost:true,reason:g})},n);F[Y]={settle:$,t:Z};try{for(const B of b){v.postMessage({__om_file:true,id:Y,op:"write",path:J,content:Q},B)}}catch{clearTimeout(Z);delete F[Y];$({persisted:false,noHost:true,reason:g})}});const R=(J)=>{try{return JSON.stringify(J)}catch{return JSON.stringify(String(J))}};window.addEventListener("message",(J)=>{if(b.indexOf(J.origin)<0)return;if(J.source!==v)return;const Q=J.data;if(!Q)return;if(Q.type==="omelette-preview-refresh"){if(typeof Q.token!=="string"||!/^[0-9a-f.-]+(\.(rc|pr-[0-9]+))?(\.[0-9]+\.[0-9a-f]{16})?$/.test(Q.token))return;const Z=Math.max(1,Math.floor((Q.expiresAt||0)-Date.now()/1000));document.cookie="__Host-omelette-preview="+Q.token+"; Path=/; Secure; SameSite=None; Partitioned; Max-Age="+Z;return}if(Q.__om_file_r){const Z=F[Q.id];if(!Z)return;clearTimeout(Z.t);delete F[Q.id];Z.settle(Q.ok?{persisted:true}:{persisted:false,reason:Q.error||"write failed"});return}if(Q.__om_api_r){const Z=G[Q.id];if(!Z)return;if(Q.error!=null){clearTimeout(Z.t);delete G[Q.id];Z.reject(new Error(Q.error));return}if(Q.chunk!=null){clearTimeout(Z.t);Z.t=Z.arm();Z.text+=Q.chunk;return}if(Q.done){clearTimeout(Z.t);delete G[Q.id];Z.resolve({text:Q.text!=null?Q.text:Z.text,message:Q.message});return}return}if(!Q.__om_eval)return;const $=Q;const Y=(Z)=>{J.source.postMessage({...Z,__om_eval_r:1,id:$.id},J.origin)};try{const Z=(0,eval)($.code);if(Z&&typeof Z.then==="function"){Z.then((B)=>Y({ok:1,v:R(B)}),(B)=>Y({ok:0,e:String(B)}))}else{Y({ok:1,v:R(Z)})}}catch(Z){Y({ok:0,e:String(Z)})}})}})();
+</script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>단기임대 4주 실전반 1기 — 첫 호실 오픈까지 | 다니엘스테이</title>
+<meta name="description" content="입지 선정부터 계약·셋업·운영 자동화까지, 4주 안에 첫 단기임대 호실을 엽니다. 7개 호실 운영자의 1:1 입지 피드백, 소수정예 10명 모집.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="다니엘스테이">
+<meta property="og:title" content="단기임대 4주 실전반 1기 — 첫 호실 오픈까지">
+<meta property="og:description" content="입지 선정부터 운영 자동화까지 4주 핸즈온 — 소수정예 10명, 1기 최저가.">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Course",
+  "name": "다니엘스테이 단기임대 4주 실전반",
+  "description": "입지 선정, 계약과 셋업, 채널 오픈과 가격 전략, 운영 자동화까지 4주 안에 첫 호실을 여는 핸즈온 프로그램",
+  "provider": { "@type": "Organization", "name": "다니엘스테이" },
+  "hasCourseInstance": {
+    "@type": "CourseInstance",
+    "courseMode": "online",
+    "courseWorkload": "P4W"
+  }
+}
+</script>
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>
+  body { margin: 0; color: var(--sand-200);
+    background:
+      repeating-radial-gradient(circle at 50% -320px, transparent 0 178px, rgba(255,255,255,.03) 178px 180px),
+      radial-gradient(1400px 900px at 50% -260px, var(--forest-700), var(--forest-800) 62%);
+    background-attachment: fixed; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 40px; }
+  .nav { position: sticky; top: 0; z-index: 50; background: color-mix(in oklab, var(--forest-800) 82%, transparent); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,.1); }
+  .nav-in { display: flex; align-items: center; gap: 32px; height: 72px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 800; font-size: 21px; letter-spacing: -.02em; color: #fff; }
+  .brand .s { color: var(--forest-300); }
+  .nav-cta { margin-left: auto; display: flex; gap: 16px; align-items: center; }
+  .nav-cta a { font-size: 15px; font-weight: 500; color: var(--sand-200); }
+  .nav-cta a:hover { color: #fff; text-decoration: none; }
+  section { padding: 0; }
+  .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--forest-300); }
+  html { scroll-behavior: smooth; }
+  ::selection { background: color-mix(in oklab, var(--forest-300) 45%, transparent); }
+  h1, h2, h3 { font-family: var(--font-display); }
+  h2 { letter-spacing: -.025em; font-weight: 800; text-wrap: balance; }
+  .sec-center::before { content: ""; display: block; width: 30px; height: 3px; background: var(--coral-400); border-radius: 99px; margin: 0 auto 16px; }
+  .on-dark h2 { color: #fff; }
+
+  /* ---- MengTo/skills refs ---- */
+  #root { position: relative; isolation: isolate; }
+  #root::before, #root::after { content: ""; position: absolute; top: 0; bottom: 0; z-index: 0; width: 1px;
+    background: rgba(255,255,255,.09); pointer-events: none; }
+  #root::before { left: max(40px, calc((100vw - 1100px) / 2)); }
+  #root::after { right: max(40px, calc((100vw - 1100px) / 2)); }
+  .bshadow-lg { box-shadow: 0 2.8px 2.2px rgba(0,0,0,.034), 0 6.7px 5.3px rgba(0,0,0,.048), 0 12.5px 10px rgba(0,0,0,.06),
+    0 22.3px 17.9px rgba(0,0,0,.072), 0 41.8px 33.4px rgba(0,0,0,.086), 0 100px 80px rgba(0,0,0,.12); }
+  .num-detail { font-family: var(--font-data); font-size: 14px; font-weight: 600; letter-spacing: .1em; font-variant-numeric: tabular-nums; }
+  .word-reveal__mask { display: inline-block; overflow: hidden; vertical-align: top; }
+  .word-reveal__word { display: inline-block; transform: translateY(110%);
+    transition: transform .8s cubic-bezier(.19,1,.22,1);
+    transition-delay: calc(var(--word-index) * .04s); will-change: transform; }
+  .word-reveal.is-visible .word-reveal__word { transform: translateY(0); }
+  /* progressive blur — 하단 고정 CTA */
+  .gradient-blur { position: fixed; z-index: 40; inset: auto 0 0 0; height: 140px; pointer-events: none; transition: opacity .4s; }
+  .gradient-blur > div, .gradient-blur::before, .gradient-blur::after { position: absolute; inset: 0; }
+  .gradient-blur::before { content: ""; z-index: 1; backdrop-filter: blur(.5px); mask: linear-gradient(to bottom, rgba(0,0,0,0) 0%, #000 12.5%, #000 25%, rgba(0,0,0,0) 37.5%); }
+  .gradient-blur > div:nth-of-type(1) { z-index: 2; backdrop-filter: blur(1px); mask: linear-gradient(to bottom, rgba(0,0,0,0) 12.5%, #000 25%, #000 37.5%, rgba(0,0,0,0) 50%); }
+  .gradient-blur > div:nth-of-type(2) { z-index: 3; backdrop-filter: blur(2px); mask: linear-gradient(to bottom, rgba(0,0,0,0) 25%, #000 37.5%, #000 50%, rgba(0,0,0,0) 62.5%); }
+  .gradient-blur > div:nth-of-type(3) { z-index: 4; backdrop-filter: blur(4px); mask: linear-gradient(to bottom, rgba(0,0,0,0) 37.5%, #000 50%, #000 62.5%, rgba(0,0,0,0) 75%); }
+  .gradient-blur > div:nth-of-type(4) { z-index: 5; backdrop-filter: blur(8px); mask: linear-gradient(to bottom, rgba(0,0,0,0) 50%, #000 62.5%, #000 75%, rgba(0,0,0,0) 87.5%); }
+  .gradient-blur > div:nth-of-type(5) { z-index: 6; backdrop-filter: blur(16px); mask: linear-gradient(to bottom, rgba(0,0,0,0) 62.5%, #000 75%, #000 87.5%, rgba(0,0,0,0) 100%); }
+  .gradient-blur > div:nth-of-type(6) { z-index: 7; backdrop-filter: blur(32px); mask: linear-gradient(to bottom, rgba(0,0,0,0) 75%, #000 87.5%, #000 100%); }
+  .gradient-blur::after { content: ""; z-index: 8; backdrop-filter: blur(64px); mask: linear-gradient(to bottom, rgba(0,0,0,0) 87.5%, #000 100%); }
+  .pb-cta-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 41; display: flex; justify-content: center; padding: 0 0 22px; pointer-events: none; transition: opacity .4s; }
+  .pb-cta-bar > * { pointer-events: auto; }
+  .cta-off { opacity: 0; }
+  .cta-off > * { pointer-events: none !important; }
+  @media (prefers-reduced-motion: reduce) {
+    .word-reveal__word { opacity: 1 !important; transform: none !important; transition: none !important; }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal { opacity: 0; transform: translateY(28px); filter: blur(8px); transition: opacity .7s var(--ease-out), transform .7s var(--ease-out), filter .7s var(--ease-out); will-change: opacity, transform, filter; }
+    .reveal.in { opacity: 1; transform: none; filter: none; }
+    .reveal[data-d="1"] { transition-delay: .08s; }
+    .reveal[data-d="2"] { transition-delay: .16s; }
+    .reveal[data-d="3"] { transition-delay: .24s; }
+    .reveal[data-d="4"] { transition-delay: .32s; }
+    .hero-anim { opacity: 0; transform: translateY(24px); animation: heroIn .8s var(--ease-out) forwards; }
+    .hero-anim[data-d="1"] { animation-delay: .05s; }
+    .hero-anim[data-d="2"] { animation-delay: .3s; }
+    .hero-anim[data-d="3"] { animation-delay: .55s; }
+    .hero-anim[data-d="4"] { animation-delay: .85s; }
+    .hero-anim.pop { animation-name: heroPop; }
+    @keyframes heroPop { 0% { opacity: 0; transform: translateY(14px) scale(.96); } 70% { opacity: 1; transform: translateY(-2px) scale(1.01); } 100% { opacity: 1; transform: none; } }
+    .lift { transition: transform .4s var(--ease-out); }
+    .lift:hover { transform: translateY(-6px); }
+    @keyframes heroIn { to { opacity: 1; transform: none; } }
+    .cta-pulse { animation: ctaPulse 2.6s var(--ease-in-out) infinite; }
+    @keyframes ctaPulse { 0%,100% { box-shadow: var(--shadow-brand); } 50% { box-shadow: 0 16px 36px color-mix(in oklab, var(--coral-500) 42%, transparent); } }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { Button, Badge, Card, Stat, Input, Select } = window.DesignSystem_921ebf;
+
+function Nav() {
+  return (
+    <div className="nav"><div className="wrap"><div className="nav-in">
+      <div className="brand"><img src="../../assets/logo-mark-inverse.svg" width="32" height="32" alt=""/>다니엘<span className="s">스테이</span></div>
+      <div className="nav-cta">
+        <a href="index.html">1일 특강 랜딩</a>
+        <Button variant="primary" size="sm" onClick={()=>{const el=document.getElementById("apply"); if(el) window.scrollTo({top: el.getBoundingClientRect().top + window.pageYOffset - 60, behavior:"smooth"});}}>실전반 1기 신청</Button>
+      </div>
+    </div></div></div>
+  );
+}
+
+function Hero() {
+  return (
+    <section style={{paddingTop:72, paddingBottom:72}}><div className="wrap" style={{maxWidth:820,textAlign:"center"}}>
+      <div className="hero-anim" data-d="1"><Badge tone="brand" solid style={{marginBottom:20}}>4주 실전반 1기 · 소수정예 10명</Badge></div>
+      <h1 className="hero-anim" data-d="2" style={{fontSize:54,fontWeight:800,letterSpacing:"-.03em",lineHeight:1.14,margin:"0 0 22px",color:"#fff"}}>
+        4주 뒤, 당신의<br/><span style={{color:"var(--forest-300)"}}>첫 호실</span>이 열립니다
+      </h1>
+      <p className="hero-anim" data-d="3" style={{fontSize:19,lineHeight:1.65,color:"var(--sand-200)",maxWidth:600,margin:"0 auto 32px"}}>
+        입지 선정부터 계약, 셋업, 자동화까지 — 7개 호실을 직접 운영하는 다니엘이 첫 호실 오픈까지 옆에서 함께합니다.
+      </p>
+      <div className="hero-anim pop" data-d="4" style={{display:"flex",gap:12,justifyContent:"center",marginBottom:40}}>
+        <Button variant="accent" size="lg" iconRight={<span>→</span>} onClick={()=>{const el=document.getElementById("apply"); if(el) window.scrollTo({top: el.getBoundingClientRect().top + window.pageYOffset - 60, behavior:"smooth"});}}>실전반 1기 신청하기</Button>
+        <Button variant="secondary" size="lg" onClick={()=>{const el=document.getElementById("curriculum"); if(el) window.scrollTo({top: el.getBoundingClientRect().top + window.pageYOffset - 60, behavior:"smooth"});}}>커리큘럼 보기</Button>
+      </div>
+      <div className="hero-anim" data-d="4" style={{display:"flex",justifyContent:"center"}}>
+        <Card variant="default" padding="lg" style={{display:"inline-flex",gap:48}}>
+          <Stat label="직접 운영" value="7" unit="실"/>
+          <Stat label="호실당 월 순수익" value="50~80" unit="만원"/>
+          <Stat label="평균 점유율" value="92" unit="%"/>
+        </Card>
+      </div>
+    </div></section>
+  );
+}
+
+function Curriculum() {
+  const weeks = [
+    {w:"WEEK 1", t:"시장 이해와 입지 선정", d:"수요가 검증된 지역을 고르는 기준과 수익성 시뮬레이션 — 내 예산으로 가능한 후보지를 확정합니다."},
+    {w:"WEEK 2", t:"계약과 초기 셋업", d:"전대 동의·세무 체크리스트, 가구·비품 리스트, 공간 사진 촬영까지 실수 없는 셋업."},
+    {w:"WEEK 3", t:"채널 운영과 가격 전략", d:"플랫폼 등록, 다이내믹 프라이싱으로 점유율과 단가를 동시에 관리합니다."},
+    {w:"WEEK 4", t:"자동화와 정산 관리", d:"청소·메시지 자동화 셋업, 월 정산과 세금 관리 루틴 — 퇴근 후 2시간 운영 체제 완성."},
+  ];
+  return (
+    <section id="curriculum" style={{paddingBottom:72}}><div className="wrap">
+      <div className="reveal sec-center on-dark" style={{textAlign:"center",marginBottom:40}}>
+        <div className="eyebrow">4주 커리큘럼</div>
+        <h2 data-word-reveal style={{fontSize:38,margin:"12px 0 0"}}>첫 호실 오픈까지, 주차별 로드맵</h2>
+      </div>
+      <div style={{display:"flex",flexDirection:"column",gap:16,maxWidth:760,margin:"0 auto"}}>
+        {weeks.map((wk,i)=>(
+          <div key={i} className="reveal lift" data-d={String((i%2)+1)}>
+          <Card variant="default" padding="lg" style={{display:"flex",gap:20}}>
+            <div style={{fontFamily:"var(--font-data)",fontWeight:600,fontSize:15,color:"var(--forest-500)",flex:"none",width:64}}>{wk.w}</div>
+            <div>
+              <h3 style={{fontSize:21,margin:"0 0 8px"}}>{wk.t}</h3>
+              <p style={{fontSize:15,color:"var(--text-muted)",margin:0,lineHeight:1.6}}>{wk.d}</p>
+            </div>
+          </Card>
+          </div>
+        ))}
+      </div>
+    </div></section>
+  );
+}
+
+function Perks() {
+  const items = [
+    {t:"소수정예 10명", d:"질문이 묻히지 않는 규모. 한 명 한 명의 진도를 직접 챙깁니다."},
+    {t:"1:1 입지 피드백", d:"내가 고른 후보지를 다니엘이 직접 검토하고 숫자로 피드백합니다."},
+    {t:"1기 최저가", d:"첫 기수에만 적용되는 가격. 2기부터는 인상됩니다."},
+    {t:"실전 서식 제공", d:"계약 체크리스트·수익 시뮬레이션 시트·운영 메시지 템플릿 일체."},
+  ];
+  return (
+    <section style={{paddingBottom:72}}><div className="wrap">
+      <div className="reveal sec-center on-dark" style={{textAlign:"center",marginBottom:40}}>
+        <div className="eyebrow">1기 혜택</div>
+        <h2 style={{fontSize:38,margin:"12px 0 0"}}>첫 기수라서 가능한 조건</h2>
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:20,maxWidth:920,margin:"0 auto"}}>
+        {items.map((it,i)=>(
+          <div key={i} className="reveal lift" data-d={String((i%2)+1)} style={{display:"flex"}}>
+          <Card variant="default" padding="lg" style={{display:"flex",flexDirection:"column",gap:10,position:"relative"}}>
+            <div className="num-detail" style={{position:"absolute",top:18,right:20,color:"var(--sand-300)"}}>{String(i+1).padStart(2,"0")}</div>
+            <h3 style={{fontSize:20,margin:0}}>{it.t}</h3>
+            <p style={{fontSize:15,color:"var(--text-muted)",margin:0,lineHeight:1.65}}>{it.d}</p>
+          </Card>
+          </div>
+        ))}
+      </div>
+    </div></section>
+  );
+}
+
+function Fit() {
+  return (
+    <section style={{paddingBottom:72}}><div className="wrap reveal">
+      <Card variant="ink" padding="xl" style={{borderRadius:24,display:"grid",gridTemplateColumns:"1fr 1fr",gap:40}}>
+        <div>
+          <h3 style={{color:"#fff",fontSize:23,margin:"0 0 18px"}}>이런 분께 맞습니다</h3>
+          <div style={{display:"flex",flexDirection:"column",gap:12,fontSize:15.5,color:"var(--sand-200)",lineHeight:1.6}}>
+            <div style={{display:"flex",gap:10}}><span style={{color:"var(--forest-300)",fontWeight:700}}>✓</span>보증금+세팅비 수준의 시작 자본이 준비된 분</div>
+            <div style={{display:"flex",gap:10}}><span style={{color:"var(--forest-300)",fontWeight:700}}>✓</span>본업을 유지하며 주 2~3시간을 낼 수 있는 분</div>
+            <div style={{display:"flex",gap:10}}><span style={{color:"var(--forest-300)",fontWeight:700}}>✓</span>4주 안에 첫 호실을 실제로 열 생각이 있는 분</div>
+          </div>
+        </div>
+        <div>
+          <h3 style={{color:"var(--sand-300)",fontSize:23,margin:"0 0 18px"}}>이런 분께는 권하지 않습니다</h3>
+          <div style={{display:"flex",flexDirection:"column",gap:12,fontSize:15.5,color:"var(--sand-300)",lineHeight:1.6}}>
+            <div style={{display:"flex",gap:10}}><span style={{color:"var(--coral-300)",fontWeight:700}}>✕</span>한 방의 대박을 기대하는 분</div>
+            <div style={{display:"flex",gap:10}}><span style={{color:"var(--coral-300)",fontWeight:700}}>✕</span>강의만 듣고 실행은 미루실 분</div>
+            <div style={{display:"flex",gap:10}}><span style={{color:"var(--coral-300)",fontWeight:700}}>✕</span>시작 자본이 전혀 없는 분</div>
+          </div>
+        </div>
+      </Card>
+    </div></section>
+  );
+}
+
+function ApplyForm() {
+  const [done, setDone] = React.useState(false);
+  return (
+    <section id="apply" style={{paddingBottom:88}}><div className="wrap reveal">
+      <Card variant="brand" padding="xl" style={{borderRadius:24,display:"grid",gridTemplateColumns:"1fr 1fr",gap:48,alignItems:"center"}}>
+        <div>
+          <div className="eyebrow" style={{color:"var(--forest-600)"}}>실전반 1기 신청</div>
+          <h2 style={{fontSize:34,margin:"12px 0 16px",color:"var(--forest-800)"}}>10자리뿐입니다.<br/>4주 뒤 첫 호실을 여세요</h2>
+          <p style={{fontSize:16,lineHeight:1.65,color:"var(--forest-700)",margin:"0 0 20px"}}>신청 후 짧은 사전 상담으로 시작 가능 여부를 함께 확인합니다. 준비가 안 된 분께는 솔직하게 말씀드립니다.</p>
+          <div style={{display:"flex",flexDirection:"column",gap:10,fontSize:15,color:"var(--forest-800)",fontWeight:600}}>
+            <div style={{display:"flex",gap:10,alignItems:"center"}}><span style={{color:"var(--forest-500)"}}>✓</span>4주 라이브 + 다시보기</div>
+            <div style={{display:"flex",gap:10,alignItems:"center"}}><span style={{color:"var(--forest-500)"}}>✓</span>1:1 입지 피드백 · 실전 서식 일체</div>
+            <div style={{display:"flex",gap:10,alignItems:"center"}}><span style={{color:"var(--forest-500)"}}>✓</span>소수정예 10명 마감 · 1기 최저가</div>
+          </div>
+        </div>
+        <Card variant="default" padding="lg">
+          {done ? (
+            <div style={{textAlign:"center",padding:"28px 0"}}>
+              <div style={{fontSize:40,marginBottom:12}}>✓</div>
+              <h3 style={{margin:"0 0 8px"}}>신청이 접수되었어요</h3>
+              <p style={{color:"var(--text-muted)",margin:0,fontSize:15}}>사전 상담 일정을 문자로 안내드립니다.</p>
+            </div>
+          ) : (
+            <div style={{display:"flex",flexDirection:"column",gap:16}}>
+              <Input label="이름" placeholder="홍길동" required/>
+              <Input label="연락처" type="tel" placeholder="010-0000-0000" required/>
+              <Select label="시작 가능 예산" required>
+                <option>500만원 미만</option><option>500~1,000만원</option><option>1,000~2,000만원</option><option>2,000만원 이상</option>
+              </Select>
+              <Button variant="accent" size="lg" full onClick={()=>setDone(true)} className="cta-pulse">실전반 1기 신청하기</Button>
+            </div>
+          )}
+        </Card>
+      </Card>
+    </div></section>
+  );
+}
+
+function Footer() {
+  return (
+    <footer style={{background:"var(--sand-900)",color:"var(--sand-300)",padding:"56px 0",borderTop:"3px solid var(--coral-400)"}}><div className="wrap" style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:20}}>
+      <div style={{display:"flex",alignItems:"center",gap:10}}>
+        <img src="../../assets/logo-mark-inverse.svg" width="30" height="30" alt=""/>
+        <span style={{fontFamily:"var(--font-display)",fontWeight:800,fontSize:18,color:"#fff"}}>다니엘<span style={{color:"var(--forest-300)"}}>스테이</span></span>
+      </div>
+      <div style={{display:"flex",gap:24,fontSize:14}}>
+        <span>@pakistanikorean</span><span>daniel.hostinkorea@gmail.com</span><span>© 2026 DanielStay</span>
+      </div>
+    </div></footer>
+  );
+}
+
+function BottomCTA() {
+  return (
+    <div>
+      <div className="gradient-blur cta-off" id="gblur"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+      <div className="pb-cta-bar cta-off" id="gcta">
+        <Button variant="accent" size="lg" iconRight={<span>→</span>} onClick={()=>{const el=document.getElementById("apply"); if(el) window.scrollTo({top: el.getBoundingClientRect().top + window.pageYOffset - 60, behavior:"smooth"});}}>실전반 1기 신청하기</Button>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  return (<div><Nav/><Hero/><Curriculum/><Perks/><Fit/><ApplyForm/><Footer/><BottomCTA/></div>);
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+
+requestAnimationFrame(() => {
+  const reveal = () => {
+    const vh = window.innerHeight || document.documentElement.clientHeight;
+    document.querySelectorAll(".reveal:not(.in)").forEach((el) => {
+      const r = el.getBoundingClientRect();
+      if (r.top < vh * 0.9 && r.bottom > 0) el.classList.add("in");
+    });
+  };
+  reveal();
+  window.addEventListener("scroll", reveal, { passive: true });
+  window.addEventListener("resize", reveal);
+  setTimeout(reveal, 200);
+  setTimeout(reveal, 500);
+  const updateCta = () => {
+    const bar = document.getElementById("gcta"), blur = document.getElementById("gblur"), applyEl = document.getElementById("apply");
+    if (!bar || !applyEl) return;
+    const vh = window.innerHeight || document.documentElement.clientHeight;
+    const show = window.scrollY > 560 && applyEl.getBoundingClientRect().top > vh * 0.75;
+    bar.classList.toggle("cta-off", !show);
+    blur.classList.toggle("cta-off", !show);
+  };
+  window.addEventListener("scroll", updateCta, { passive: true });
+  setTimeout(updateCta, 300);
+});
+
+// Staggered word reveal (MengTo/skills staggered-word-reveal)
+function splitWordReveal(element) {
+  if (element.dataset.wordRevealReady === "true") return;
+  const text = element.textContent || "";
+  const parts = text.split(/(\s+)/);
+  let wordIndex = 0;
+  element.textContent = "";
+  element.setAttribute("aria-label", text.trim());
+  element.classList.add("word-reveal");
+  parts.forEach((part) => {
+    if (!part.trim()) { element.appendChild(document.createTextNode(part)); return; }
+    const mask = document.createElement("span");
+    mask.className = "word-reveal__mask";
+    mask.setAttribute("aria-hidden", "true");
+    const word = document.createElement("span");
+    word.className = "word-reveal__word";
+    word.style.setProperty("--word-index", wordIndex);
+    word.textContent = part;
+    mask.appendChild(word);
+    element.appendChild(mask);
+    wordIndex += 1;
+  });
+  element.dataset.wordRevealReady = "true";
+}
+function initWordReveals() {
+  const els = Array.from(document.querySelectorAll("[data-word-reveal]"));
+  if (!els.length) return;
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduceMotion || !("IntersectionObserver" in window)) {
+    els.forEach((el) => el.classList.add("word-reveal", "is-visible"));
+    return;
+  }
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add("is-visible");
+      io.unobserve(entry.target);
+    });
+  }, { threshold: 0.2, rootMargin: "0px 0px -10% 0px" });
+  els.forEach((el) => { splitWordReveal(el); io.observe(el); });
+}
+setTimeout(initWordReveals, 250);
+setTimeout(initWordReveals, 800);
+</script>
+</body>
+</html>

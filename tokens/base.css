@@ -1,0 +1,68 @@
+/* ============================================================
+   다니엘스테이 — Base / Reset
+   토큰을 실제 요소에 연결하는 얇은 베이스 레이어.
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: var(--fw-regular);
+  color: var(--text-body);
+  background: var(--surface-page);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  word-break: keep-all;       /* 한글 단어 단위 줄바꿈 */
+  text-wrap: pretty;
+}
+
+h1, h2, h3, h4 {
+  margin: 0 0 0.5em;
+  color: var(--text-strong);
+  font-family: var(--font-display);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--ls-tight);
+  font-weight: var(--fw-bold);
+  text-wrap: balance;
+}
+h1 { font-size: var(--fs-h1); font-weight: var(--fw-heavy); line-height: var(--lh-tight); }
+h2 { font-size: var(--fs-h2); font-weight: var(--fw-bold); }
+h3 { font-size: var(--fs-h3); }
+h4 { font-size: var(--fs-h4); }
+
+p { margin: 0 0 1em; }
+
+a { color: var(--text-brand); text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 0.18em; }
+
+strong, b { font-weight: var(--fw-semibold); color: var(--text-strong); }
+
+small { font-size: var(--fs-sm); }
+
+::selection { background: color-mix(in oklab, var(--forest-500) 22%, transparent); }
+
+:focus-visible {
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* 유틸: 영문 라벨/카테고리 트래킹 */
+.ds-eyebrow {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* 유틸: 숫자 지표 */
+.ds-data {
+  font-family: var(--font-data);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}

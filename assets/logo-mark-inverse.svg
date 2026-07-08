@@ -1,0 +1,5 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="다니엘스테이">
+  <rect x="2" y="2" width="44" height="44" rx="13" fill="none" stroke="#FAF8F5" stroke-width="2.5"></rect>
+  <path d="M15 35 V25 A9 9 0 0 1 33 25 V35 Z" fill="#FAF8F5"></path>
+  <circle cx="28.5" cy="27.5" r="1.7" fill="#115A40"></circle>
+</svg>

@@ -1,0 +1,46 @@
+/* ============================================================
+   다니엘스테이 — Typography Tokens
+   한글 고딕(Pretendard) 워크호스. 제목은 무겁게(700–800),
+   본문은 가볍고 또렷하게(400–500). 숫자 지표는 모노.
+   ============================================================ */
+
+:root {
+  /* ---- Families ---- */
+  --font-sans: "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont,
+               "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --font-mono: "Spline Sans Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  /* 의미 별칭 */
+  --font-display: var(--font-sans); /* 무거운 weight로 디스플레이 처리 */
+  --font-body:    var(--font-sans);
+  --font-data:    var(--font-mono);
+
+  /* ---- Weights ---- */
+  --fw-regular:  400; /* @kind font */
+  --fw-medium:   500; /* @kind font */
+  --fw-semibold: 600; /* @kind font */
+  --fw-bold:     700; /* @kind font */
+  --fw-heavy:    800; /* @kind font */
+
+  /* ---- Type scale (한글 기준, rem 1rem=16px) ---- */
+  --fs-display:  clamp(2.75rem, 6vw, 4.5rem); /* @kind font */
+  --fs-h1:       2.5rem;    /* @kind font */
+  --fs-h2:       2rem;      /* 32 */
+  --fs-h3:       1.5rem;    /* 24 */
+  --fs-h4:       1.25rem;   /* 20 */
+  --fs-lg:       1.125rem;  /* 18 리드 */
+  --fs-body:     1rem;      /* 16 본문 */
+  --fs-sm:       0.875rem;  /* 14 */
+  --fs-xs:       0.75rem;   /* 12 캡션/라벨 */
+
+  /* ---- Line heights (한글은 넉넉히) ---- */
+  --lh-tight:   1.15;  /* @kind font */
+  --lh-heading: 1.3;   /* @kind font */
+  --lh-body:    1.65;  /* @kind font */
+  --lh-relaxed: 1.8;   /* @kind font */
+
+  /* ---- Letter spacing (한글은 거의 0, 라벨만 트래킹) ---- */
+  --ls-tight:  -0.02em;  /* @kind font */
+  --ls-normal:  0;       /* @kind font */
+  --ls-label:   0.04em;  /* @kind font */
+}

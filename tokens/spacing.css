@@ -1,0 +1,56 @@
+/* ============================================================
+   다니엘스테이 — Spacing, Radius, Shadow, Motion Tokens
+   4px 베이스 스페이싱. 부드럽고 따뜻한(잉크 틴트) 그림자.
+   ============================================================ */
+
+:root {
+  /* ---- Spacing scale (4px base) ---- */
+  --space-0:   0;
+  --space-1:   0.25rem;  /* 4 */
+  --space-2:   0.5rem;   /* 8 */
+  --space-3:   0.75rem;  /* 12 */
+  --space-4:   1rem;     /* 16 */
+  --space-5:   1.25rem;  /* 20 */
+  --space-6:   1.5rem;   /* 24 */
+  --space-8:   2rem;     /* 32 */
+  --space-10:  2.5rem;   /* 40 */
+  --space-12:  3rem;     /* 48 */
+  --space-16:  4rem;     /* 64 */
+  --space-20:  5rem;     /* 80 */
+  --space-24:  6rem;     /* 96 */
+
+  /* ---- Radius ---- */
+  --radius-xs:   4px;
+  --radius-sm:   8px;
+  --radius-md:   12px;   /* 버튼/인풋 */
+  --radius-lg:   16px;   /* 카드 */
+  --radius-xl:   24px;   /* 큰 카드/모달 */
+  --radius-2xl:  32px;   /* 히어로 패널 */
+  --radius-pill: 999px;
+
+  /* ---- Shadows (warm ink tint, soft) ---- */
+  --shadow-xs:  0 1px 2px rgba(26, 23, 18, 0.06);
+  --shadow-sm:  0 2px 6px rgba(26, 23, 18, 0.07);
+  --shadow-md:  0 6px 18px rgba(26, 23, 18, 0.09);
+  --shadow-lg:  0 14px 36px rgba(26, 23, 18, 0.12);
+  --shadow-xl:  0 28px 64px rgba(26, 23, 18, 0.16);
+  /* 브랜드 그림자 — CTA/포커스 카드 */
+  --shadow-brand: 0 12px 28px color-mix(in oklab, var(--forest-600) 28%, transparent);
+
+  /* ---- Borders ---- */
+  --border-width: 1px; /* @kind spacing */
+  --border-hairline: 1px; /* @kind spacing */
+
+  /* ---- Layout ---- */
+  --container-max: 1200px; /* @kind spacing */
+  --container-prose: 680px;   /* @kind spacing */
+  --gutter: clamp(1rem, 5vw, 4rem); /* @kind spacing */
+
+  /* ---- Motion ---- */
+  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1); /* @kind other */
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1); /* @kind other */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* @kind other */
+  --dur-fast:    140ms; /* @kind other */
+  --dur-base:    220ms; /* @kind other */
+  --dur-slow:    360ms; /* @kind other */
+}
