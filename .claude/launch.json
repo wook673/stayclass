@@ -21,6 +21,13 @@
       "port": 8778
     },
     {
+      "name": "static-auto",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-c", "import os,functools,http.server,socketserver; p=int(os.environ.get('PORT','8779')); socketserver.TCPServer(('',p), functools.partial(http.server.SimpleHTTPRequestHandler, directory='.')).serve_forever()"],
+      "port": 8779,
+      "autoPort": true
+    },
+    {
       "name": "영상메이커",
       "runtimeExecutable": "python",
       "runtimeArgs": ["video-maker/app.py"],
