@@ -72,6 +72,15 @@ def apply_ments(data):
 
 _ment_count = apply_ments(data)
 
+# 파일 크기 절감: url은 goodscode로 JS에서 복원, 이미지 공통 접두 제거
+IMG_PREFIX = "https://tlpcserver.imakeweb.co.kr/data/goods/"
+for _r in data:
+    for _s in _r["subcategories"]:
+        for _p in _s["products"]:
+            _p.pop("url", None)
+            if (_p.get("image") or "").startswith(IMG_PREFIX):
+                _p["image"] = _p["image"][len(IMG_PREFIX):]
+
 TEMPLATE = """<!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -92,7 +101,9 @@ TEMPLATE = """<!DOCTYPE html>
   --point-soft:#e8f2ec;
   --price:#12513a;
   --shadow:0 1px 2px rgba(20,40,32,.04), 0 6px 18px rgba(20,40,32,.05);
-  --shadow-hover:0 6px 14px rgba(20,40,32,.08), 0 18px 40px rgba(20,40,32,.10);
+  --shadow-hover:0 4px 10px rgba(20,40,32,.07), 0 16px 32px rgba(20,40,32,.09);
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Cascadia Mono",monospace;
+  --ease:cubic-bezier(0.16,1,0.3,1);
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 html { -webkit-text-size-adjust:100%; }
@@ -119,21 +130,24 @@ header {
 }
 .brand { display:flex; align-items:baseline; gap:10px; flex-shrink:0; }
 .brand h1 {
-  font-size:19px; font-weight:800; letter-spacing:-.02em; color:var(--ink);
+  font-size:19px; font-weight:800; letter-spacing:-.035em; color:var(--ink);
   display:flex; align-items:center; gap:8px;
 }
 .brand h1::before {
   content:""; width:9px; height:9px; border-radius:50%;
   background:var(--point); box-shadow:0 0 0 4px var(--point-soft);
 }
-.brand small { font-size:12px; font-weight:500; color:var(--faint); letter-spacing:0; }
+.brand small {
+  font-family:var(--mono); font-variant-numeric:tabular-nums;
+  font-size:11px; font-weight:400; color:var(--faint); letter-spacing:0;
+}
 .controls { display:flex; align-items:center; gap:10px; flex:1; flex-wrap:wrap; justify-content:flex-end; }
 .field { position:relative; display:flex; align-items:center; }
 .controls select, .controls input {
   font:inherit; font-size:14px; color:var(--ink);
   background:var(--surface); border:1px solid var(--line-strong);
   border-radius:11px; padding:10px 14px; height:42px;
-  transition:border-color .15s, box-shadow .15s;
+  transition:border-color .25s var(--ease), box-shadow .25s var(--ease);
 }
 .controls select {
   cursor:pointer; padding-right:34px;
@@ -150,6 +164,7 @@ header {
 }
 #count {
   font-size:13px; font-weight:600; color:var(--point);
+  font-variant-numeric:tabular-nums;
   background:var(--point-soft); border-radius:999px;
   padding:8px 14px; white-space:nowrap; flex-shrink:0;
 }
@@ -157,27 +172,48 @@ header {
 /* ── Main ─────────────────────────────── */
 main { max-width:1440px; margin:0 auto; padding:22px 20px 40px; }
 
-.cat-group { margin-top:34px; }
-.cat-group:first-child { margin-top:8px; }
-.cat-head { display:flex; align-items:center; gap:12px; margin:0 2px 16px; }
-.cat-head .bar { width:4px; height:20px; border-radius:2px; background:var(--point); flex-shrink:0; }
-.cat-head .root { font-size:17px; font-weight:800; letter-spacing:-.02em; color:var(--ink); }
+.cat-group { margin-top:38px; }
+.cat-group:first-child { margin-top:10px; }
+.cat-head { display:flex; align-items:baseline; gap:11px; margin:0 2px 16px; }
+.cat-head .idx {
+  font-family:var(--mono); font-variant-numeric:tabular-nums;
+  font-size:11px; font-weight:500; color:var(--point);
+  letter-spacing:.06em; flex-shrink:0;
+  padding-bottom:1px; border-bottom:2px solid var(--point);
+}
+.cat-head .root { font-size:17px; font-weight:800; letter-spacing:-.03em; color:var(--ink); }
 .cat-head .chev { color:var(--faint); font-size:13px; }
 .cat-head .sub {
   font-size:12.5px; font-weight:600; color:var(--point);
   background:var(--point-soft); border-radius:999px; padding:4px 11px;
+  align-self:center;
 }
-.cat-head .rule { flex:1; height:1px; background:var(--line); }
+.cat-head .rule { flex:1; height:1px; background:var(--line); align-self:center; }
+.cat-head .cnt {
+  font-family:var(--mono); font-variant-numeric:tabular-nums;
+  font-size:11px; color:var(--faint); flex-shrink:0; letter-spacing:.02em;
+}
 
 .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(196px,1fr)); gap:16px; }
 
+@keyframes card-in {
+  from { opacity:0; transform:translateY(8px); }
+  to { opacity:1; transform:translateY(0); }
+}
+@keyframes shimmer {
+  from { background-position:200% 0; }
+  to { background-position:-200% 0; }
+}
 .card {
   background:var(--surface); border:1px solid var(--line);
   border-radius:16px; overflow:hidden;
   display:flex; flex-direction:column;
   box-shadow:var(--shadow);
-  transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  transition:transform .35s var(--ease), box-shadow .35s var(--ease), border-color .35s var(--ease);
+  animation:card-in .5s var(--ease) both;
+  animation-delay:calc(var(--i,0) * 25ms);
 }
+.card:active { transform:scale(.98); }
 .card a { display:flex; flex-direction:column; height:100%; }
 .card a:focus-visible { outline:2px solid var(--point); outline-offset:2px; border-radius:16px; }
 
@@ -187,7 +223,17 @@ main { max-width:1440px; margin:0 auto; padding:22px 20px 40px; }
   display:flex; align-items:center; justify-content:center;
   overflow:hidden; padding:16px;
 }
-.thumb img { max-width:100%; max-height:100%; object-fit:contain; mix-blend-mode:multiply; transition:transform .25s ease; }
+.thumb.sk {
+  background:linear-gradient(100deg,#f2f5f3 40%,#fbfdfc 50%,#f2f5f3 60%) #fbfcfb;
+  background-size:200% 100%;
+  animation:shimmer 1.6s linear infinite;
+}
+.thumb.sk:has(img.ld) { animation:none; background:#fbfcfb; }
+.thumb img {
+  max-width:100%; max-height:100%; object-fit:contain; mix-blend-mode:multiply;
+  opacity:0; transition:opacity .45s var(--ease), transform .35s var(--ease);
+}
+.thumb img.ld { opacity:1; }
 .thumb .noimg { color:var(--faint); font-size:12px; }
 
 .info { padding:13px 14px 15px; flex:1; display:flex; flex-direction:column; gap:5px; }
@@ -214,13 +260,15 @@ main { max-width:1440px; margin:0 auto; padding:22px 20px 40px; }
 .card.has-ment { border-color:#cde0d6; }
 .prices { margin-top:8px; padding-top:10px; border-top:1px dashed var(--line-strong); }
 .p1 {
-  font-size:17px; font-weight:800; color:var(--price); letter-spacing:-.01em;
+  font-size:17px; font-weight:800; color:var(--price); letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;
   display:flex; align-items:baseline; gap:5px;
 }
 .p1 .lab { font-size:11px; font-weight:700; color:var(--muted); }
 .p2 {
   margin-top:6px; display:inline-flex; align-items:center; gap:5px;
   font-size:11.5px; font-weight:600; color:var(--point);
+  font-variant-numeric:tabular-nums;
   background:var(--point-soft); border-radius:7px; padding:3px 8px;
 }
 .p2 .lab { font-weight:700; opacity:.85; }
@@ -229,12 +277,13 @@ main { max-width:1440px; margin:0 auto; padding:22px 20px 40px; }
 .more-wrap { display:flex; justify-content:center; margin:32px 0 8px; }
 .more {
   font:inherit; font-size:14px; font-weight:700; color:var(--point);
+  font-variant-numeric:tabular-nums;
   background:var(--surface); border:1.5px solid var(--line-strong);
   border-radius:999px; padding:13px 30px; cursor:pointer;
   display:inline-flex; align-items:center; gap:8px;
-  transition:background .15s, border-color .15s, transform .1s, box-shadow .15s;
+  transition:background .3s var(--ease), border-color .3s var(--ease), color .3s var(--ease), transform .2s var(--ease), box-shadow .3s var(--ease);
 }
-.more:active { transform:translateY(1px); }
+.more:active { transform:scale(.98); }
 .more:focus-visible { outline:none; box-shadow:0 0 0 3px var(--point-soft); }
 
 /* ── Hover (포인터 기기 전용) ─────────── */
@@ -251,8 +300,23 @@ main { max-width:1440px; margin:0 auto; padding:22px 20px 40px; }
 .empty .t { font-size:16px; font-weight:700; color:var(--ink); margin-bottom:6px; }
 .empty .d { font-size:13.5px; color:var(--faint); }
 
-footer { text-align:center; color:var(--faint); font-size:12px; padding:28px 20px 40px; }
+footer {
+  max-width:1440px; margin:0 auto; padding:28px 20px 44px;
+  display:flex; align-items:center; gap:12px;
+  color:var(--faint); font-size:12px;
+}
+footer::before { content:""; flex:1; height:1px; background:var(--line); }
+footer::after { content:""; flex:1; height:1px; background:var(--line); }
+footer .src { white-space:nowrap; }
 footer a { color:var(--muted); font-weight:600; }
+footer .date { font-family:var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap; }
+
+/* ── Reduced motion ───────────────────── */
+@media (prefers-reduced-motion:reduce) {
+  .card { animation:none; }
+  .thumb.sk { animation:none; background:#fbfcfb; }
+  .card, .thumb img, .more, .controls select, .controls input { transition:none; }
+}
 
 /* ── Tablet (≤768px): 3열 그리드 ──────── */
 @media (max-width:768px) {
@@ -302,7 +366,8 @@ footer a { color:var(--muted); font-weight:600; }
   .cat-group { margin-top:26px; }
   .cat-head { gap:8px; margin:0 0 12px; flex-wrap:nowrap; }
   .cat-head .rule { display:none; }
-  .cat-head .bar { height:17px; }
+  .cat-head .idx { font-size:10px; }
+  .cat-head .cnt { display:none; }
   .cat-head .root { font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .cat-head .chev { flex-shrink:0; }
   .cat-head .sub { flex-shrink:0; white-space:nowrap; font-size:11.5px; padding:3px 9px; }
@@ -332,7 +397,7 @@ footer a { color:var(--muted); font-weight:600; }
   </div>
 </header>
 <main id="main"></main>
-<footer>출처: <a href="https://tlpcserver.imakeweb.co.kr" target="_blank" rel="noopener">tlpcserver.imakeweb.co.kr</a> · 수집일 __DATE__</footer>
+<footer><span class="src">출처: <a href="https://tlpcserver.imakeweb.co.kr" target="_blank" rel="noopener">tlpcserver.imakeweb.co.kr</a></span><span class="date">수집일 __DATE__</span></footer>
 <script>
 const DATA = __DATA__;
 const PAGE = 120;
@@ -383,16 +448,20 @@ function collect() {
 
 const MENT_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>';
 
-function card(p) {
+const IMG_BASE = 'https://tlpcserver.imakeweb.co.kr/data/goods/';
+const VIEW_BASE = 'https://tlpcserver.imakeweb.co.kr/kor/mall/view.asp?goodscode=';
+
+function card(p, ci) {
   const img = p.image
-    ? `<img loading="lazy" src="${esc(p.image)}" alt="">`
+    ? `<img loading="lazy" src="${esc(p.image.startsWith('http') ? p.image : IMG_BASE + p.image)}" alt="" onload="this.classList.add('ld')" onerror="this.classList.add('ld')">`
     : '<span class="noimg">이미지 준비중</span>';
   const p2 = p.price_card
     ? `<div class="p2"><span class="lab">카드할인</span>${esc(p.price_card)}</div>` : '';
   const ment = p.ment
     ? `<div class="ment">${MENT_ICON}<span class="txt">${esc(p.ment)}</span></div>` : '';
-  return `<div class="card${p.ment ? ' has-ment' : ''}"><a href="${esc(p.url)}" target="_blank" rel="noopener">
-    <div class="thumb">${img}</div>
+  const stagger = ci < 20 ? ci : 0; // 그리드당 앞 20개만 스태거, 이후 즉시
+  return `<div class="card${p.ment ? ' has-ment' : ''}" style="--i:${stagger}"><a href="${VIEW_BASE}${esc(p.goodscode)}" target="_blank" rel="noopener">
+    <div class="thumb${p.image ? ' sk' : ''}">${img}</div>
     <div class="info">
       <div class="model">${esc(p.model)||'&nbsp;'}</div>
       <div class="pname">${esc(p.name)}</div>
@@ -409,21 +478,29 @@ function render(reset) {
   const items = collect();
   document.getElementById('count').textContent = `${items.length.toLocaleString()}개`;
   const slice = items.slice(0, shown);
+  // 그룹별 전체 개수 (필터 결과 기준)
+  const gcounts = {};
+  for (const it of items) {
+    const k = it._root + '>' + it._sub;
+    gcounts[k] = (gcounts[k] || 0) + 1;
+  }
   // 카테고리별 그룹 헤더
-  let html = '', lastKey = '';
+  let html = '', lastKey = '', gi = 0, ci = 0;
   for (const p of slice) {
     const key = p._root + '>' + p._sub;
     if (key !== lastKey) {
       if (lastKey) html += '</div></section>';
+      gi++; ci = 0;
       html += `<section class="cat-group"><div class="cat-head">`
-        + `<span class="bar"></span>`
+        + `<span class="idx">${String(gi).padStart(2,'0')}</span>`
         + `<span class="root">${esc(p._root)}</span>`
         + `<span class="chev">›</span>`
         + `<span class="sub">${esc(p._sub)}</span>`
-        + `<span class="rule"></span></div><div class="grid">`;
+        + `<span class="rule"></span>`
+        + `<span class="cnt">${gcounts[key].toLocaleString()}개</span></div><div class="grid">`;
       lastKey = key;
     }
-    html += card(p);
+    html += card(p, ci++);
   }
   if (lastKey) html += '</div></section>';
   if (items.length > shown)
