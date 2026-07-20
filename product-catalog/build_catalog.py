@@ -205,6 +205,7 @@ main { max-width:1440px; margin:0 auto; padding:22px 20px 40px; }
   to { background-position:-200% 0; }
 }
 .card {
+  position:relative;
   background:var(--surface); border:1px solid var(--line);
   border-radius:16px; overflow:hidden;
   display:flex; flex-direction:column;
@@ -214,6 +215,14 @@ main { max-width:1440px; margin:0 auto; padding:22px 20px 40px; }
   animation-delay:calc(var(--i,0) * 25ms);
 }
 .card:active { transform:scale(.98); }
+.feebtn {
+  position:absolute; top:10px; right:10px; z-index:2;
+  background:rgba(18,81,58,.92); color:#fff; text-decoration:none;
+  font-size:11px; font-weight:700; letter-spacing:.02em;
+  padding:5px 9px; border-radius:20px;
+  opacity:.92; transition:opacity .2s, transform .2s;
+}
+.feebtn:hover { opacity:1; transform:scale(1.05); }
 .card a { display:flex; flex-direction:column; height:100%; }
 .card a:focus-visible { outline:2px solid var(--point); outline-offset:2px; border-radius:16px; }
 
@@ -460,7 +469,9 @@ function card(p, ci) {
   const ment = p.ment
     ? `<div class="ment">${MENT_ICON}<span class="txt">${esc(p.ment)}</span></div>` : '';
   const stagger = ci < 20 ? ci : 0; // 그리드당 앞 20개만 스태거, 이후 즉시
-  return `<div class="card${p.ment ? ' has-ment' : ''}" style="--i:${stagger}"><a href="${VIEW_BASE}${esc(p.goodscode)}" target="_blank" rel="noopener">
+  const feeBtn = p.model
+    ? `<a class="feebtn" href="../chatbot.html?q=${encodeURIComponent(p.model.split('/')[0])}" target="_blank" rel="noopener">수수료</a>` : '';
+  return `<div class="card${p.ment ? ' has-ment' : ''}" style="--i:${stagger}">${feeBtn}<a href="${VIEW_BASE}${esc(p.goodscode)}" target="_blank" rel="noopener">
     <div class="thumb${p.image ? ' sk' : ''}">${img}</div>
     <div class="info">
       <div class="model">${esc(p.model)||'&nbsp;'}</div>
