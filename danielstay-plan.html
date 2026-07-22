@@ -1,0 +1,874 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>다니엘스테이 위탁운영계획서</title>
+  <style>
+/* ============================================================
+   다니엘스테이 위탁운영계획서 — 공통 디자인 토큰
+   danielstay.html 번들에서 추출한 실제 팔레트 기반.
+   모든 섹션 조각은 이 파일의 변수·클래스만 사용한다.
+   ============================================================ */
+
+:root {
+  /* Brand green scale */
+  --g-50:  #ECF6F1;
+  --g-100: #D2EBE0;
+  --g-200: #A6D8C2;
+  --g-300: #6FBF9E;
+  --g-400: #3DA37C;
+  --g-500: #1E8A63;
+  --g-600: #16704F;
+  --g-700: #115A40;
+  --g-800: #0E4633;  /* primary */
+  --g-900: #0A3526;
+
+  /* Warm neutrals */
+  --paper:   #FAF8F5;
+  --n-100:   #F2EEE8;
+  --n-200:   #E6E0D7;
+  --n-300:   #D2C9BB;
+  --n-400:   #A89E8E;
+  --n-500:   #7E7567;
+  --n-600:   #5C5447;
+  --n-700:   #423C32;
+  --n-800:   #2B271F;
+  --n-900:   #1A1712;
+
+  /* Accent (리스크·주의 전용, 절제 사용) */
+  --terra-100: #FBE3DC;
+  --terra-300: #F2A795;
+  --terra-500: #E8674C;
+  --terra-600: #D24E33;
+  --terra-700: #AE3C25;
+
+  /* Semantic */
+  --ok:     #1E8A63;
+  --warn:   #E0A526;
+  --danger: #D14343;
+  --info:   #2E6FB7;
+  --ok-bg:     #ECF6F1;
+  --warn-bg:   #FBF1D9;
+  --danger-bg: #FAE2E2;
+  --info-bg:   #E3EEF8;
+
+  /* Typography */
+  --font-sans: "Pretendard", "Pretendard Variable", -apple-system, BlinkMacSystemFont,
+               "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", Consolas, "Malgun Gothic", monospace;
+  --font-display: var(--font-sans);
+  --font-body:    var(--font-sans);
+  --font-data:    var(--font-mono);
+}
+
+/* ---------- base ---------- */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--paper);
+  color: var(--n-800);
+  line-height: 1.65;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+img, svg { max-width: 100%; display: block; }
+
+/* ---------- layout ---------- */
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+
+.sec { padding: 72px 0; border-top: 1px solid var(--n-200); }
+.sec:first-of-type { border-top: none; }
+.sec-alt { background: var(--n-100); }
+
+/* 섹션 헤더: 번호 마커 + 타이틀 */
+.sec-head { display: flex; align-items: baseline; gap: 16px; margin-bottom: 40px; }
+.sec-num {
+  font-family: var(--font-data);
+  font-size: 14px; font-weight: 600;
+  color: var(--g-500);
+  letter-spacing: 0.08em;
+}
+.sec-title {
+  font-family: var(--font-display);
+  font-size: 32px; font-weight: 700;
+  color: var(--g-800);
+  letter-spacing: -0.02em;
+}
+.sec-sub { font-size: 16px; color: var(--n-500); margin-top: 8px; }
+
+/* ---------- components ---------- */
+.card {
+  background: #FFFFFF;
+  border: 1px solid var(--n-200);
+  border-radius: 12px;
+  padding: 28px;
+}
+.card + .card { margin-top: 16px; }
+.card-grid { display: grid; gap: 16px; }
+.card-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+.card-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.card-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+/* KPI: 핵심 숫자는 모노 + 딥그린 */
+.kpi { display: flex; flex-direction: column; gap: 4px; }
+.kpi .kpi-label { font-size: 13px; color: var(--n-500); letter-spacing: 0.02em; }
+.kpi .kpi-value {
+  font-family: var(--font-data);
+  font-size: 30px; font-weight: 700;
+  color: var(--g-800); letter-spacing: -0.01em;
+}
+.kpi .kpi-note { font-size: 12px; color: var(--n-400); }
+
+/* 표: 장부 스타일 */
+table.ledger { width: 100%; border-collapse: collapse; font-size: 14px; }
+table.ledger th {
+  text-align: left; font-weight: 600; color: var(--n-600);
+  background: var(--n-100);
+  padding: 10px 14px; border-bottom: 2px solid var(--n-300);
+  white-space: nowrap;
+}
+table.ledger td { padding: 10px 14px; border-bottom: 1px solid var(--n-200); vertical-align: top; }
+table.ledger td.num { font-family: var(--font-data); text-align: right; color: var(--g-800); }
+table.ledger tr.total td { font-weight: 700; border-top: 2px solid var(--n-300); background: var(--g-50); }
+.table-scroll { overflow-x: auto; }
+
+/* 배지 */
+.badge {
+  display: inline-block; padding: 3px 10px; border-radius: 999px;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.02em;
+}
+.badge-ok     { background: var(--ok-bg);     color: var(--g-600); }
+.badge-warn   { background: var(--warn-bg);   color: #8a6410; }
+.badge-danger { background: var(--danger-bg); color: var(--terra-700); }
+.badge-info   { background: var(--info-bg);   color: var(--info); }
+.badge-muted  { background: var(--n-100);     color: var(--n-500); }
+
+/* 타임라인 (운영계획용) */
+.timeline { list-style: none; position: relative; padding-left: 28px; }
+.timeline::before {
+  content: ""; position: absolute; left: 8px; top: 6px; bottom: 6px;
+  width: 2px; background: var(--g-200);
+}
+.timeline li { position: relative; padding: 0 0 28px 8px; }
+.timeline li::before {
+  content: ""; position: absolute; left: -26px; top: 6px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--g-500); border: 3px solid var(--g-100);
+}
+.timeline .tl-step { font-family: var(--font-data); font-size: 12px; color: var(--g-500); font-weight: 600; }
+.timeline .tl-title { font-weight: 700; color: var(--n-800); margin: 2px 0 4px; }
+.timeline .tl-desc { font-size: 14px; color: var(--n-600); }
+
+/* 리스크 카드 (테라코타 액센트는 여기만) */
+.risk { border-left: 4px solid var(--terra-500); }
+.risk .risk-title { font-weight: 700; color: var(--terra-700); margin-bottom: 6px; }
+.risk .risk-mitigation { color: var(--g-700); font-size: 14px; }
+
+/* 각주·캐비앳 */
+.footnote {
+  font-size: 12.5px; color: var(--n-500);
+  border-top: 1px dashed var(--n-300);
+  padding-top: 12px; margin-top: 24px;
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 1024px) {
+  .card-grid.cols-4 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .wrap { padding: 0 20px; }
+  .sec { padding: 48px 0; }
+  .sec-title { font-size: 26px; }
+  .card-grid.cols-3, .card-grid.cols-2 { grid-template-columns: 1fr; }
+  .kpi .kpi-value { font-size: 24px; }
+}
+@media (max-width: 480px) {
+  .card-grid.cols-4 { grid-template-columns: 1fr; }
+  .card { padding: 20px; }
+}
+
+/* ---------- print (A4 보고서) ---------- */
+@media print {
+  body { background: #fff; font-size: 12px; }
+  .sec { padding: 24px 0; page-break-inside: avoid; }
+  .card { border: 1px solid #ccc; box-shadow: none; }
+  .no-print { display: none !important; }
+}
+  </style>
+</head>
+<body>
+
+<!-- ============================================================
+     표지 (s01)
+     ============================================================ -->
+
+<section class="sec sec-alt" id="s01">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">다니엘스테이 · DANIELSTAY</span>
+      <h1 class="sec-title">위탁운영계획서</h1>
+    </div>
+    <p class="sec-sub">영통역 도보권 단기임대(33m²) 위탁운영 타당성 검토 — 투자 참여자 보고용</p>
+
+    <div class="card">
+      <div class="table-scroll">
+        <table class="ledger">
+          <tbody>
+            <tr>
+              <th>문서명</th>
+              <td>위탁운영계획서</td>
+            </tr>
+            <tr>
+              <th>브랜드</th>
+              <td>다니엘스테이 (DanielStay)</td>
+            </tr>
+            <tr>
+              <th>대상 물건</th>
+              <td>영통역 인근 스타벅스 입점 건물 (영통역 도보권, 상세 주소 비공개)</td>
+            </tr>
+            <tr>
+              <th>작성일</th>
+              <td>2026-07-11</td>
+            </tr>
+            <tr>
+              <th>수신</th>
+              <td>투자 참여자</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <p class="footnote">
+      이 문서의 일부 수치는 시장조사와 시뮬레이션에 근거한 추정치다. 확정되지 않은 값은 본문에 따로 표기했다.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================
+     01 요약 (s02)
+     ============================================================ -->
+
+<section class="sec" id="s02">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">01</span>
+      <h2 class="sec-title">요약</h2>
+    </div>
+    <p class="sec-sub">세 줄 결론 — 위치, 운영, 투자자 관점</p>
+
+    <div class="card-grid cols-3">
+      <div class="card">
+        <span class="badge badge-info">① 왜 이 위치인가</span>
+        <p class="sec-sub">
+          영통역 도보권에 삼성전자 수원사업장·경희대 국제캠퍼스 수요가 겹치는 입지다.
+          근거는 위치 타당성(02)에서 다룬다.
+        </p>
+      </div>
+      <div class="card">
+        <span class="badge badge-info">② 어떻게 운영하는가</span>
+        <p class="sec-sub">
+          삼삼엠투(33m2) 기반으로 셋업·리스팅·게스트 응대·청소·월 정산까지 전 과정을 위탁 대행한다.
+        </p>
+      </div>
+      <div class="card">
+        <span class="badge badge-info">③ 투자자는 무엇을 받는가</span>
+        <p class="sec-sub">
+          매월 정산 리포트와 순수익의 60%를 받는다. 상세는 수익 구조(03)와 보고 체계(05).
+        </p>
+      </div>
+    </div>
+
+    <div class="card-grid cols-4">
+      <div class="card">
+        <div class="kpi">
+          <span class="kpi-label">반경 1km 매물 수</span>
+          <span class="kpi-value">13건</span>
+          <span class="kpi-note">33m² 단기임대 조사 기준 (02)</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="kpi">
+          <span class="kpi-label">지역 평균 예약률</span>
+          <span class="kpi-value">69.1%</span>
+          <span class="kpi-note">실제보다 높게 잡힐 수 있는 상한값 (02)</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="kpi">
+          <span class="kpi-label">주간가 중위값</span>
+          <span class="kpi-value">330,000원/주</span>
+          <span class="kpi-note">인근 유사 유닛 게시가 중위 (02)</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="kpi">
+          <span class="kpi-label">유닛당 예상 순익</span>
+          <span class="kpi-value">약 185,000원/월</span>
+          <span class="kpi-note">기본 시나리오 월 기준 (03)</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="footnote">
+      위 KPI는 추정치로 확정 수익을 보장하지 않는다. 예약률에는 호스트 차단분이 섞여 있어 실제보다 높게 잡힐 수 있다.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================
+     02 위치 타당성 (s03) · 02 별첨 (s03-appendix)
+     ============================================================ -->
+
+<section class="sec sec-alt" id="s03">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">02</span>
+      <div>
+        <h2 class="sec-title">위치 타당성</h2>
+        <p class="sec-sub">영통역 도보권 — 수요와 공급 구조 (실조사 2026-07-11)</p>
+      </div>
+    </div>
+
+    <!-- 개념 약도 -->
+    <div class="card">
+      <svg viewBox="0 0 640 480" role="img" aria-label="영통역 기준 300m·500m·1km 동심원과 대상 건물, 훼미리타워 군집 위치를 나타낸 개념 약도" xmlns="http://www.w3.org/2000/svg">
+        <title>영통역 기준 반경 동심원 개념 약도</title>
+
+        <!-- 동심원 링 (개념 스케일: 1km = 185px) -->
+        <circle cx="330" cy="220" r="185" fill="#ECF6F1" fill-opacity="0.45" stroke="#A6D8C2" stroke-width="1.5"/>
+        <circle cx="330" cy="220" r="92" fill="#D2EBE0" fill-opacity="0.5" stroke="#3DA37C" stroke-width="1.5"/>
+        <circle cx="330" cy="220" r="55" fill="#A6D8C2" fill-opacity="0.45" stroke="#0E4633" stroke-width="1.5" stroke-dasharray="4 3"/>
+
+        <!-- 링 거리 라벨 -->
+        <text x="330" y="42" text-anchor="middle" font-size="12" fill="#16704F" font-weight="600">1km</text>
+        <text x="330" y="135" text-anchor="middle" font-size="12" fill="#16704F" font-weight="600">500m</text>
+        <text x="330" y="172" text-anchor="middle" font-size="11" fill="#0E4633" font-weight="600">300m</text>
+
+        <!-- 방향 수요처 라벨 (개념 방위) -->
+        <text x="612" y="60" text-anchor="end" font-size="12" fill="#5C5447">경희대 국제캠퍼스 &#8599;</text>
+        <text x="628" y="222" text-anchor="end" font-size="12" fill="#5C5447">삼성전자 수원사업장 &#8594;</text>
+        <text x="330" y="452" text-anchor="middle" font-size="12" fill="#5C5447">영통 상권</text>
+
+        <!-- 영통역 기준점 -->
+        <circle cx="330" cy="220" r="7" fill="#0E4633" stroke="#FAF8F5" stroke-width="2.5"/>
+        <text x="330" y="243" text-anchor="middle" font-size="13" fill="#0A3526" font-weight="700">영통역</text>
+        <text x="330" y="258" text-anchor="middle" font-size="10.5" fill="#5C5447">수인분당선 · 기준점</text>
+
+        <!-- 대상 건물 (도보권) -->
+        <g>
+          <rect x="290" y="146" width="12" height="12" transform="rotate(45 296 152)" fill="#16704F" stroke="#FAF8F5" stroke-width="2"/>
+          <text x="278" y="140" text-anchor="end" font-size="12" fill="#115A40" font-weight="700">대상 건물</text>
+          <text x="278" y="154" text-anchor="end" font-size="10.5" fill="#5C5447">영통역 도보권</text>
+        </g>
+
+        <!-- 훼미리타워 군집 (538m, 10실) -->
+        <g>
+          <circle cx="398" cy="292" r="5" fill="#7E7567"/>
+          <circle cx="410" cy="298" r="5" fill="#7E7567"/>
+          <circle cx="404" cy="306" r="5" fill="#7E7567"/>
+          <circle cx="416" cy="288" r="5" fill="#A89E8E"/>
+          <text x="428" y="292" font-size="12" fill="#423C32" font-weight="600">훼미리타워 군집</text>
+          <text x="428" y="307" font-size="10.5" fill="#5C5447">538m · 오피스텔 10실</text>
+        </g>
+
+        <!-- 애플트리 (569m) -->
+        <g>
+          <circle cx="256" cy="296" r="5" fill="#A89E8E"/>
+          <text x="244" y="292" text-anchor="end" font-size="11" fill="#5C5447">애플트리</text>
+          <text x="244" y="306" text-anchor="end" font-size="10.5" fill="#A89E8E">569m</text>
+        </g>
+
+        <!-- 범례 -->
+        <g>
+          <rect x="150" y="460" width="10" height="10" transform="rotate(45 155 465)" fill="#16704F"/>
+          <text x="172" y="469" font-size="11" fill="#5C5447">대상 건물</text>
+          <circle cx="290" cy="465" r="5" fill="#7E7567"/>
+          <text x="302" y="469" font-size="11" fill="#5C5447">경쟁 매물</text>
+          <circle cx="410" cy="465" r="6" fill="#0E4633"/>
+          <text x="424" y="469" font-size="11" fill="#5C5447">영통역(기준점)</text>
+        </g>
+      </svg>
+      <p class="footnote">개념 약도 — 실제 지도가 아니라 반경 관계만 표현. 거리는 영통역 기준 직선거리.</p>
+    </div>
+
+    <!-- 수요처 카드 -->
+    <h3 class="sec-sub">주요 수요처</h3>
+    <div class="card-grid cols-2">
+      <div class="card">
+        <h3>영통역 (수인분당선)</h3>
+        <p>도보권 역세권. 분당선으로 성남·수서·왕십리 방면 이동이 쉽다.</p>
+      </div>
+      <div class="card">
+        <h3>삼성전자 수원사업장</h3>
+        <p>파견·프로젝트·출장 인력의 중단기 거주 수요가 상시 발생하는 핵심 수요처다.</p>
+      </div>
+      <div class="card">
+        <h3>경희대 국제캠퍼스</h3>
+        <p>학기·계절학기·연수 일정에 연동된 단기 임대 수요가 있다.</p>
+      </div>
+      <div class="card">
+        <h3>영통 상권</h3>
+        <p>식음·의료·편의 시설이 밀집해 게스트 체류와 재방문에 유리하다.</p>
+      </div>
+    </div>
+
+    <!-- 시장조사 요약 표 -->
+    <h3 class="sec-sub">33m2 공급·가격 조사 요약 (반경 링별)</h3>
+    <div class="card">
+      <div class="table-scroll">
+        <table class="ledger">
+          <thead>
+            <tr>
+              <th>반경</th>
+              <th>매물 수</th>
+              <th>주간가 최저</th>
+              <th>주간가 중위</th>
+              <th>주간가 최고</th>
+              <th>8주 예약률</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>300m</td>
+              <td class="num">0</td>
+              <td class="num">&ndash;</td>
+              <td class="num">&ndash;</td>
+              <td class="num">&ndash;</td>
+              <td>N/A (매물 없음)</td>
+            </tr>
+            <tr>
+              <td>500m</td>
+              <td class="num">2</td>
+              <td class="num">240,000</td>
+              <td class="num">284,950</td>
+              <td class="num">329,900</td>
+              <td>68.8%</td>
+            </tr>
+            <tr>
+              <td>1km</td>
+              <td class="num">11</td>
+              <td class="num">320,000</td>
+              <td class="num">330,000</td>
+              <td class="num">330,000</td>
+              <td>69.2%</td>
+            </tr>
+            <tr class="total">
+              <td>합계 (일반)</td>
+              <td class="num">13</td>
+              <td class="num">240,000</td>
+              <td class="num">330,000</td>
+              <td class="num">330,000</td>
+              <td>69.1%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="footnote">
+        주간가 = 임대료+관리비(원/주). 고시원·모텔·쉐어하우스 15건은 표본에서 제외(별첨).
+        예약률은 실제보다 높게 잡힐 수 있는 값으로, 호스트 차단분을 빼면 약 62.6%다(수익 구조 03 참조).
+      </p>
+    </div>
+
+    <!-- 관찰 소견 -->
+    <h3 class="sec-sub">관찰 소견</h3>
+    <div class="card">
+      <p>반경 1km 일반 매물 13건 중 <strong>10건(77%)이 훼미리타워 한 건물</strong>에 몰려 있다. 가격도 주 320,000&ndash;330,000원으로 사실상 균일하다.</p>
+      <p>300m 안에는 일반 매물이 0건 — 초역세권 공급 공백이 있다. 같은 건물·같은 가격에서 예약률이 <strong>98.2% vs 30.4%</strong>로 갈리는 만큼, 성과는 입지가 아니라 운영이 가른다.</p>
+    </div>
+
+    <!-- 조사 한계 각주 -->
+    <p class="footnote">
+      <strong>조사 한계 (2026-07-11)</strong><br>
+      &middot; 기준점: 스타벅스 건물을 특정하지 못해 영통역 좌표로 대체했다.<br>
+      &middot; 거리: 직선거리이며 오차 &plusmn;50&ndash;75m. 훼미리타워(538m)는 500m/1km 경계값이다.<br>
+      &middot; 예약률: 캘린더 마감일 기준이라 실제보다 높게 잡힐 수 있다. 호스트 차단분을 뺀 값은 약 62.6%다.<br>
+      &middot; &lsquo;영통역 O분&rsquo; 표기는 마케팅 문구로, 실제 직선거리는 538&ndash;569m(도보 7&ndash;9분)다.
+    </p>
+  </div>
+</section>
+
+<section class="sec" id="s03-appendix">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">02 · 별첨</span>
+      <div>
+        <h2 class="sec-title">제외 매물 목록</h2>
+        <p class="sec-sub">표본에서 제외한 고시원·모텔·쉐어하우스 15건 (반경 1km 이내)</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="table-scroll">
+        <table class="ledger">
+          <thead>
+            <tr>
+              <th>유형</th>
+              <th>매물 / 건물</th>
+              <th>주간가 (원/주)</th>
+              <th>직선거리</th>
+              <th>제외 사유</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>모텔·여관 개조형</td>
+              <td>동양프라자 10실 (영통동 1010-2, 청명남로34번길 8)</td>
+              <td class="num">220,000&ndash;270,000</td>
+              <td class="num">443m</td>
+              <td>호텔형 &mdash; 독립세대 아님</td>
+            </tr>
+            <tr>
+              <td>고시원</td>
+              <td>아이앤 내창원룸 (매직프라자, 약 13실 추정)</td>
+              <td class="num">131,000</td>
+              <td class="num">354m</td>
+              <td>고시원 (초저가 세그먼트)</td>
+            </tr>
+            <tr>
+              <td>고시원</td>
+              <td>여성전용 잇다하우스 (거성빌딩)</td>
+              <td class="num">140,000</td>
+              <td class="num">397m</td>
+              <td>고시원</td>
+            </tr>
+            <tr>
+              <td>고시원</td>
+              <td>스테이휘게2 (이레빌딩)</td>
+              <td class="num">100,000</td>
+              <td class="num">722m</td>
+              <td>고시원</td>
+            </tr>
+            <tr>
+              <td>고시원</td>
+              <td>스테이휘게1 (이레빌딩)</td>
+              <td class="num">100,000</td>
+              <td class="num">720m</td>
+              <td>고시원</td>
+            </tr>
+            <tr>
+              <td>쉐어하우스</td>
+              <td>영통역 테라스쉐어하우스 (청명로 33)</td>
+              <td class="num">160,000</td>
+              <td class="num">840m</td>
+              <td>공유주택 &mdash; 독립세대 아님</td>
+            </tr>
+            <tr class="total">
+              <td>제외 합계</td>
+              <td>모텔 10 · 고시원 4 · 쉐어하우스 1</td>
+              <td class="num">15건</td>
+              <td class="num">&ndash;</td>
+              <td>&ndash;</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="footnote">
+        저가 세그먼트(고시원·모텔) 공급은 두텁지만 본 표본(일반 독립세대 13건)과 상품군이 다르다. 전부 반경 1km 이내.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     03 수익 구조 (s05)
+     ============================================================ -->
+
+<section class="sec sec-alt" id="s05">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">03</span>
+      <div>
+        <h2 class="sec-title">수익 구조</h2>
+        <p class="sec-sub">성과연동 수수료와 3케이스 월 손익 (예시 시뮬레이션)</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="tl-title">위탁수수료 구조 — 성과연동</h3>
+      <p class="tl-desc">
+        다니엘스테이는 <strong>순수익(운영이익)의 40%</strong>를 수수료로 받는다 <span class="badge badge-ok">확정</span>.
+        투자자 몫은 60%이며, 운영이익이 0 이하인 달은 수수료도 0이다.
+      </p>
+      <p class="tl-desc">
+        객단가 6박(1주) 330,000원, 플랫폼 수수료 3.3%, 청소비(게스트 70,000원 수취 &minus; 원가 40,000원 = 회전당 +30,000원)는 확정됐다.
+        <strong>월세 500,000원과 관리비 100,000원은 예상치다</strong> <span class="badge badge-muted">예상</span>.
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="sec-head">
+        <div>
+          <h3 class="tl-title">3케이스 월 손익 <span class="badge badge-info">예시 시뮬레이션</span></h3>
+          <p class="tl-desc">
+            예약률 가정 — 보수 50% / 기본 62% / 낙관 80% (실조사 연동). 단위: 원/월.
+          </p>
+        </div>
+      </div>
+
+      <div class="table-scroll">
+        <table class="ledger">
+          <thead>
+            <tr>
+              <th>손익 라인</th>
+              <th>보수 (예약률 50%)</th>
+              <th>기본 (예약률 62%)</th>
+              <th>낙관 (예약률 80%)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>임대매출 (예약률 × 4.35주 × 330,000원) <span class="badge badge-ok">확정 단가</span></td>
+              <td class="num">717,000</td>
+              <td class="num">889,000</td>
+              <td class="num">1,147,000</td>
+            </tr>
+            <tr>
+              <td>월 회전 수 (1예약=1주=1회전) <span class="badge badge-muted">운영 가정</span></td>
+              <td class="num">2.17회</td>
+              <td class="num">2.69회</td>
+              <td class="num">3.48회</td>
+            </tr>
+            <tr>
+              <td>청소 마진 (회전당 +30,000원) <span class="badge badge-ok">확정</span></td>
+              <td class="num">+65,000</td>
+              <td class="num">+81,000</td>
+              <td class="num">+104,000</td>
+            </tr>
+            <tr>
+              <td>월세 <span class="badge badge-muted">예상</span></td>
+              <td class="num">500,000</td>
+              <td class="num">500,000</td>
+              <td class="num">500,000</td>
+            </tr>
+            <tr>
+              <td>관리비 <span class="badge badge-muted">예상</span></td>
+              <td class="num">100,000</td>
+              <td class="num">100,000</td>
+              <td class="num">100,000</td>
+            </tr>
+            <tr>
+              <td>소모품 <span class="badge badge-muted">운영 가정</span></td>
+              <td class="num">25,000</td>
+              <td class="num">32,000</td>
+              <td class="num">42,000</td>
+            </tr>
+            <tr>
+              <td>플랫폼 수수료 (임대매출의 3.3%) <span class="badge badge-ok">확정</span></td>
+              <td class="num">24,000</td>
+              <td class="num">29,000</td>
+              <td class="num">38,000</td>
+            </tr>
+            <tr class="total">
+              <td>비용 소계</td>
+              <td class="num">649,000</td>
+              <td class="num">661,000</td>
+              <td class="num">680,000</td>
+            </tr>
+            <tr class="total">
+              <td>운영이익 (임대매출 + 청소 마진 &minus; 비용 소계)</td>
+              <td class="num">133,000</td>
+              <td class="num">309,000</td>
+              <td class="num">572,000</td>
+            </tr>
+            <tr>
+              <td>다니엘스테이 위탁수수료 (순수익의 40%) <span class="badge badge-ok">확정</span></td>
+              <td class="num">53,000</td>
+              <td class="num">123,000</td>
+              <td class="num">229,000</td>
+            </tr>
+            <tr class="total">
+              <td>투자자 순익 (월 · 순수익의 60%)</td>
+              <td class="num">약 80,000</td>
+              <td class="num">약 185,000</td>
+              <td class="num">약 343,000</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card-grid cols-3">
+      <div class="card">
+        <div class="kpi">
+          <span class="kpi-label">기본 케이스 투자자 순익</span>
+          <span class="kpi-value">약 185,000원</span>
+          <span class="kpi-note">/월 · 예약률 62% 기준</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="kpi">
+          <span class="kpi-label">민감도 (예약률 ±10%p)</span>
+          <span class="kpi-value">약 ±88,000원</span>
+          <span class="kpi-note">예약률이 압도적 지배 변수</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="kpi">
+          <span class="kpi-label">손익분기 예약률</span>
+          <span class="kpi-value">약 41%</span>
+          <span class="kpi-note">보수 케이스 50%도 흑자 유지</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="footnote">
+      임대매출 = 예약률 × 월 4.345주 × 330,000원(6박 단가, 확정). 보증금과 초기 셋업비는 월 손익에서 제외.
+      기본 62%는 실측 예약률 69.1%에서 호스트 차단분을 뺀 62.6%에 근거하고, 낙관 80%는 상위 그룹 성수기 실적(약 90%)을 비수기 반영해 낮춘 값이다.
+      <br>
+      회전 수는 1예약=1주 가정이다. 연박이 늘면 청소 마진이 줄어든다 — 전부 2주 연박이면 기본 케이스 순익 약 &minus;24,000원.
+      플랫폼 3.3%는 임대매출에만 적용한다고 가정했다(청소비 수취분 과금 여부 미확인, 영향은 월 5&ndash;8천원 수준).
+      <br>
+      내부 기준(약 150,000원/월) 대비 기본 케이스 185,000원은 약 23% 상회. 도달에 필요한 예약률은 약 58%로 시장 평균(62.6%)보다 낮다.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================
+     04 리스크와 대응 (s06)
+     ============================================================ -->
+
+<section class="sec" id="s06">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">04</span>
+      <div>
+        <h2 class="sec-title">리스크와 대응</h2>
+        <p class="sec-sub">실조사 기반 5대 리스크와 대응책</p>
+      </div>
+    </div>
+
+    <div class="card-grid cols-2">
+      <div class="card risk">
+        <div class="risk-title">1. 공실 리스크</div>
+        <p class="tl-desc">
+          실측 하위 6건의 예약률은 30~52%다. 같은 건물·같은 가격에서 98.2% vs 30.4%로 갈렸다 — 공실은 운영 실패의 결과다.
+        </p>
+        <p class="risk-mitigation">
+          → 대응: 전문 촬영·리뷰 관리·동적 가격으로 상위 그룹 진입을 목표한다. 초기에는 프로모션·장기할인으로 예약률을 방어한다.
+        </p>
+      </div>
+
+      <div class="card risk">
+        <div class="risk-title">2. 공급 증가 리스크</div>
+        <p class="tl-desc">
+          훼미리타워 한 건물에 10실이 몰린 전례가 있다. 비슷한 대량 공급이 나오면 가격 경쟁이 심해질 수 있다.
+        </p>
+        <p class="risk-mitigation">
+          → 대응: 300m 안 공급 공백을 선점하고, 인테리어·타깃 특화(삼성 출장·경희대)로 가격 경쟁을 피한다.
+        </p>
+      </div>
+
+      <div class="card risk">
+        <div class="risk-title">3. 계절성 리스크</div>
+        <p class="tl-desc">
+          7~8월 초는 사실상 완판이지만 공실은 8월 중순 이후에 몰린다. 겨울 비수기까지 넣으면 연평균은 더 낮아진다.
+        </p>
+        <p class="risk-mitigation">
+          → 대응: 비수기에는 기업·출장 수요의 월 단위 장기 임차를 유치한다. 낙관치는 이미 90%→80%로 낮춰 반영했다.
+        </p>
+      </div>
+
+      <div class="card risk">
+        <div class="risk-title">4. 저예약률 구간 수익성 리스크</div>
+        <p class="tl-desc">
+          고정비(월세 500,000원 + 관리비 100,000원, 예상치) 기준 손익분기 예약률은 약 41%다.
+          실측 하위 그룹 평균(41.1%)이 딱 이 수준이라, 하위권 운영이 이어지면 순익은 0에 가까워진다.
+          보수 케이스(50%)에서는 월 약 80,000원 흑자다.
+        </p>
+        <p class="risk-mitigation">
+          → 대응: 수수료가 순수익의 40% 성과연동이라 운영사도 예약률에 직접 이해가 걸린다.
+          3개월 내 기본 케이스(62%) 도달을 목표로 하고, 미달 시 가격·타깃을 재조정한다.
+        </p>
+      </div>
+
+      <div class="card risk">
+        <div class="risk-title">5. 플랫폼 정책 리스크</div>
+        <p class="tl-desc">
+          33m2 단일 채널 의존이다. 수수료율은 3.3%로 확정됐지만 노출·예약규칙·요율 정책이 바뀌면 매출에 직접 영향을 준다
+          (요율 5% 시 기본 순익 약 &minus;9,000원, 10% 시 약 &minus;36,000원).
+        </p>
+        <p class="risk-mitigation">
+          → 대응: 요율·정산 조건을 계약서에 명문화하고, 재예약 유도와 타 채널 병행으로 분산한다.
+        </p>
+      </div>
+    </div>
+
+    <p class="footnote">
+      근거는 위치 타당성(02) 실조사(2026-07-12 예약률 실측)다.
+      객단가·플랫폼 3.3%·청소비·위탁수수료 40%는 확정, 월세·관리비는 예상치, 회전수·소모품은 운영 가정이다.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================
+     05 보고 체계 (s07)
+     ============================================================ -->
+
+<section class="sec sec-alt" id="s07">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-num">05</span>
+      <h2 class="sec-title">보고 체계</h2>
+    </div>
+    <p class="sec-sub">정산 주기, 리포트 구성, 소통 채널</p>
+
+    <div class="card-grid cols-2">
+      <div class="card">
+        <span class="kpi-label">월간 정산 리포트 구성</span>
+        <div class="table-scroll">
+          <table class="ledger">
+            <thead>
+              <tr>
+                <th>항목</th>
+                <th>내용</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>입금 내역</td>
+                <td>플랫폼별 매출 · 실입금액 · 정산 대상 기간</td>
+              </tr>
+              <tr>
+                <td>예약 실적</td>
+                <td>예약률 · 예약 건수 · 평균 객단가</td>
+              </tr>
+              <tr>
+                <td>비용 내역</td>
+                <td>청소 · 소모품 · 수수료 등 항목별 집계</td>
+              </tr>
+              <tr class="total">
+                <td>순수익 배분</td>
+                <td>위탁수수료 차감 후 투자자 배분액 (수익 구조 03 기준)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="kpi">
+          <span class="kpi-label">정산 주기</span>
+          <span class="kpi-value">월 1회</span>
+          <span class="kpi-note">매월 정산 마감 후 리포트 발송</span>
+        </div>
+        <p class="sec-sub">
+          정산 리포트는 매월 발송한다. 장기 공실·시설 하자·민원 같은 특이사항은 발생 즉시 공유한다.
+        </p>
+        <p class="sec-sub">
+          <!-- contact: 사용자 확인 필요 -->
+          문의: 다니엘스테이 · <span class="badge badge-muted">wook910123@gmail.com</span>
+        </p>
+      </div>
+    </div>
+
+    <p class="footnote">
+      리포트 항목과 정산 주기는 계약 조건에 따라 조정될 수 있다.
+    </p>
+  </div>
+</section>
+
+</body>
+</html>

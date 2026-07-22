@@ -3,3 +3,6 @@ __pycache__/
 video-maker/projects/
 video-maker/config.json
 video-maker/music/
+plan_src/molit.key
+market-analyzer/.cache/
+market-analyzer/session.txt
