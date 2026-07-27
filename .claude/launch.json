@@ -32,6 +32,13 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["video-maker/app.py"],
       "port": 5000
+    },
+    {
+      "name": "analyzer",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["web.py"],
+      "cwd": "market-analyzer",
+      "port": 8899
     }
   ]
 }
