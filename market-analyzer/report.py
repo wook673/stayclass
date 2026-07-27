@@ -34,20 +34,20 @@ def _today():
 
 
 def _window_label(ctx) -> str:
-    """가동률 측정 창 라벨 — '지난 8주 확정 실적 (5/28~7/23 직전)' 식으로 명시."""
+    """측정 창 라벨 — '향후 8주 선점률 (예약+차단, 측정일 2026-07-27 기준)'."""
     weeks = ctx.get("weeks", 8)
-    win = ctx.get("window", "past")
     today = datetime.date.today()
-    if win == "past":
+    if ctx.get("window", "future") == "past":     # 하위호환(미지원 경로)
         start = today - datetime.timedelta(days=weeks * 7)
-        return (f"지난 {weeks}주 확정 실적 "
+        return (f"지난 {weeks}주 (API 미지원 — 33m2가 과거 날짜 미반환) "
                 f"({start.isoformat()} ~ {today.isoformat()} 직전)")
     end = today + datetime.timedelta(days=weeks * 7)
-    return f"향후 {weeks}주 예정 ({today.isoformat()} ~ {end.isoformat()} 직전)"
+    return (f"향후 {weeks}주 선점률 (예약+차단, 측정일 {today.isoformat()} 기준 "
+            f"~ {end.isoformat()} 직전)")
 
 
 def _top_rooms(occ, n=5):
-    """매물별 통합 가동률 상위 n개 (랭킹용)."""
+    """매물별 통합 선점률 상위 n개 (랭킹용)."""
     if not (occ and occ.get("ok")):
         return []
     rooms = sorted(occ.get("rooms", []), key=lambda r: r["combined"],
@@ -74,20 +74,20 @@ def console_summary(ctx) -> str:
              f"· 주간가 중위 {_won(w['median'])} (n={w['n']})")
     occ = ctx["occupancy"]
     if occ and occ.get("ok"):
-        L.append(f"[가동률] {_pct(occ['combined_occ'])} — {_window_label(ctx)} "
+        L.append(f"[선점률] {_pct(occ['combined_occ'])} — {_window_label(ctx)} "
                  f"(33m2단독 {_pct(occ['pure_occ'])}·타채널 "
                  f"+{occ['other_channel']*100:.1f}p, 표본 {occ['n']})")
         top = _top_rooms(occ)
         if top:
-            L.append("[가동률 랭킹] 가장 잘 도는 지점 (상위 %d)" % len(top))
+            L.append("[선점률 랭킹] 가장 잘 도는 지점 (상위 %d)" % len(top))
             for i, t in enumerate(top, 1):
                 mark = "★" if i == 1 else " "
                 L.append(f"  {mark}{i}. {t['name']} · {t.get('addr') or '주소 미상'} "
-                         f"· {_won(t['weekly'])}/주 · 가동률 {_pct(t['combined'])}")
+                         f"· {_won(t['weekly'])}/주 · 선점률 {_pct(t['combined'])}")
     else:
         reason = "세션 필요(로그인 세션 없음/만료)" if ctx.get("occ_login_needed") else (
             occ.get("reason") if occ else "미측정")
-        L.append(f"[가동률] {reason} — 실측 불가 → 수익 계산 보류(공급·월세만 출력)")
+        L.append(f"[선점률] {reason} — 실측 불가 → 수익 계산 보류(공급·월세만 출력)")
     mo = ctx["molit"]
     L.append(f"[실거래] MOLIT 오피스텔 전월세 {mo['months'][0]}~{mo['months'][-1]} "
              f"· 전용 ≤33㎡ · {'/'.join(mo['dongs'])} · 월세건 {mo['n_filtered']}")
@@ -99,7 +99,7 @@ def console_summary(ctx) -> str:
         else:
             L.append(f"  · {band}밴드: {b['note']} — 추정 금지")
     if ctx.get("conservative"):
-        L.append(f"[보수 순수익] 기대매출 = 주간가중위 × 4.345 × 실측가동률 "
+        L.append(f"[보수 순수익] 기대매출 = 주간가중위 × 4.345 × 실측 선점률 "
                  f"{_pct(ctx['occ_used'])} · 관리비 {_man(ctx['mgmt'])} [가정]")
         for row in ctx["conservative"]:
             tag = "기준" if row["primary"] else "참고"
@@ -107,7 +107,7 @@ def console_summary(ctx) -> str:
                      f"− 월세 {row['rent']:g} − 관리비 {row['mgmt']:g} "
                      f"= 순수익 {row['net']:.1f}만/월")
     else:
-        L.append("[보수 순수익] 세션 필요 — 실측 가동률 없음 → 산출 보류")
+        L.append("[보수 순수익] 세션 필요 — 실측 선점률 없음 → 산출 보류")
     if ctx["scenarios"]:
         L.append(f"[상세 모델·보조] 정본 산식(위탁 60/50%·청소·수수료, "
                  f"공과금 {_man(UTILITIES)} 가정)")
@@ -168,15 +168,15 @@ def build_md(ctx) -> str:
            f"비원룸제외 {sup['n_notroom_excluded']} → **유지 {sup['n_kept']}건**",
            f"- 주간가(임대료+관리비): 중위 **{_won(w['median'])}** / "
            f"최저 {_won(w['min'])} / 최고 {_won(w['max'])} (n={w['n']})", "",
-           f"## 2. 실측 가동률 — {_window_label(ctx)}", ""]
+           f"## 2. 선점률 — {_window_label(ctx)}", ""]
     if occ and occ.get("ok"):
-        out += [f"- 통합 가동률(booking+disable ÷ 기간) **{_pct(occ['combined_occ'])}** "
+        out += [f"- 통합 선점률(booking+disable ÷ 기간) **{_pct(occ['combined_occ'])}** "
                 f"· 33m2 단독 {_pct(occ['pure_occ'])} · 타채널비중 +{occ['other_channel']*100:.1f}p "
                 f"(표본 {occ['n']})", ""]
         top = _top_rooms(occ)
         if top:
-            out += ["### 가동률 최고 지점 랭킹 (가장 잘 도는 지점)", "",
-                    "| # | 매물명(건물) | 주소 | 주간가 | 가동률 |",
+            out += ["### 선점률 최고 지점 랭킹 (가장 잘 도는 지점)", "",
+                    "| # | 매물명(건물) | 주소 | 주간가 | 선점률 |",
                     "|---|---|---|---|---|"]
             for i, t in enumerate(top, 1):
                 name = f"**{t['name']}** ★" if i == 1 else t["name"]
@@ -195,7 +195,7 @@ def build_md(ctx) -> str:
             f"- 보증금 밴드: 500=300~700만 / 1000=700초과~1300만 (환산 없음, 신고 원값)", "",
             _md_band_table(mo), ""]
     out += ["## 4. 보수 순수익 (기본)", "",
-            "> 산식: 월 기대매출 = 주간가 중위 × 4.345 × 실측 가동률 · "
+            "> 산식: 월 기대매출 = 주간가 중위 × 4.345 × 실측 선점률 · "
             "보수 순수익 = 기대매출 − 월세중위 − 관리비 (다른 가감 없음) · "
             f"관리비 {_man(ctx['mgmt'])} [가정]", ""]
     if ctx.get("conservative"):
@@ -208,11 +208,11 @@ def build_md(ctx) -> str:
                        f"| {row['mgmt']:g}만 | {net} | {tag} |")
         out.append("")
     else:
-        out += ["_**세션 필요** — 실측 가동률이 없어 수익 계산 보류. "
+        out += ["_**세션 필요** — 실측 선점률이 없어 수익 계산 보류. "
                 "33m2 로그인 세션(session.txt)을 주면 산출됩니다._", ""]
     out += ["### 4b. 상세 모델 (보조 — 정본 산식)", "",
             f"> 가정: 관리비 {_man(ctx['mgmt'])}·공과금 {_man(UTILITIES)}·"
-            f"청소수입 3만/주·청소실비 3.2만·수수료 3.3% · 가동률 {_pct(ctx['occ_used'])}"
+            f"청소수입 3만/주·청소실비 3.2만·수수료 3.3% · 선점률 {_pct(ctx['occ_used'])}"
             + (" (실측)" if ctx.get("occ_measured") else ""), ""]
     if ctx["scenarios"]:
         out += ["| 밴드 | 보증금 | 월순익 60% | 월순익 50% | 연수익률 60% | 연수익률 50% |",
@@ -222,7 +222,7 @@ def build_md(ctx) -> str:
                        f"| {sc['profit50']:.1f}만 | {sc['yield60']:.1f}% | {sc['yield50']:.1f}% |")
         out.append("")
     else:
-        out += ["_세션 필요 — 실측 가동률 없음 → 산출 보류._", ""]
+        out += ["_세션 필요 — 실측 선점률 없음 → 산출 보류._", ""]
     an = ctx.get("analysis")
     if an:
         out += ["## 5. 분석·추천 (판단룰 엔진)", "",
@@ -287,7 +287,7 @@ def _html_band_rows(mo):
 def _html_conservative_rows(rows):
     if not rows:
         return ("<tr><td colspan='6'><span class='badge badge-warn'>세션 필요</span> "
-                "— 실측 가동률이 없어 수익 계산 보류(공급·월세만 출력)</td></tr>")
+                "— 실측 선점률이 없어 수익 계산 보류(공급·월세만 출력)</td></tr>")
     tr = []
     for row in rows:
         if row["primary"]:
@@ -327,7 +327,7 @@ def _html_ranking_rows(top):
 def _html_scenario_rows(scs):
     if not scs:
         return ("<tr><td colspan='6'><span class='badge badge-warn'>세션 필요</span> "
-                "— 실측 가동률 없음 → 산출 보류</td></tr>")
+                "— 실측 선점률 없음 → 산출 보류</td></tr>")
     tr = []
     for sc in scs:
         tr.append(
@@ -400,7 +400,7 @@ def build_html(ctx) -> str:
     wlabel = _window_label(ctx)
     if occ and occ.get("ok"):
         occ_html = (f"<div class='card-grid cols-3'>"
-                    f"<div class='card kpi'><span class='kpi-label'>통합 가동률</span>"
+                    f"<div class='card kpi'><span class='kpi-label'>통합 선점률</span>"
                     f"<span class='kpi-value'>{_pct(occ['combined_occ'])}</span>"
                     f"<span class='kpi-note'>booking+disable ÷ 기간, 표본 {occ['n']}</span></div>"
                     f"<div class='card kpi'><span class='kpi-label'>33m2 단독</span>"
@@ -413,20 +413,24 @@ def build_html(ctx) -> str:
         if top:
             occ_html += (
                 "<div class='sec-head' style='margin-top:32px'>"
-                "<div><div class='sec-title' style='font-size:18px'>가동률 최고 지점 랭킹</div>"
-                "<div class='sec-sub'>가장 잘 도는 지점 — 매물별 실측 가동률 상위 "
+                "<div><div class='sec-title' style='font-size:18px'>선점률 최고 지점 랭킹</div>"
+                "<div class='sec-sub'>가장 잘 도는 지점 — 매물별 선점률 상위 "
                 f"{len(top)}개</div></div></div>"
                 "<div class='table-scroll'><table class='ledger'>"
                 "<thead><tr><th>#</th><th>매물명(건물)</th><th>주소</th>"
-                "<th>주간가</th><th>가동률</th></tr></thead>"
+                "<th>주간가</th><th>선점률</th></tr></thead>"
                 f"<tbody>{_html_ranking_rows(top)}</tbody></table></div>")
     else:
         reason = "세션 필요 (로그인 세션 없음/만료)" if ctx.get("occ_login_needed") else (
             occ.get("reason") if occ else "미측정")
-        occ_html = (f"<div class='card'><span class='badge badge-warn'>가동률 {_h(reason)}</span>"
+        occ_html = (f"<div class='card'><span class='badge badge-warn'>선점률 {_h(reason)}</span>"
                     f"<p style='margin-top:8px;color:var(--n-500)'>예약률 실측을 위해 "
                     f"33m2 로그인 세션이 필요합니다. 수익 계산은 보류하고 "
-                    f"공급·월세만 출력합니다.</p></div>")
+                    f"공급·월세만 출력합니다.</p>"
+                    f"<p style='margin-top:6px;color:var(--n-500)'>해결: 메인 화면의 "
+                    f"<b>33m2 로그인</b> 칸에 이메일/비밀번호를 입력하세요 (비밀번호 저장 안 됨). "
+                    f"Edge/Chrome 자동 감지는 브라우저 보안 정책상 관리자 권한 실행에서만 동작할 수 "
+                    f"있습니다.</p></div>")
 
     caveats = "\n".join(f"<li>{_h(c)}</li>" for c in ctx["caveats"])
     if ctx.get("locate_evidence"):
@@ -467,15 +471,15 @@ def build_html(ctx) -> str:
 {locate_html}
 <section class="sec"><div class="wrap">
   <div class="sec-head"><span class="sec-num">01</span>
-    <div><div class="sec-title">실측 가동률</div>
-    <div class="sec-sub">측정 창: {_h(wlabel)} · 통합 가동률 = booking+disable ÷ 기간</div></div></div>
+    <div><div class="sec-title">선점률 (실측)</div>
+    <div class="sec-sub">측정 창: {_h(wlabel)} · 통합 선점률 = booking+disable ÷ 기간 · 창 후반은 채워지는 중이라 하한 성격</div></div></div>
   {occ_html}
 </div></section>
 
 <section class="sec sec-alt"><div class="wrap">
   <div class="sec-head"><span class="sec-num">02</span>
     <div><div class="sec-title">보수 순수익 (기본)</div>
-    <div class="sec-sub">기대매출(주간가중위 × 4.345 × 실측가동률) − 월세중위 − 관리비 · 가동률 {_h(occ_note)}</div></div></div>
+    <div class="sec-sub">기대매출(주간가중위 × 4.345 × 실측선점률) − 월세중위 − 관리비 · 선점률 {_h(occ_note)}</div></div></div>
   <div class="table-scroll"><table class="ledger">
     <thead><tr><th>밴드</th><th>월 기대매출</th><th>− 월세중위</th>
       <th>− 관리비 [가정]</th><th>= 보수 순수익/월</th><th>구분</th></tr></thead>
@@ -488,7 +492,7 @@ def build_html(ctx) -> str:
 <section class="sec"><div class="wrap">
   <div class="sec-head"><span class="sec-num">03</span>
     <div><div class="sec-title">상세 모델 (보조)</div>
-    <div class="sec-sub">정본 산식 · share 60%(주)/50%(병기) · 가동률 {_h(occ_note)}</div></div></div>
+    <div class="sec-sub">정본 산식 · share 60%(주)/50%(병기) · 선점률 {_h(occ_note)}</div></div></div>
   <div class="table-scroll"><table class="ledger">
     <thead><tr><th>밴드</th><th>보증금</th><th>월순익 60%</th><th>월순익 50%</th>
       <th>연수익률 60%</th><th>연수익률 50%</th></tr></thead>

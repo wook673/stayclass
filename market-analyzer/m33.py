@@ -7,8 +7,15 @@
    항목   : rid, roomName, propertyType, usingFee(임대료), mgmtFee(관리비),
             pyeongSize, roomCnt, lat, lng, addrLot, town, province, isNew...
 캘린더 API: GET https://web.33m2.co.kr/v1/use-auth/rooms/{rid}/schedules
+   params : year=YYYY, month=M  ← **필수**(누락 시 400 VLD_001 "월은 필수입니다").
+            currentInitialContractId 는 선택(값 없으면 아예 보내지 않음).
+            실제 프런트 번들(chunk 6192) 계약을 리버스로 확인한 값이다.
    로그인 세션 필요(쿠키/Bearer). 미로그인 시 401 AUTH_002.
-   응답에서 날짜별 상태(booking/disable/available)를 창(weeks×7일) 내로 집계.
+   응답   : {"code":"SCSS_001","data":{
+              "contracts":[{initialContractId,startDate,endDate,checkoutDate}],
+              "schedules":[{"date":"YYYY-MM-DD","status":"BOOKING"|"DISABLE"|...}]}}
+   한 번에 한 달치만 주므로, 창(weeks×7일)이 걸치는 모든 (연,월)을 각각 조회해
+   날짜 기준으로 병합·중복제거한 뒤 창 안으로 필터링해 집계한다.
 
 상시 지침 필터:
   - 유형: '오피스텔'만 유지. 고시원·모텔여관·호텔·게스트하우스·쉐어·펜션 제외(건수 기록).
@@ -48,6 +55,10 @@ _MULTIROOM_RE = re.compile(
 
 class SessionError(RuntimeError):
     """로그인 세션 없음/만료(예약률 조회 불가)."""
+
+
+class ScheduleAPIError(RuntimeError):
+    """캘린더 API 계약 위반(파라미터 거부 등) — 조용히 삼키지 않는다."""
 
 
 def _sleep():
@@ -177,19 +188,25 @@ def _to_date(s) -> Optional[datetime.date]:
         return None
 
 
-def _parse_schedule_counts(payload, window_days: int, window: str = "past",
-                           today: Optional[datetime.date] = None) -> Optional[dict]:
-    """schedules 응답에서 booking/disable 일수 집계.
+def _months_in_window(lo: datetime.date, hi: datetime.date) -> list:
+    """[lo, hi) 창이 걸치는 모든 (연, 월)을 시간순으로. hi는 **불포함**.
 
-    기본 window='past': [오늘-window_days, 오늘) 확정 실적 창.
-    window='future': [오늘, 오늘+window_days) 예정 창.
-    분모(days)는 창 길이(window_days) 고정 — '기간' 대비 점유율.
-    날짜를 하나도 못 읽으면(비정형 응답) 정렬 후 앞 window_days개로
-    폴백하고 undated=True 표기.
-
-    방어적 파싱: 응답 구조가 리스트/'data' 래핑 어느 쪽이든, 각 원소에서
-    상태 문자열(booking/disable/available)을 찾아 카운트.
+    예) 2026-07-27 ~ 2026-09-21 → [(2026,7),(2026,8),(2026,9)]
+        2026-12-20 ~ 2027-02-01 → [(2026,12),(2027,1)]  (연도 경계 처리)
     """
+    if hi <= lo:
+        return []
+    last = hi - datetime.timedelta(days=1)      # 창의 마지막 '포함' 날짜
+    out = []
+    y, m = lo.year, lo.month
+    while (y, m) <= (last.year, last.month):
+        out.append((y, m))
+        y, m = (y + 1, 1) if m == 12 else (y, m + 1)
+    return out
+
+
+def _schedule_items(payload):
+    """페이로드에서 스케줄 리스트를 방어적으로 꺼낸다. 못 찾으면 None."""
     if isinstance(payload, dict):
         items = payload.get("data")
         if isinstance(items, dict):
@@ -197,67 +214,124 @@ def _parse_schedule_counts(payload, window_days: int, window: str = "past",
                      or items.get("list") or [])
     else:
         items = payload
-    if not isinstance(items, list):
-        return None
+    return items if isinstance(items, list) else None
 
-    def state_of(el):
-        if not isinstance(el, dict):
-            return None
-        for k in ("state", "status", "scheduleState", "type"):
-            v = el.get(k)
-            if isinstance(v, str):
-                return v.lower()
-        return None
 
-    def date_of(el):
-        if not isinstance(el, dict):
-            return None
-        for k in ("date", "day", "scheduleDate", "ymd"):
-            if el.get(k):
-                return str(el[k])
+def _state_of(el) -> Optional[str]:
+    if not isinstance(el, dict):
         return None
+    for k in ("state", "status", "scheduleState", "type"):
+        v = el.get(k)
+        if isinstance(v, str):
+            return v.lower()
+    return None
 
+
+def _date_of(el) -> Optional[str]:
+    if not isinstance(el, dict):
+        return None
+    for k in ("date", "day", "scheduleDate", "ymd"):
+        if el.get(k):
+            return str(el[k])
+    return None
+
+
+def merge_schedule_counts(payloads, window_days: int,
+                          today: Optional[datetime.date] = None,
+                          window: str = "future") -> Optional[dict]:
+    """월별 schedules 응답 여러 개를 병합해 booking/disable 일수 집계.
+
+    payloads : (연,월)별로 받아온 디코드된 JSON 페이로드 리스트.
+    기본 window='future': [오늘, 오늘+window_days) 선점 창.
+      ※ 33m2 캘린더 API는 **과거 날짜를 반환하지 않는다**(2026-07 상현역 실측).
+        window='past'는 집계 로직 검증용으로만 남긴다(실사용 금지).
+    같은 날짜가 두 달치 응답에 겹쳐 들어와도 **날짜 기준으로 1회만** 센다.
+    분모(days)는 창 길이(window_days) 고정 — '기간' 대비 점유율.
+    날짜를 하나도 못 읽으면(비정형 응답) 앞 window_days개로 폴백하고
+    undated=True 표기(이때도 분모는 window_days).
+
+    어떤 페이로드에서도 리스트 구조를 못 찾으면 None.
+    """
     today = today or datetime.date.today()
-    dated = [(_to_date(date_of(e)), state_of(e)) for e in items]
-    dated = [(d, s) for d, s in dated if s is not None]
+    if window == "past":
+        lo, hi = today - datetime.timedelta(days=window_days), today
+    else:
+        lo, hi = today, today + datetime.timedelta(days=window_days)
 
-    have_dates = any(d for d, _ in dated)
-    if have_dates:
-        if window == "past":
-            lo, hi = today - datetime.timedelta(days=window_days), today
-        else:
-            lo, hi = today, today + datetime.timedelta(days=window_days)
-        sel = [(d, s) for d, s in dated if d is not None and lo <= d < hi]
-        days = window_days or 1          # 분모 = 창 길이(기간)
+    any_list = False
+    by_date = {}          # date → state (중복 제거)
+    undated_states = []   # 날짜를 못 읽은 항목(폴백용, 순서 보존)
+    for payload in (payloads or []):
+        items = _schedule_items(payload)
+        if items is None:
+            continue
+        any_list = True
+        for el in items:
+            s = _state_of(el)
+            if s is None:
+                continue
+            d = _to_date(_date_of(el))
+            if d is None:
+                undated_states.append(s)
+            else:
+                by_date[d] = s
+    if not any_list:
+        return None
+
+    days = window_days or 1              # 분모 = 창 길이(기간) 고정
+    if by_date:
+        sel = [s for d, s in sorted(by_date.items()) if lo <= d < hi]
         undated = False
     else:
         # 날짜 없는 비정형 응답 → 앞에서 window_days개 폴백
-        sel = dated[:window_days] if window_days else dated
-        days = len(sel) or window_days or 1
+        sel = undated_states[:window_days] if window_days else undated_states
         undated = True
 
-    booking = sum(1 for _, s in sel if "book" in s)
-    disable = sum(1 for _, s in sel
+    booking = sum(1 for s in sel if "book" in s)
+    disable = sum(1 for s in sel
                   if "disable" in s or "block" in s or "close" in s)
     return {"days": days, "booking": booking, "disable": disable,
             "undated": undated, "n_in_window": len(sel)}
 
 
-def fetch_occupancy(rooms: list, session_headers: dict, weeks: int = 8,
-                    samples: int = 10, window: str = "past") -> dict:
-    """가격 중위권 samples개 매물의 예약률(기본: 지난 weeks주 확정 실적).
+def _server_message(payload) -> str:
+    """에러 페이로드의 사람이 읽는 메시지(message.content 또는 message 문자열)."""
+    if not isinstance(payload, dict):
+        return ""
+    msg = payload.get("message")
+    if isinstance(msg, dict):
+        return str(msg.get("content") or msg)
+    if isinstance(msg, str):
+        return msg
+    return ""
 
-    - window='past'(기본): 오늘 기준 과거 weeks주 창의 booking+disable ÷ 기간.
-    - window='future': 향후 weeks주 예정 창(참고용).
-    - 통합 가동률 = (booking+disable)/기간  (기본 지표)
+
+def fetch_occupancy(rooms: list, session_headers: dict, weeks: int = 8,
+                    samples: int = 10, window: str = "future") -> dict:
+    """가격 중위권 samples개 매물의 선점률(기본: 향후 weeks주).
+
+    - window='future'(기본): [오늘, 오늘+weeks주) 창의 booking+disable ÷ 기간.
+      33m2 API가 과거 날짜를 반환하지 않아 이것이 유일한 실측 경로다.
+      창 후반은 아직 예약이 채워지는 중이므로 **하한 성격**(실제 최종 가동률 ≥ 측정값).
+    - window='past': 하위호환용. API 미반환으로 항상 0% — 사용 금지.
+    - 통합 선점률 = (booking+disable)/기간  (기본 지표)
     - 33m2 단독 = booking/기간
     - 타채널비중 = 통합 − 단독
     각 매물의 개별 가동률도 rooms 리스트로 반환(랭킹용: name/addr/weekly/combined).
-    세션 없음/만료(401)면 SessionError.
+    세션 없음/만료(401)면 SessionError, 캘린더 API 계약 위반이면 ScheduleAPIError.
+
+    캘린더 API는 한 번에 한 달치만 주고 year/month 가 필수이므로,
+    창이 걸치는 모든 (연,월)을 매물마다 각각 조회해 병합한다.
     """
     if not session_headers:
         raise SessionError("세션 헤더 없음")
     window_days = weeks * 7
+    today = datetime.date.today()
+    if window == "past":
+        lo, hi = today - datetime.timedelta(days=window_days), today
+    else:
+        lo, hi = today, today + datetime.timedelta(days=window_days)
+    months = _months_in_window(lo, hi)
     # 가격 중위권 표본 선정
     priced = sorted([r for r in rooms if r["weekly"]], key=lambda r: r["weekly"])
     if not priced:
@@ -276,18 +350,38 @@ def fetch_occupancy(rooms: list, session_headers: dict, weeks: int = 8,
     results = []
     for r in chosen:
         rid = r["rid"]
-        resp = requests.get(SCHED_URL.format(rid=rid), headers=h, timeout=20)
-        resp.encoding = "utf-8"
-        if resp.status_code == 401:
-            raise SessionError(f"401 세션 만료/미로그인 (rid {rid})")
-        try:
-            payload = resp.json()
-        except ValueError:
+        payloads = []
+        for (y, mon) in months:
+            params = {"year": y, "month": mon}      # ← 둘 다 필수
+            resp = requests.get(SCHED_URL.format(rid=rid), params=params,
+                                headers=h, timeout=20)
+            resp.encoding = "utf-8"
+            if resp.status_code == 401:
+                raise SessionError(f"401 세션 만료/미로그인 (rid {rid})")
+            try:
+                payload = resp.json()
+            except ValueError:
+                raise ScheduleAPIError(
+                    f"캘린더 API 비 JSON 응답 — rid {rid} params={params} "
+                    f"status={resp.status_code} body={(resp.text or '')[:200]!r}")
+            code = payload.get("code") if isinstance(payload, dict) else None
+            if code == "AUTH_002":
+                raise SessionError("AUTH_002 로그인 필요")
+            if resp.status_code == 400 or (isinstance(code, str)
+                                           and code.startswith("VLD_")):
+                raise ScheduleAPIError(
+                    f"캘린더 API 계약 위반 — rid {rid} params={params} "
+                    f"status={resp.status_code} code={code} "
+                    f"message={_server_message(payload)!r}")
+            if not (200 <= resp.status_code < 300):
+                raise ScheduleAPIError(
+                    f"캘린더 API 오류 — rid {rid} params={params} "
+                    f"status={resp.status_code} code={code} "
+                    f"body={(resp.text or '')[:200]!r}")
+            payloads.append(payload)
             _sleep()
-            continue
-        if isinstance(payload, dict) and payload.get("code") == "AUTH_002":
-            raise SessionError("AUTH_002 로그인 필요")
-        counts = _parse_schedule_counts(payload, window_days, window=window)
+        counts = merge_schedule_counts(payloads, window_days,
+                                       today=today, window=window)
         if counts:
             days = counts["days"]
             results.append({
@@ -298,7 +392,7 @@ def fetch_occupancy(rooms: list, session_headers: dict, weeks: int = 8,
                 "pure": counts["booking"] / days,
                 "combined": (counts["booking"] + counts["disable"]) / days,
             })
-        _sleep()
+        # 스로틀은 요청 단위(월별 루프 안)에서 이미 걸린다.
 
     if not results:
         return {"ok": False, "reason": "응답 파싱 실패", "rooms": []}

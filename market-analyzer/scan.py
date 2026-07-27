@@ -15,6 +15,13 @@
 """
 from __future__ import annotations
 
+import sys
+
+if hasattr(sys.stdout, "reconfigure"):      # Windows 기본 콘솔(cp949)에서 U+2014 등 출력 크래시 방지
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 import math
 import statistics
 import time
@@ -220,7 +227,8 @@ def analyze_cluster(cluster: dict, months: int, service_key: str,
                                             samples=_SCAN_SAMPLES)
             if occupancy.get("ok"):
                 occ_used, occ_measured = occupancy["combined_occ"], True
-        except m33.SessionError:
+        except (m33.SessionError, m33.ScheduleAPIError):
+            # 세션 만료든 API 계약 오류든 스캔은 계속(가정값 폴백).
             occupancy = None
     if occ_used is None and occ_assumed is not None:
         occ_used = occ_assumed

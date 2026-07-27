@@ -52,7 +52,10 @@ THROTTLE_SEC = 1.0           # 33m2 요청 간 최소 대기(상시 지침: 1초
 DEFAULT_RADIUS_M = 500
 DEFAULT_MONTHS = 6
 DEFAULT_WEEKS = 8            # 예약률 조사 창(주)
-DEFAULT_SAMPLES = 10         # 예약률 캘린더 표본 수(가격 중위권)
+# 예약률 캘린더 표본 수(가격 중위권). 상현역 실측에서 표본 10 → 80.0%,
+# 표본 15 → 63.4%로 16.6%p 벌어져 표본 민감도가 크게 확인됨(2026-07-27).
+# 매물 간 편차가 큰 시장에서 평균이 흔들리지 않도록 기본 표본을 넓게 잡는다.
+DEFAULT_SAMPLES = 30
 
 
 def ensure_dirs():

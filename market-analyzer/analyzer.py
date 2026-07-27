@@ -14,8 +14,14 @@
 """
 from __future__ import annotations
 
-import argparse
 import sys
+
+if hasattr(sys.stdout, "reconfigure"):      # Windows 기본 콘솔(cp949)에서 U+2014 등 출력 크래시 방지
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
+import argparse
 
 import config
 import locate                    # 지역명 자유 입력 자동 해석(사전에 없을 때)
@@ -44,9 +50,11 @@ def build_caveats(ctx) -> list:
     if ctx.get("occ_login_needed"):
         c.append("예약률 로그인 세션이 없어 가동률 미측정 — 수익 계산은 '세션 필요'로 "
                  "보류(공급·월세만 산출). 가정치 대체 없음.")
-    if ctx.get("window", "past") == "past":
-        c.append("가동률은 지난 %d주 확정 실적(booking+disable ÷ 기간) 기준 — "
-                 "향후 수요를 보장하지 않음." % ctx.get("weeks", 8))
+    if ctx.get("window", "future") == "future":
+        c.append("선점률은 측정일 기준 향후 %d주(booking+disable ÷ 기간). 33m2 API가 "
+                 "과거 날짜를 반환하지 않아 확정 실적 측정은 불가하며, 창 후반은 아직 "
+                 "예약이 채워지는 중이라 **하한 성격**(실제 최종 가동률 ≥ 측정값)."
+                 % ctx.get("weeks", 8))
     return c
 
 
@@ -144,9 +152,9 @@ def main(argv=None):
     ap.add_argument("--occ", type=float, default=None,
                     help="[스캔 모드 전용] 가정 예약률(0~1). 단일 지역 분석은 "
                          "실측만 사용 — 세션 없으면 수익 계산 보류")
-    ap.add_argument("--window", choices=("past", "future"), default="past",
-                    help="가동률 측정 창: past=지난 N주 확정 실적(기본) / "
-                         "future=향후 N주 예정")
+    ap.add_argument("--window", choices=("past", "future"), default="future",
+                    help="선점률 측정 창: future=향후 N주(기본·유일 지원). "
+                         "past는 33m2 API가 과거 날짜를 반환하지 않아 미지원")
     ap.add_argument("--session-file", help="33m2 로그인 세션 파일(쿠키/Bearer)")
     ap.add_argument("--no-cache", action="store_true", help="MOLIT 캐시 미사용")
     # 수동 위치(사전에 없을 때)
@@ -155,6 +163,11 @@ def main(argv=None):
     ap.add_argument("--lawd")
     ap.add_argument("--dong", nargs="+")
     args = ap.parse_args(argv)
+
+    if args.window == "past":
+        ap.error("--window past 는 API 미지원입니다 — 33m2 캘린더 API가 과거 날짜를 "
+                 "반환하지 않아(2026-07 실측 확인) 항상 0%가 나옵니다. "
+                 "--window future(기본)를 사용하세요.")
 
     config.ensure_dirs()
 
@@ -222,8 +235,7 @@ def main(argv=None):
     # 3) 예약률 — 실측 필수 (기본: 지난 N주 확정 실적)
     occupancy, occ_login_needed = None, False
     if session_headers:
-        wlabel = "지난" if args.window == "past" else "향후"
-        print(f"[3/4] 예약률 캘린더 조회({wlabel} {args.weeks}주 창)...")
+        print(f"[3/4] 선점률 캘린더 조회(향후 {args.weeks}주 창)...")
         try:
             occupancy = m33.fetch_occupancy(supply["rooms"], session_headers,
                                             weeks=args.weeks, samples=args.samples,
@@ -231,6 +243,9 @@ def main(argv=None):
         except m33.SessionError as e:
             print(f"      예약률: 로그인 필요 ({e})", file=sys.stderr)
             occ_login_needed = True
+        except m33.ScheduleAPIError as e:
+            # 로그인 문제가 아니라 API 계약 문제 — 재로그인 유도하지 않는다.
+            print(f"      선점률 조회 실패(API 계약): {e}", file=sys.stderr)
     else:
         print("[3/4] 예약률: 세션 파일 없음 → 수익 계산 보류(세션 필요)")
         occ_login_needed = True

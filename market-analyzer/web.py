@@ -7,15 +7,22 @@ CLI(analyzer.py) 파이프라인을 브라우저에서 쓸 수 있게 감싼 최
   python web.py            # http://localhost:8899
 
 기능:
-  - 메인: 지역명/가동률/반경 입력 폼, 등록역 칩, 최근 리포트 목록, 세션 배지
+  - 메인: 지역명/반경 입력 폼, 등록역 칩, 최근 리포트 목록, 세션 배지
   - 분석: 폼 제출 → analyzer 파이프라인 직접 호출(동기) → 리포트로 리다이렉트
   - 열람: output/ 리포트 서빙(경로 탐색 방지)
 """
 from __future__ import annotations
 
+import sys
+
+if hasattr(sys.stdout, "reconfigure"):      # Windows 기본 콘솔(cp949)에서 U+2014 등 출력 크래시 방지
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 import html
 import os
-import sys
+import threading
 import traceback
 import urllib.parse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -25,6 +32,7 @@ import locate
 import model  # noqa: F401  (import 시 앵커 자기검증)
 import molit
 import m33
+import get_session
 import report
 import rules
 import session_auto
@@ -78,10 +86,10 @@ def _session_headers_or_none():
 # --------------------------------------------------------------------------- #
 # 분석 파이프라인 (analyzer.main 핵심을 웹용으로 재구성 — html 경로 반환)
 # --------------------------------------------------------------------------- #
-def run_analysis(region: str, radius: float, window: str = "past"):
+def run_analysis(region: str, radius: float, window: str = "future"):
     """지역 분석 실행 후 생성된 리포트 html 파일명(basename) 반환.
 
-    예약률은 실측 필수(기본: 지난 8주 확정 실적). 세션 없으면 수익 계산을
+    선점률은 실측 필수(기본: 향후 8주 — 33m2 API가 과거 미반환). 세션 없으면 수익 계산을
     보류하고 공급·월세만 출력. 미등록·수집 실패 등은 사람이 읽을 수 있는
     메시지의 ValueError로 올린다.
     """
@@ -131,7 +139,7 @@ def run_analysis(region: str, radius: float, window: str = "past"):
                   "n_kept": 0, "weekly": {"median": None, "min": None,
                   "max": None, "n": 0}, "rooms": []}
 
-    # 3) 예약률 — 실측 필수(기본: 지난 8주 확정 실적). 가정치 대체 없음.
+    # 3) 선점률 — 실측 필수(기본: 향후 8주). 가정치 대체 없음.
     occupancy, occ_login_needed = None, False
     if session_headers:
         try:
@@ -153,8 +161,14 @@ def run_analysis(region: str, radius: float, window: str = "past"):
                     sys.stderr.write("[세션] 만료 감지 → 자동 재획득 후 재조회\n")
                 except (OSError, m33.SessionError):
                     occ_login_needed = True
+                except m33.ScheduleAPIError as e:
+                    sys.stderr.write(f"[선점률] API 계약 오류: {e}\n")
             else:
                 occ_login_needed = True
+        except m33.ScheduleAPIError as e:
+            # 세션 만료가 아니라 API 계약 문제 — 재로그인 유도/500 없이 넘긴다.
+            sys.stderr.write(f"[선점률] API 계약 오류: {e}\n")
+            occupancy = None
     else:
         occ_login_needed = True
 
@@ -216,7 +230,7 @@ def render_form(error: str = "", radius: str = "500", notice: str = "") -> str:
     if has_session:
         src = _session_source()
         label = _SRC_LABEL.get(src, "세션 있음")
-        badge = (f'<span class="badge badge-ok">{html.escape(label)} → 예약률 실측(지난 8주)</span>')
+        badge = (f'<span class="badge badge-ok">{html.escape(label)} → 향후 8주 선점률 실측</span>')
     else:
         badge = ('<span class="badge badge-warn">세션 없음 — 로그인 필요 '
                  '(수익 계산 보류·공급/월세만)</span>')
@@ -226,16 +240,47 @@ def render_form(error: str = "", radius: str = "500", notice: str = "") -> str:
         login_card = (
             '<div class="card"><div class="sec-title">33m2 세션</div>'
             f'<p class="muted">{html.escape(_SRC_LABEL.get(_session_source(), "세션 저장됨"))} '
-            '— 예약률 실측이 활성화되어 있습니다. 분석 시작 시 만료가 감지되면 '
+            '— 선점률 실측이 활성화되어 있습니다. 분석 시작 시 만료가 감지되면 '
             '브라우저 세션으로 자동 재획득을 시도합니다.</p>'
-            '<form method="post" action="/logout" style="margin-top:12px">'
-            '<button type="submit" class="btn-ghost">세션 지우기</button></form></div>')
+            '<div style="display:flex;gap:10px;margin-top:12px">'
+            '<form method="post" action="/detect" style="margin:0">'
+            '<button type="submit" class="btn-ghost">세션 다시 감지</button></form>'
+            '<form method="post" action="/logout" style="margin:0">'
+            '<button type="submit" class="btn-ghost">세션 지우기</button></form>'
+            '</div></div>')
     else:
+        # 전용 창이 이미 떠 있으면 2단계(세션 가져오기)를 강조
+        waiting = get_session.debug_port_alive()
+        if waiting:
+            step_box = (
+                '<div class="notice" style="margin:0 0 16px">'
+                '<b>전용 로그인 창이 열려 있습니다.</b><br>'
+                '그 창에서 33m2 로그인을 마친 뒤 아래 [세션 가져오기]를 누르세요.</div>'
+                '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px">'
+                '<form method="post" action="/profile-fetch" style="margin:0">'
+                '<button type="submit" class="btn">세션 가져오기</button></form>'
+                '<form method="post" action="/login-profile" style="margin:0">'
+                '<button type="submit" class="btn-ghost">전용 창 다시 열기</button></form>'
+                '</div>')
+        else:
+            step_box = (
+                '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px">'
+                '<form method="post" action="/login-profile" style="margin:0">'
+                '<button type="submit" class="btn">전용 창으로 로그인</button></form>'
+                '<form method="post" action="/detect" style="margin:0">'
+                '<button type="submit" class="btn-ghost">세션 다시 감지</button></form>'
+                '</div>')
         login_card = (
-            '<div class="card"><div class="sec-title">33m2 로그인 (예약률 실측용)</div>'
-            '<p class="muted" style="margin-bottom:14px">브라우저(Edge/Chrome)에서 33m2에 '
-            '로그인돼 있으면 <b>분석 시작만 눌러도</b> 세션이 자동 감지됩니다. '
-            '자동 감지가 안 되면 아래로 로그인하세요.</p>'
+            '<div class="card"><div class="sec-title">33m2 세션 얻기 (선점률 실측용)</div>'
+            '<p class="muted" style="margin-bottom:12px"><b>가장 확실한 방법</b> — '
+            '[전용 창으로 로그인]을 누르면 별도 창이 열립니다. 거기서 33m2에 로그인한 뒤 '
+            '[세션 가져오기]를 누르면 끝입니다. '
+            '(기본 브라우저 프로필은 건드리지 않습니다)</p>'
+            + step_box +
+            '<p class="muted" style="margin-bottom:14px;font-size:13px">'
+            '평소 브라우저에 이미 로그인돼 있다면 [세션 다시 감지]로도 됩니다. '
+            '아래 이메일 로그인은 33m2 서버 상태에 따라 '
+            '"처리중입니다"(COMN_003)로 막힐 수 있습니다.</p>'
             '<form method="post" action="/login">'
             '<div class="field"><label for="email">이메일</label>'
             '<input type="text" id="email" name="email" placeholder="33m2 계정 이메일"></div>'
@@ -243,7 +288,10 @@ def render_form(error: str = "", radius: str = "500", notice: str = "") -> str:
             '<input type="password" id="password" name="password"></div>'
             '<button type="submit" class="btn">33m2 로그인</button>'
             '<div class="hint">🔒 비밀번호는 저장되지 않습니다 — 로그인 요청에만 쓰고 '
-            '세션 쿠키만 보관합니다.</div></form>'
+            '세션 쿠키만 보관합니다.<br>'
+            '카카오·네이버·애플 등 소셜 계정으로 가입한 경우 이메일/비밀번호 로그인은 '
+            '불가합니다 — 브라우저에서 소셜로 로그인한 뒤 [분석 시작]을 누르면 세션이 '
+            '자동 감지됩니다.</div></form>'
             '<details style="margin-top:16px"><summary class="adv">고급 · 쿠키 직접 붙여넣기</summary>'
             '<form method="post" action="/session" style="margin-top:12px">'
             '<textarea name="session" placeholder="Cookie: k=v; k2=v2   또는   '
@@ -303,6 +351,9 @@ input:focus {{ outline:none; border-color:var(--g-500); box-shadow:0 0 0 3px var
   font-family:var(--font-sans); }}
 .btn-ghost:hover {{ background:var(--g-100); }}
 .adv {{ cursor:pointer; font-size:13px; font-weight:600; color:var(--g-700); }}
+a.btn-ghost {{ display:inline-block; text-decoration:none; }}
+code {{ background:var(--n-100); padding:1px 6px; border-radius:5px;
+  font-family:var(--font-mono); font-size:12.5px; }}
 summary {{ list-style:revert; }}
 .row {{ display:flex; gap:16px; }}
 .row .field {{ flex:1; }}
@@ -366,7 +417,7 @@ textarea:focus {{ outline:none; border-color:var(--g-500); box-shadow:0 0 0 3px 
       </div>
     </div>
     <button type="submit" id="go" class="btn">분석 시작</button>
-    <div class="hint">가동률은 지난 8주 확정 실적(booking+disable ÷ 기간)으로 실측합니다.
+    <div class="hint">선점률은 측정일 기준 향후 8주(예약+차단 ÷ 기간)로 실측합니다. 창 후반은 아직 채워지는 중이라 하한 성격입니다.
       브라우저에 33m2 로그인이 돼 있으면 세션이 자동 감지됩니다. 없으면 수익 계산은
       보류되고 공급·월세만 출력됩니다. 분석은 수십 초 걸릴 수 있습니다.</div>
   </form>
@@ -451,6 +502,12 @@ class Handler(BaseHTTPRequestHandler):
             self._post_login()
         elif path == "/session":
             self._post_session()
+        elif path == "/detect":
+            self._post_detect()
+        elif path == "/login-profile":
+            self._post_login_profile()
+        elif path == "/profile-fetch":
+            self._post_profile_fetch()
         elif path == "/logout":
             self._post_logout()
         else:
@@ -468,7 +525,7 @@ class Handler(BaseHTTPRequestHandler):
             del password
             sys.stderr.write("[세션] 앱 로그인 성공 → 세션 저장(비밀번호 미저장)\n")
             self._redirect("/?notice=" + urllib.parse.quote(
-                "33m2 로그인 성공 — 예약률 실측이 활성화되었습니다."))
+                "33m2 로그인 성공 — 선점률 실측이 활성화되었습니다."))
         except session_auto.LoginError as e:
             self._redirect("/?error=" + urllib.parse.quote(str(e)))
         except Exception as e:
@@ -499,6 +556,75 @@ class Handler(BaseHTTPRequestHandler):
             self._redirect("/?error=" + urllib.parse.quote(
                 "붙여넣은 세션에서 Cookie/Authorization 을 찾지 못했습니다. "
                 "'k=v; k2=v2' 또는 'Bearer <토큰>' 형식으로 넣어주세요."))
+
+    def _post_login_profile(self):
+        """[전용 창으로 로그인] — 임시 프로필 브라우저를 백그라운드로 띄우고 즉시 응답."""
+        result = {}
+
+        def _launch():
+            try:
+                get_session.launch_profile_browser()
+            except get_session.ProfileError as e:
+                result["error"] = str(e)
+            except Exception as e:          # 예기치 못한 실패도 흡수
+                traceback.print_exc()
+                result["error"] = f"전용 창 실행 실패: {e}"
+
+        th = threading.Thread(target=_launch, daemon=True)
+        th.start()
+        th.join(timeout=12)                 # 포트 열림 확인까지 잠깐만 대기
+        if result.get("error"):
+            self._redirect("/?error=" + urllib.parse.quote(result["error"]))
+            return
+        sys.stderr.write("[세션] 전용 로그인 창 실행\n")
+        self._redirect("/?notice=" + urllib.parse.quote(
+            "전용 로그인 창을 열었습니다 — 그 창에서 33m2에 로그인한 뒤 "
+            "[세션 가져오기]를 누르세요."))
+
+    def _post_profile_fetch(self):
+        """[세션 가져오기] — 전용 창에서 CDP로 httpOnly 포함 쿠키를 읽어 저장."""
+        try:
+            cookie = get_session.fetch_profile_cookies()
+        except get_session.ProfileError as e:
+            self._redirect("/?error=" + urllib.parse.quote(str(e)))
+            return
+        except Exception as e:
+            traceback.print_exc()
+            self._redirect("/?error=" + urllib.parse.quote(f"세션 가져오기 실패: {e}"))
+            return
+        try:
+            _save_session(cookie, "browser")
+        except (OSError, m33.SessionError) as e:
+            self._redirect("/?error=" + urllib.parse.quote(f"세션 저장 실패: {e}"))
+            return
+        sys.stderr.write("[세션] 전용 창에서 세션 획득·저장\n")
+        self._redirect("/?notice=" + urllib.parse.quote(
+            "세션을 가져왔습니다 — 선점률 실측이 활성화되었습니다. "
+            "전용 로그인 창은 이제 닫으셔도 됩니다."))
+
+    def _post_detect(self):
+        """[세션 다시 감지] — 브라우저 쿠키 저장소에서 33m2 세션 재추출."""
+        try:
+            cookie = session_auto.get_session()
+        except Exception:
+            traceback.print_exc()
+            cookie = None
+        if cookie:
+            try:
+                _save_session(cookie, "browser")
+                sys.stderr.write("[세션] 재감지 성공 → 저장\n")
+                self._redirect("/?notice=" + urllib.parse.quote(
+                    "브라우저 세션을 감지했습니다 — 선점률 실측이 활성화되었습니다."))
+                return
+            except (OSError, m33.SessionError):
+                pass
+        self._redirect("/?error=" + urllib.parse.quote(
+            "브라우저에서 33m2 세션을 찾지 못했습니다.\n"
+            "① 브라우저에서 33m2에 로그인했는지 확인하세요. "
+            "② 브라우저를 완전히 종료한 뒤 다시 [세션 다시 감지]를 눌러보세요"
+            "(최신 Edge/Chrome은 쿠키 암호화 때문에 실행 중이면 읽지 못할 수 있습니다). "
+            "③ 그래도 안 되면 터미널에서 python get_session.py --profile 을 실행하거나, "
+            "아래 '고급 · 쿠키 직접 붙여넣기'를 사용하세요."))
 
     def _post_logout(self):
         for p in (SESSION_FILE, SESSION_SRC):
