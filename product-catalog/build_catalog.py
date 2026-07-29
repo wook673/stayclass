@@ -459,6 +459,7 @@ const MENT_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" f
 
 const IMG_BASE = 'https://tlpcserver.imakeweb.co.kr/data/goods/';
 const VIEW_BASE = 'https://tlpcserver.imakeweb.co.kr/kor/mall/view.asp?goodscode=';
+const SHOW_FEE = __FEE__; // false = 고객용(수수료 링크 숨김)
 
 function card(p, ci) {
   const img = p.image
@@ -469,7 +470,7 @@ function card(p, ci) {
   const ment = p.ment
     ? `<div class="ment">${MENT_ICON}<span class="txt">${esc(p.ment)}</span></div>` : '';
   const stagger = ci < 20 ? ci : 0; // 그리드당 앞 20개만 스태거, 이후 즉시
-  const feeBtn = p.model
+  const feeBtn = SHOW_FEE && p.model
     ? `<a class="feebtn" href="../chatbot.html?q=${encodeURIComponent(p.model.split('/')[0])}" target="_blank" rel="noopener">수수료</a>` : '';
   return `<div class="card${p.ment ? ' has-ment' : ''}" style="--i:${stagger}">${feeBtn}<a href="${VIEW_BASE}${esc(p.goodscode)}" target="_blank" rel="noopener">
     <div class="thumb${p.image ? ' sk' : ''}">${img}</div>
@@ -536,6 +537,9 @@ render(true);
 import datetime
 html = TEMPLATE.replace("__DATA__", json.dumps(data, ensure_ascii=False, separators=(",", ":")))
 html = html.replace("__DATE__", datetime.date.today().isoformat())
-out = HERE / "catalog.html"
-out.write_text(html, encoding="utf-8")
-print(f"OK {out} ({out.stat().st_size/1024/1024:.1f} MB) / 추천멘트 매칭 제품 {_ment_count}개")
+# catalog.html = 내부용(수수료 링크 O), catalog_customer.html = 고객용(수수료 링크 X)
+for fname, fee in (("catalog.html", "true"), ("catalog_customer.html", "false")):
+    out = HERE / fname
+    out.write_text(html.replace("__FEE__", fee), encoding="utf-8")
+    print(f"OK {out} ({out.stat().st_size/1024/1024:.1f} MB)")
+print(f"추천멘트 매칭 제품 {_ment_count}개")
