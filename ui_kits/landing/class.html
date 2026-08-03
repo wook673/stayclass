@@ -239,6 +239,27 @@ function Fit() {
 
 function ApplyForm() {
   const [done, setDone] = React.useState(false);
+  const [name, setName] = React.useState("");
+  const [phone, setPhone] = React.useState("");
+  const [budget, setBudget] = React.useState("500만원 미만");
+  const [err, setErr] = React.useState("");
+  const [busy, setBusy] = React.useState(false);
+  // 구글폼 → 응답이 구글드라이브(설문지 응답)에 저장됨 (index.html과 동일 폼, "실전반 |" 접두사로 구분)
+  const GFORM = "https://docs.google.com/forms/d/e/1FAIpQLSes3h07kTlR9xVqRtxOLlvgR5B7hyqSy5Qiv5MEVGw_8_4ROg/formResponse";
+  const submit = async () => {
+    if (!name.trim()) { setErr("이름을 입력해 주세요."); return; }
+    if (!/^01[016789][-.\s]?\d{3,4}[-.\s]?\d{4}$/.test(phone.trim())) { setErr("연락처를 010-0000-0000 형식으로 입력해 주세요."); return; }
+    setErr(""); setBusy(true);
+    try {
+      await fetch(GFORM, { method: "POST", mode: "no-cors",
+        body: new URLSearchParams({
+          "entry.1023614460": name.trim(),
+          "entry.1885249864": phone.trim(),
+          "entry.485118385": "실전반 | " + budget
+        }) });
+    } catch (e) { /* no-cors라 실패해도 응답을 읽을 수 없음 — 낙관 처리 */ }
+    setBusy(false); setDone(true);
+  };
   return (
     <section id="apply" style={{paddingBottom:88}}><div className="wrap reveal">
       <Card variant="brand" padding="xl" style={{borderRadius:24,display:"grid",gridTemplateColumns:"1fr 1fr",gap:48,alignItems:"center"}}>
@@ -261,12 +282,13 @@ function ApplyForm() {
             </div>
           ) : (
             <div style={{display:"flex",flexDirection:"column",gap:16}}>
-              <Input label="이름" placeholder="홍길동" required/>
-              <Input label="연락처" type="tel" placeholder="010-0000-0000" required/>
-              <Select label="시작 가능 예산" required>
+              <Input label="이름" placeholder="홍길동" required value={name} onChange={e=>setName(e.target.value)}/>
+              <Input label="연락처" type="tel" placeholder="010-0000-0000" required value={phone} onChange={e=>setPhone(e.target.value)}/>
+              <Select label="시작 가능 예산" required value={budget} onChange={e=>setBudget(e.target.value)}>
                 <option>500만원 미만</option><option>500~1,000만원</option><option>1,000~2,000만원</option><option>2,000만원 이상</option>
               </Select>
-              <Button variant="accent" size="lg" full onClick={()=>setDone(true)} className="cta-pulse">실전반 1기 신청하기</Button>
+              {err && <div style={{fontSize:14,color:"var(--danger)",fontWeight:600}}>{err}</div>}
+              <Button variant="accent" size="lg" full disabled={busy} onClick={submit} className="cta-pulse">{busy ? "신청 접수 중…" : "실전반 1기 신청하기"}</Button>
             </div>
           )}
         </Card>
