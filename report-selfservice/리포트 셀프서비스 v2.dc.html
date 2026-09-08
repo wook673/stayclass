@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style data-omelette-injected>html,body{background:transparent}</style><script data-omelette-injected>(()=>{{const n=new URLSearchParams(location.search).get("theme");if(n==="light"||n==="dark"){document.documentElement.dataset.theme=n}}{if(new URLSearchParams(location.search).get("_omthumb")==="1"){const n=(f)=>{const g=f.focus;if(!g)return;f.focus=function(h){g.call(this,{...h,preventScroll:true})}};n(HTMLElement.prototype);n(SVGElement.prototype);if(typeof MathMLElement!=="undefined"){n(MathMLElement.prototype)}const d=(f)=>{f.removeAttribute("autofocus");f.inert=true;if(!(f instanceof HTMLElement))f.removeAttribute("tabindex")};const p=(f)=>{if(f.hasAttribute("autofocus"))d(f);for(const g of f.querySelectorAll("[autofocus]")){d(g)}};p(document.documentElement);new MutationObserver((f)=>{for(const g of f){for(const h of g.addedNodes){if(h.nodeType===1)p(h)}}}).observe(document,{childList:true,subtree:true})}}{const n=()=>{try{if(document.querySelector('meta[name="color-scheme"]'))return;const d=getComputedStyle(document.documentElement).getPropertyValue("color-scheme").trim();if(d&&d!=="normal")return;const p=(y)=>{if(!y)return null;const m=getComputedStyle(y).backgroundColor.match(/^rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,\s/]+([\d.]+%?))?\s*\)$/);if(!m)return null;const w=m[4]==null?1:parseFloat(m[4])/(m[4].endsWith("%")?100:1);if(w<0.99)return null;return[+m[1],+m[2],+m[3]]};const f=p(document.body)||p(document.documentElement);if(!f)return;const g=(y)=>{const m=y/255;return m<=0.04045?m/12.92:((m+0.055)/1.055)**2.4};const h=0.2126*g(f[0])+0.7152*g(f[1])+0.0722*g(f[2]);document.documentElement.style.setProperty("color-scheme",h<0.4?"dark":"light")}catch{}};if(document.readyState==="complete")n();else window.addEventListener("load",n)}var I=[];var B=false;var K=false;var C=()=>{};if(K===true){try{const n=setTimeout.bind(window);const d=1e4;const p=15;const f=1e4;const g=120000;const h=200;const y=(o)=>{try{let r;if(typeof o==="string")r=o;else if(o instanceof URL)r=o.href;else if(typeof Request!=="undefined"&&o instanceof Request)r=o.url;else return null;if(!r)return null;const l=document.baseURI;const i=new URL(r,l);if(i.protocol!=="http:"&&i.protocol!=="https:")return null;if(i.origin!==new URL(l).origin)return null;return i.origin+i.pathname}catch{return null}};const m=new Map;const w=(o)=>{let r=m.get(o);if(!r){if(m.size>=h){const l=m.keys().next().value;if(l!==undefined)m.delete(l)}r={fails:[],until:0,cooldown:f,hard:false};m.set(o,r)}return r};const R=(o)=>{const r=m.get(o);return r!==undefined&&r.until>Date.now()};const O=(o,r)=>{const l=Date.now();const i=w(o);if(r)i.hard=true;if(i.until>l)return;i.fails.push(l);while(i.fails.length>0&&i.fails[0]<=l-d)i.fails.shift();if(i.fails.length>=p){i.until=l+i.cooldown;if(i.hard)i.cooldown=Math.min(i.cooldown*2,g);i.fails.length=0;try{n(()=>{try{S(true)}catch{}},i.until-l+100)}catch{}console.warn("[omelette] asset circuit breaker: pausing requests to "+o+" for "+Math.round((i.until-l)/1000)+"s after "+p+" failures in "+d/1000+"s")}};const e=(o)=>{m.delete(o)};const t=100;const a=new WeakMap;const u=new Set;let s=null;const S=(o)=>{for(const r of Array.from(u)){try{const l=a.get(r);if(l===undefined){u.delete(r);continue}if(o){const i=y(l);if(i!==null&&R(i))continue}a.delete(r);u.delete(r);if(s!==null)s.call(r,l)}catch{}}};C=()=>{try{m.clear();S(false)}catch{}};document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")C()});const _=window.fetch;if(typeof _==="function"){const o=function(...r){let l=null;try{l=y(r[0])}catch{}if(l!==null&&R(l)){let c;try{if(r[1]&&r[1].signal!==undefined){c=r[1].signal||undefined}else if(typeof Request!=="undefined"&&r[0]instanceof Request){c=r[0].signal||undefined}}catch{c=undefined}return new Promise((k,b)=>{const E=()=>{try{return c.reason!==undefined?c.reason:new DOMException("The operation was aborted.","AbortError")}catch{return new DOMException("The operation was aborted.","AbortError")}};try{if(c&&c.aborted){b(E());return}}catch{}let T=false;const j=()=>{if(T)return;T=true;b(E())};try{if(c)c.addEventListener("abort",j,{once:true})}catch{}n(()=>{if(T)return;T=true;try{if(c)c.removeEventListener("abort",j)}catch{}let L;try{L=new Response(null,{status:429,statusText:"Too Many Requests",headers:{"Retry-After":"10"}})}catch{L={ok:false,status:429}}k(L)},250)})}const i=_.apply(window,r);if(l!==null){const c=l;i.then((k)=>{try{if(k.ok)e(c);else if(k.status===401||k.status===403||k.status===404||k.status===429){O(c,k.status!==404)}}catch{}},()=>{})}return i};window.fetch=o}const v=Object.getOwnPropertyDescriptor(HTMLImageElement.prototype,"src");if(v!==undefined&&v.set!==undefined&&v.get!==undefined){const o=v.set;s=o;Object.defineProperty(HTMLImageElement.prototype,"src",{configurable:true,enumerable:v.enumerable,get:v.get,set(r){const l=`${r}`;try{const i=y(l);if(i!==null&&R(i)){a.set(this,l);if(u.size<t)u.add(this);return}}catch{}try{a.delete(this);u.delete(this)}catch{}o.call(this,l)}})}try{const o=HTMLImageElement.prototype.setAttribute;HTMLImageElement.prototype.setAttribute=function(r,l){if(arguments.length<2){o.apply(this,arguments);return}if(typeof r==="string"&&r.toLowerCase()==="src"){const i=`${l}`;try{const c=y(i);if(c!==null&&R(c)){a.set(this,i);if(u.size<t)u.add(this);return}a.delete(this);u.delete(this)}catch{}o.call(this,r,i);return}o.call(this,r,l)}}catch{}window.addEventListener("error",(o)=>{try{const r=o.target;if(r instanceof HTMLImageElement){const l=y(r.currentSrc||r.src||"");if(l!==null)O(l,true)}}catch{}},true);window.addEventListener("load",(o)=>{try{const r=o.target;if(r instanceof HTMLImageElement){const l=y(r.currentSrc||r.src||"");if(l!==null)e(l);const i=a.get(r);if(i!==undefined){let c=false;try{c=new URL(i,document.baseURI).href===new URL(r.currentSrc||r.src||"",document.baseURI).href}catch{c=false}if(c){a.delete(r);u.delete(r)}}}}catch{}},true)}catch{}}var J=30000;var G=3000;document.addEventListener("DOMContentLoaded",()=>{const n=window.Babel;const d="om-src-id";if(n&&n.registerPlugin&&!(n.availablePlugins&&n.availablePlugins[d])){n.registerPlugin(d,({types:h})=>({visitor:{JSXOpeningElement(y,m){const w=y.node;if(w.name&&w.name.type==="JSXMemberExpression")return;for(let t=0;t<w.attributes.length;t++){const a=w.attributes[t];if(a.type==="JSXAttribute"&&a.name&&a.name.name==="data-om-id")return}const R=m.file&&m.file.opts&&m.file.opts.filename||"?";const O=w.loc&&w.loc.start;const e=`jsx:${R}:${w.start??0}:${O?O.line:0}:${O?O.column+1:0}`;w.attributes.push(h.jsxAttribute(h.jsxIdentifier("data-om-id"),h.stringLiteral(e)))}}}))}const p="om-text-extract";let f=false;if(B&&n&&n.registerPlugin&&!(n.availablePlugins&&n.availablePlugins[p])){const h=window.React;if(h&&h.useSyncExternalStore&&h.createElement){f=true;const y={};const m=new Set;let w=0;window.__omTextO=y;window.__omTextSet=(e)=>{for(const t in e){const a=e[t];if(a==null)delete y[t];else y[t]=a}w++;m.forEach((t)=>t())};const R=(e)=>{m.add(e);return()=>m.delete(e)};const O=()=>w;window.__OmT=function e(t){h.useSyncExternalStore(R,O,O);return h.createElement("span",{"data-om-text":t.i,className:"__om-t"},t.i in y?y[t.i]:t.children)};n.registerPlugin(p,({types:e})=>{const t={style:1,script:1,noscript:1,textarea:1,title:1,option:1,text:1,tspan:1,textPath:1};const a={placeholder:1,alt:1,title:1,label:1,"aria-label":1,"aria-description":1,"aria-placeholder":1};const u=(o,r)=>e.logicalExpression("??",e.memberExpression(e.logicalExpression("||",e.memberExpression(e.identifier("window"),e.identifier("__omTextO")),e.objectExpression([])),e.stringLiteral(o),true),r);const s=(o)=>o.file&&o.file.opts&&o.file.opts.filename||"?";const S=(o)=>o.file&&o.file.code||"";const _=(o,r)=>{const l=(c)=>c&&c.start!=null&&c.end!=null&&(c.type==="StringLiteral"||c.type==="TemplateLiteral"&&c.expressions.length===0)?[c.start,c.end]:null;const i=l(r);if(i)return i;if(r&&r.type==="Identifier"){const c=o.scope.getBinding(r.name);if(c&&c.constant&&c.path.node.type==="VariableDeclarator"){return l(c.path.node.init)}}return null};const v=(o,r,l)=>{const i=o.node;let c=false;const k=(E,T)=>{c=true;return e.jsxElement(e.jsxOpeningElement(e.jsxIdentifier("__OmT"),[e.jsxAttribute(e.jsxIdentifier("i"),e.stringLiteral(E))],false),e.jsxClosingElement(e.jsxIdentifier("__OmT")),[T],false)};const b=i.children.map((E)=>{if(E.type==="JSXText"){if(E.start==null||E.end==null)return E;const T=l.slice(E.start,E.end);const j=T.length-T.trimStart().length;const L=T.length-T.trimEnd().length;if(j+L>=T.length)return E;return k(`txt:${r}:${E.start+j}:${E.end-L}`,E)}if(E.type==="JSXExpressionContainer"){const T=_(o,E.expression);if(T)return k(`str:${r}:${T[0]}:${T[1]}`,E)}return E});if(c)i.children=b};return{visitor:{JSXOpeningElement(o,r){const l=o.node;const i=s(r);const c={};for(let k=0;k<l.attributes.length;k++){const b=l.attributes[k];if(b.type!=="JSXAttribute"||!b.name)continue;const E=b.name.name;if(!a[E])continue;if(!b.value||b.value.type!=="StringLiteral")continue;if(b.value.start==null||b.value.end==null)continue;const T=`txt:${i}:${b.value.start}:${b.value.end}`;c[E]=T;b.value=e.jsxExpressionContainer(u(T,e.stringLiteral(b.value.value)))}if(Object.keys(c).length){l.attributes.push(e.jsxAttribute(e.jsxIdentifier("data-om-text-attrs"),e.stringLiteral(JSON.stringify(c))))}},JSXElement(o,r){const l=o.node.openingElement;const i=l&&l.name&&l.name.name;if(i==="__OmT")return;if(typeof i==="string"&&t[i])return;v(o,s(r),S(r))},JSXFragment(o,r){v(o,s(r),S(r))}}}})}}const g=f?["transform-react-jsx-source",d,p]:["transform-react-jsx-source",d];document.querySelectorAll('script[type="text/babel"],script[type="text/jsx"]').forEach((h,y)=>{const m=h.getAttribute("data-plugins")||"";const w=g.filter((R)=>m.indexOf(R)<0);if(w.length){h.setAttribute("data-plugins",m?`${m},${w.join(",")}`:w.join(","))}if(!h.hasAttribute("data-filename")){h.setAttribute("data-filename",h.getAttribute("src")||`inline-${y}`)}})});var A=window.parent;var U="not editable here — open the project in the Claude Design editor to save";var W=()=>Promise.resolve({persisted:false,noHost:true,reason:U});var H=W;var M="data/storage.json";var z=()=>{try{const n=new URL(document.baseURI);const d=n.pathname.match(/\/projects\/([^/]+)\/serve\//);if(d)return d[1];return n.hostname.split(".")[0]||""}catch{return location.hostname.split(".")[0]||""}};var Z=()=>{try{const n=new URL(document.baseURI);const d=n.pathname.indexOf("/serve/");if(d>=0)return n.origin+n.pathname.slice(0,d+"/serve/".length)+M}catch{}return"./"+M};var x=null;var N=()=>{if(!x){x=fetch(Z(),{cache:"no-store"}).then((n)=>{if(n.ok)return n.text();return n.status===404?"":null}).catch(()=>null).then((n)=>{if(n===null){x=null;return null}const d=new Map;if(!n)return d;let p;try{p=JSON.parse(n)}catch{console.warn("[omelette.storage] "+M+" is not valid JSON; treating the store as unreadable so a save cannot overwrite the "+"hand-edited bytes. Fix the JSON (or delete the file) to re-enable persistence.");x=null;return null}if(p===null||typeof p!=="object"||Array.isArray(p)){console.warn("[omelette.storage] "+M+" doesn't hold a JSON object; treating the store as unreadable so a save cannot "+"overwrite the hand-edited bytes. Make the top level a JSON object to re-enable persistence.");x=null;return null}const f=p;if("data"in f){const g=f.data;if(g===null||typeof g!=="object"||Array.isArray(g)){console.warn("[omelette.storage] "+M+' has a "data" field that is not a JSON object; treating the store as unreadable so a '+'save cannot overwrite the hand-edited bytes. Make "data" a JSON object to re-enable persistence.');x=null;return null}const h=f._meta;const y=h!==null&&typeof h==="object"?h.project:undefined;if(typeof y==="string"&&y!==""&&y!==z())return d;for(const m of Object.keys(g))d.set(m,g[m]);return d}for(const g of Object.keys(f)){if(g!=="_meta")d.set(g,f[g])}return d})}return x};var F=(n)=>H(M,JSON.stringify({_meta:{project:z(),version:1},data:Object.fromEntries(n)},null,2));var D=Promise.resolve();var $=(n)=>{const d=D.then(n);D=d.then(()=>{return},()=>{return});return d};var V=/sk-(?:ant-)?[A-Za-z0-9_-]{16,}|AKIA[0-9A-Z]{16}|gh[pousr]_[A-Za-z0-9]{20,}|xox[a-z]-[A-Za-z0-9][A-Za-z0-9-]{9,}|AIza[0-9A-Za-z_-]{30,}|-----BEGIN [A-Z ]*PRIVATE KEY-----/;var Y=/password|passwd|secret|api[_-]?key|access[_-]?token|auth[_-]?token|credential/i;var Q=(n,d,p)=>{if(V.test(d)||Y.test(n)&&typeof p==="string"&&p.length>=8){console.warn('[omelette.storage] the value for "'+n+'" looks like a credential. The storage file is a plaintext project file — visible to '+"everyone with project access and copied when the project is duplicated. Do not store secrets here.")}};var q={persisted:false,reason:"could not load the existing store — not overwriting it"};var X={persisted:false,reason:"stored value changed since a failed read — re-read this key before saving"};var P=new Set;var ee={get:(n)=>{if(typeof n!=="string"){return Promise.reject(new TypeError("storage.get: key must be a string"))}return $(N).then((d)=>{if(d===null){P.add(n);return null}P.delete(n);if(!d.has(n))return null;const p=d.get(n);return p==null?null:JSON.parse(JSON.stringify(p))})},set:(n,d)=>{if(typeof n!=="string"){return Promise.reject(new TypeError("storage.set: key must be a string"))}let p;try{p=JSON.stringify(d)}catch(g){return Promise.reject(new TypeError("storage.set: value must be JSON-serializable ("+String(g)+")"))}if(p===undefined){return Promise.reject(new TypeError("storage.set: value must be JSON-serializable"))}Q(n,p,d);const f=JSON.parse(p);return $(()=>N().then((g)=>{if(g===null)return q;if(P.has(n)){if(g.has(n))return X;P.delete(n)}g.set(n,f);return F(g)}))},delete:(n)=>{if(typeof n!=="string"){return Promise.reject(new TypeError("storage.delete: key must be a string"))}return $(()=>N().then((d)=>{if(d===null)return q;if(P.has(n)){if(d.has(n))return X;P.delete(n)}d.delete(n);return F(d)}))},keys:()=>$(N).then((n)=>n===null?[]:Array.from(n.keys()))};window.omelette={writeFile:(n,d)=>H(n,d).then((p)=>{if(!p.persisted&&!p.noHost){throw new Error(p.reason||"write failed")}}),storage:ee};if(A&&A!==window){const n=(e,t)=>{try{A.postMessage({__omelette_log:true,type:e,data:t},"*")}catch{}};["log","warn","error"].forEach((e)=>{const t=console[e];console[e]=(...a)=>{const u=a.map((s)=>{try{return typeof s==="object"?JSON.stringify(s):String(s)}catch{try{return String(s)}catch{return"[unstringifiable]"}}}).join(" ");n(e,u);t.apply(console,a)}});window.addEventListener("error",(e)=>{const t=e.target;if(t&&t!==window&&t.tagName){const a=t.src||t.href||"";n("resource_error",`${t.tagName} failed to load: ${a}`)}else{n("error",`${e.message||"Unknown error"} at ${e.filename||"?"}:${e.lineno||0}:${e.colno||0}`)}},true);window.addEventListener("unhandledrejection",(e)=>{const t=e.reason;const a=t instanceof Error?`${t.message} ${t.stack}`:String(t);n("error",`Unhandled rejection: ${a}`)});window.addEventListener("click",(e)=>{if(e.defaultPrevented||e.button!==0)return;if(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;const t=e.composedPath?e.composedPath():[];const a=["button","input","select","textarea","summary","label"];let u=null;for(const v of t){if(!(v instanceof Element))continue;if(v.localName==="a"){if(!(v instanceof HTMLAnchorElement))return;u=v;break}if(a.indexOf(v.localName)!==-1)return}if(!u)return;if(u.isContentEditable)return;const s=u.closest("[contenteditable]");if(s&&s.getAttribute("contenteditable")!=="false")return;const S=(u.getAttribute("target")||"_self").toLowerCase();if(S!=="_self"&&S!=="_top"&&S!=="_parent")return;let _;try{_=new URL(u.href)}catch{return}if(_.protocol!=="http:"&&_.protocol!=="https:")return;if(location.origin==="null")return;if(_.origin===location.origin)return;e.preventDefault();window.open(_.href,"_blank","noopener,noreferrer")});const d=()=>{try{A.postMessage({type:"omelette:height",height:document.documentElement.scrollHeight},"*")}catch{}};if(window.ResizeObserver)new ResizeObserver(d).observe(document.documentElement);const p=()=>{d();if(!document.querySelector('script[type="text/babel"],script[type="text/jsx"]'))return;const e=()=>document.getElementById("root")||document.querySelector("body > div[id]");const t=e()?.firstElementChild??null;let a=0;const u=()=>{const s=e();if(s&&s.firstElementChild!==t||++a>30){d();return}setTimeout(u,100)};setTimeout(u,100)};if(document.readyState==="complete")p();else window.addEventListener("load",p);const f={};let g=0;const h=(e)=>new Promise((t,a)=>{if(!I.length){a(new Error("claude.complete: no parent origin"));return}const u=`c${++g}`;const s=()=>setTimeout(()=>{delete f[u];a(new Error(`claude.complete: no data for ${J/1000}s`))},J);const S=s();f[u]={resolve:t,reject:a,text:"",t:S,arm:s};try{for(const _ of I){A.postMessage({__om_api:true,id:u,body:e},_)}}catch(_){clearTimeout(S);delete f[u];a(_)}});const y=8;const m=async(e,t)=>{if(!Array.isArray(e.messages)){throw new Error("claude.complete: tools require a messages array")}const a=e.messages.slice();const u={...e,tools:e.tools.map((_)=>{if(_===null||typeof _!=="object")return _;const v={};for(const o of Object.keys(_)){if(typeof _[o]!=="function")v[o]=_[o]}return v})};const s=u.tool_choice;const S=s!=null&&(s.type==="any"||s.type==="tool")?{...u,tool_choice:s.disable_parallel_tool_use!==undefined?{type:"auto",disable_parallel_tool_use:s.disable_parallel_tool_use}:{type:"auto"}}:u;for(let _=0;_<y;_++){const v=await h({..._===0?u:S,messages:a});const o=v.message;const r=o&&Array.isArray(o.content)?o.content:null;const l=r?r.filter((c)=>c?.type==="tool_use"):[];if(o?.stop_reason!=="tool_use"||l.length===0){return v.text}const i=[];for(const c of l){const k=t.get(c.name);if(!k){i.push({type:"tool_result",tool_use_id:c.id,content:`no handler for tool "${c.name}"`,is_error:true});continue}try{const b=await k(c.input);const E=typeof b==="string"?b:O(b)??"";i.push({type:"tool_result",tool_use_id:c.id,content:E})}catch(b){i.push({type:"tool_result",tool_use_id:c.id,content:String(b?.message??b??"tool handler failed"),is_error:true})}}a.push({role:"assistant",content:r},{role:"user",content:i})}throw new Error(`claude.complete: exceeded ${y} tool turns`)};window.claude={complete(e){const t=e;if(t!==null&&typeof t==="object"&&Array.isArray(t.tools)&&t.tools.some((a)=>a!==null&&typeof a==="object"&&typeof a.run==="function")){const a=new Map;for(const u of t.tools){if(u!==null&&typeof u==="object"&&typeof u.run==="function"){a.set(String(u.name),u.run)}}return m(t,a)}return h(e).then((a)=>a.text)}};const w={};let R=0;H=(e,t)=>new Promise((a)=>{if(!I.length){a({persisted:false,noHost:true,reason:U});return}const u=`f${++R}`;const s=setTimeout(()=>{delete w[u];a({persisted:false,noHost:true,reason:U})},G);w[u]={settle:a,t:s};try{for(const S of I){A.postMessage({__om_file:true,id:u,op:"write",path:e,content:t},S)}}catch{clearTimeout(s);delete w[u];a({persisted:false,noHost:true,reason:U})}});const O=(e)=>{try{return JSON.stringify(e)}catch{return JSON.stringify(String(e))}};window.addEventListener("message",(e)=>{if(I.indexOf(e.origin)<0)return;if(e.source!==A)return;const t=e.data;if(!t)return;if(t.type==="omelette-preview-refresh"){if(typeof t.token!=="string"||!/^[0-9a-f.-]+(\.(rc|pr-[0-9]+))?(\.[0-9]+\.[0-9a-f]{16})?$/.test(t.token))return;const s=Math.max(1,Math.floor((t.expiresAt||0)-Date.now()/1000));document.cookie="__Host-omelette-preview="+t.token+"; Path=/; Secure; SameSite=None; Partitioned; Max-Age="+s;C();return}if(t.__om_file_r){const s=w[t.id];if(!s)return;clearTimeout(s.t);delete w[t.id];s.settle(t.ok?{persisted:true}:{persisted:false,reason:t.error||"write failed"});return}if(t.__om_api_r){const s=f[t.id];if(!s)return;if(t.error!=null){clearTimeout(s.t);delete f[t.id];s.reject(new Error(t.error));return}if(t.chunk!=null){clearTimeout(s.t);s.t=s.arm();s.text+=t.chunk;return}if(t.done){clearTimeout(s.t);delete f[t.id];s.resolve({text:t.text!=null?t.text:s.text,message:t.message});return}return}if(!t.__om_eval)return;const a=t;const u=(s)=>{e.source.postMessage({...s,__om_eval_r:1,id:a.id},e.origin)};try{const s=(0,eval)(a.code);if(s&&typeof s.then==="function"){s.then((S)=>u({ok:1,v:O(S)}),(S)=>u({ok:0,e:String(S)}))}else{u({ok:1,v:O(s)})}}catch(s){u({ok:0,e:String(s)})}})}})();
+</script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/design-system-921ebfd8-579e-49fe-b7f9-dff3128c00d6/tokens/fonts.css">
+  <link rel="stylesheet" href="_ds/design-system-921ebfd8-579e-49fe-b7f9-dff3128c00d6/tokens/colors.css">
+  <link rel="stylesheet" href="_ds/design-system-921ebfd8-579e-49fe-b7f9-dff3128c00d6/tokens/typography.css">
+  <link rel="stylesheet" href="_ds/design-system-921ebfd8-579e-49fe-b7f9-dff3128c00d6/tokens/spacing.css">
+  <link rel="stylesheet" href="_ds/design-system-921ebfd8-579e-49fe-b7f9-dff3128c00d6/tokens/base.css">
+  <link rel="stylesheet" href="_ds/design-system-921ebfd8-579e-49fe-b7f9-dff3128c00d6/styles.css">
+  <script src="_ds/design-system-921ebfd8-579e-49fe-b7f9-dff3128c00d6/_ds_bundle.js"></script>
+  <style>
+    body{margin:0;background:#FAF8F5;font-family:"Pretendard",sans-serif;color:#423C32;word-break:keep-all;-webkit-font-smoothing:antialiased}
+    a{color:#115A40;text-decoration:none}
+    a:hover{color:#16704F}
+    @keyframes dsDrift{0%{transform:translateY(0)}50%{transform:translateY(-18px)}100%{transform:translateY(0)}}
+    @keyframes dsPulse{0%,100%{opacity:0.35}50%{opacity:0.9}}
+    @keyframes dsDash{to{stroke-dashoffset:0}}
+  </style>
+</helmet>
+<div style="font-size:16px;line-height:1.65">
+
+  <!-- ══ HERO: 도어웨이 스크롤 저니 (320vh) ══ -->
+  <div style="height:320vh;position:relative;background:#06281A">
+    <div style="position:sticky;top:0;height:100vh;overflow:hidden;background:radial-gradient(120% 90% at 50% 110%, #0A3526 0%, #06281A 60%, #041D13 100%)">
+
+      <!-- nav (hero 위) -->
+      <div style="position:absolute;top:0;left:0;right:0;z-index:30;display:flex;justify-content:space-between;align-items:center;max-width:1140px;margin:0 auto;padding:22px 32px;box-sizing:border-box">
+        <div style="display:flex;align-items:center;gap:10px">
+          <img src="assets/logo-mark-inverse.svg" alt="" style="width:26px;height:26px">
+          <span style="font-weight:800;font-size:16px;color:#fff;letter-spacing:-0.02em">다니엘스테이</span>
+        </div>
+        <sc-if value="{{ loggedIn }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.08);border:1px solid rgba(166,216,194,0.3);border-radius:999px;padding:6px 16px;backdrop-filter:blur(6px)">
+              <span style="font-size:12px;font-weight:600;color:#A6D8C2">내 크레딧</span>
+              <span style="font-family:'Spline Sans Mono',monospace;font-size:15px;font-weight:700;color:#fff">{{ credits }}</span>
+            </div>
+            <span style="font-size:13px;font-weight:600;color:#D2EBE0">{{ userName }}님</span>
+            <button onClick="{{ logout }}" style="border:none;background:transparent;cursor:pointer;font-size:12.5px;color:#A6D8C2;font-family:'Pretendard',sans-serif;padding:0" style-hover="color:#fff">로그아웃</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ loggedOut }}" hint-placeholder-val="{{ true }}">
+          <button onClick="{{ openLogin }}" style="background:#1E8A63;color:#fff;border:none;cursor:pointer;font-weight:700;font-size:13.5px;padding:10px 20px;border-radius:999px;font-family:'Pretendard',sans-serif;box-shadow:0 6px 18px rgba(30,138,99,0.35)" style-hover="filter:brightness(0.94)">로그인하고 무료 크레딧 받기</button>
+        </sc-if>
+      </div>
+
+      <!-- 떠다니는 데이터 글리프 -->
+      <div style="position:absolute;inset:0;z-index:1;pointer-events:none;opacity:{{ ambientO }}">
+        <span style="position:absolute;top:18%;left:12%;font-family:'Spline Sans Mono',monospace;font-size:13px;color:rgba(166,216,194,0.35);animation:dsDrift 7s ease-in-out infinite">71.3%</span>
+        <span style="position:absolute;top:64%;left:8%;font-family:'Spline Sans Mono',monospace;font-size:11px;color:rgba(166,216,194,0.25);animation:dsDrift 9s ease-in-out infinite 1.2s">₩47.5M</span>
+        <span style="position:absolute;top:26%;right:10%;font-family:'Spline Sans Mono',monospace;font-size:12px;color:rgba(166,216,194,0.3);animation:dsDrift 8s ease-in-out infinite 0.6s">56일 실측</span>
+        <span style="position:absolute;top:70%;right:14%;font-family:'Spline Sans Mono',monospace;font-size:13px;color:rgba(166,216,194,0.3);animation:dsDrift 10s ease-in-out infinite 2s">500m</span>
+        <span style="position:absolute;top:44%;left:20%;width:5px;height:5px;border-radius:999px;background:#3DA37C;animation:dsPulse 3.4s ease-in-out infinite"></span>
+        <span style="position:absolute;top:36%;right:22%;width:4px;height:4px;border-radius:999px;background:#3DA37C;animation:dsPulse 4.2s ease-in-out infinite 1s"></span>
+      </div>
+
+      <!-- 도어웨이: 스크롤로 열리며 커진다 -->
+      <div style="position:absolute;left:50%;bottom:0;z-index:2;width:340px;height:74vh;margin-left:-170px;transform-origin:50% 100%;transform:{{ archT }};border-radius:170px 170px 0 0;background:linear-gradient(180deg, #115A40 0%, #0E4633 55%, #0A3526 100%);box-shadow:0 0 0 1px rgba(166,216,194,0.35), 0 0 120px rgba(30,138,99,0.35) inset, 0 -20px 80px rgba(30,138,99,0.25);overflow:hidden">
+        <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(166,216,194,0.09) 1px, transparent 1px),linear-gradient(90deg, rgba(166,216,194,0.09) 1px, transparent 1px);background-size:44px 44px;opacity:{{ gridO }}"></div>
+        <div style="position:absolute;left:50%;top:16%;width:6px;height:6px;margin-left:60px;border-radius:999px;background:#A6D8C2;opacity:{{ knobO }}"></div>
+      </div>
+
+      <!-- 문 안: 데이터 공간 (실측 스탯 카운트업) -->
+      <div style="position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;opacity:{{ dataO }};pointer-events:none">
+        <div style="display:flex;gap:9vw;text-align:center;transform:translateY({{ dataY }})">
+          <div>
+            <div style="font-family:'Spline Sans Mono',monospace;font-size:clamp(38px,5.5vw,64px);font-weight:700;color:#fff;line-height:1;letter-spacing:-0.02em">{{ occVal }}<span style="font-size:0.5em;color:#A6D8C2">%</span></div>
+            <div style="margin-top:12px;font-size:13px;font-weight:600;color:#A6D8C2">통합 가동률 (실측)</div>
+          </div>
+          <div>
+            <div style="font-family:'Spline Sans Mono',monospace;font-size:clamp(38px,5.5vw,64px);font-weight:700;color:#fff;line-height:1;letter-spacing:-0.02em">{{ unitVal }}</div>
+            <div style="margin-top:12px;font-size:13px;font-weight:600;color:#A6D8C2">반경 500m 전수 매물</div>
+          </div>
+          <div>
+            <div style="font-family:'Spline Sans Mono',monospace;font-size:clamp(38px,5.5vw,64px);font-weight:700;color:#fff;line-height:1;letter-spacing:-0.02em">{{ dayVal }}</div>
+            <div style="margin-top:12px;font-size:13px;font-weight:600;color:#A6D8C2">고정 측정 창 (일)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 캡션 A -->
+      <div style="position:absolute;left:0;right:0;top:24%;z-index:10;text-align:center;padding:0 24px;opacity:{{ capAO }};transform:translateY({{ capAY }})">
+        <div style="font-size:13.5px;font-weight:600;color:#A6D8C2">단기임대 시장검증 셀프서비스</div>
+        <h1 style="margin:16px 0 0;font-size:clamp(30px,4.6vw,52px);line-height:1.18;letter-spacing:-0.03em;color:#fff;font-weight:800;text-shadow:0 2px 30px rgba(4,29,19,0.6)">계약하기 전에,<br>그 지역의 문을 먼저 열어보세요</h1>
+      </div>
+
+      <!-- 캡션 B -->
+      <div style="position:absolute;left:0;right:0;top:30%;z-index:10;text-align:center;padding:0 24px;opacity:{{ capBO }};transform:translateY({{ capBY }})">
+        <h2 style="margin:0;font-size:clamp(24px,3.4vw,38px);line-height:1.25;letter-spacing:-0.02em;color:#fff;font-weight:800;text-shadow:0 2px 30px rgba(4,29,19,0.6)">문 너머엔 감이 아니라<br>실측 데이터가 있습니다</h2>
+        <p style="margin:14px 0 0;font-size:15px;color:#A6D8C2">반경 500m 전수 조사 · 향후 56일 캘린더 실측</p>
+      </div>
+
+      <!-- 캡션 C (settle) -->
+      <div style="position:absolute;left:0;right:0;bottom:12%;z-index:10;text-align:center;padding:0 24px;opacity:{{ capCO }};transform:translateY({{ capCY }})">
+        <h2 style="margin:0;font-size:clamp(22px,3vw,34px);letter-spacing:-0.02em;color:#fff;font-weight:800">크레딧 충전 → 지역 지정 → 실행</h2>
+        <p style="margin:10px 0 0;font-size:14.5px;color:#A6D8C2">아래에서 바로 시작할 수 있습니다</p>
+      </div>
+
+      <!-- 스크롤 힌트 -->
+      <div style="position:absolute;left:0;right:0;bottom:5%;z-index:10;text-align:center;opacity:{{ hintO }}">
+        <div style="margin:0 auto;width:1px;height:34px;background:linear-gradient(180deg,#3DA37C,transparent)"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CONSOLE ══ -->
+  <div style="background:#FAF8F5;position:relative">
+    <svg viewBox="0 0 1200 60" preserveAspectRatio="none" style="display:block;width:100%;height:60px;background:#06281A"><path d="M0,60 L1200,60 L1200,58 C900,10 300,10 0,58 Z" fill="#FAF8F5"></path></svg>
+
+    <div style="max-width:1140px;margin:0 auto;padding:36px 32px 0;box-sizing:border-box;display:grid;grid-template-columns:1fr 0.95fr;gap:40px;align-items:center;opacity:{{ c1O }};transform:translateY({{ c1Y }});transition:opacity 0.8s ease,transform 0.8s cubic-bezier(0.22,1,0.36,1)">
+      <div>
+        <h2 style="margin:0;font-size:clamp(26px,3.4vw,34px);font-weight:800;letter-spacing:-0.03em;color:#0E4633">이런 보고서가<br>바로 만들어집니다</h2>
+        <p style="margin:10px 0 0;font-size:15px;color:#7E7567;max-width:480px">반경 500m 지도 위 전수 실측 가동률·주간가 분석. 크레딧 1개로 원하는 지역의 원본을 받아보세요.</p>
+      </div>
+      <div style="position:relative;min-height:300px">
+        <div style="position:absolute;top:24px;right:0;width:58%;border-radius:12px;overflow:hidden;border:1px solid #E6E0D7;box-shadow:0 18px 40px rgba(26,23,18,0.16);transform:rotate(2.5deg)">
+          <img src="assets/report-p2.jpg" alt="보고서 예시, 컨설턴트 평가" style="display:block;width:100%">
+          <div style="position:absolute;left:0;right:0;top:14%;bottom:0;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)"></div>
+        </div>
+        <div style="position:absolute;top:0;left:0;width:62%;border-radius:12px;overflow:hidden;border:1px solid #E6E0D7;box-shadow:0 18px 44px rgba(26,23,18,0.2);transform:rotate(-2deg)">
+          <img src="assets/report-p1.jpg" alt="보고서 예시, 반경 500m 지도 실측" style="display:block;width:100%">
+          <div style="position:absolute;left:0;right:0;top:16%;height:28%;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)"></div>
+        </div>
+        <div style="position:absolute;left:8%;bottom:6px;background:#0E4633;color:#fff;font-size:12px;font-weight:700;padding:8px 16px;border-radius:999px;box-shadow:0 8px 20px rgba(14,70,51,0.3)">실제 발송 보고서 미리보기, 원본은 구매 시 제공</div>
+      </div>
+    </div>
+
+    <div style="max-width:1140px;margin:0 auto;padding:32px;box-sizing:border-box;display:grid;grid-template-columns:1.15fr 0.85fr;gap:24px;align-items:start">
+
+      <!-- LEFT -->
+      <div style="background:#fff;border:1px solid #E6E0D7;border-radius:24px;padding:36px;box-shadow:0 4px 20px rgba(26,23,18,0.06);opacity:{{ c2O }};transform:translateY({{ c2Y }});transition:opacity 0.8s ease 0.12s,transform 0.8s cubic-bezier(0.22,1,0.36,1) 0.12s">
+        <div style="display:flex;align-items:center;gap:12px">
+          <h3 style="margin:0;font-size:19px;font-weight:800;color:#0E4633;letter-spacing:-0.02em">분석 지역 지정</h3>
+        </div>
+        <p style="margin:8px 0 18px;font-size:13.5px;color:#7E7567">역·동 단위로 지정합니다. 지정 지점 반경 500m가 전수 조사 범위입니다.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div>
+            <div style="font-size:12.5px;font-weight:700;color:#5C5447;margin-bottom:6px">시/도</div>
+            <select value="{{ city }}" onChange="{{ onCity }}" style="width:100%;box-sizing:border-box;padding:12px 14px;border:1px solid #D8D0C4;border-radius:12px;font-size:15px;font-family:'Pretendard',sans-serif;color:#1A1712;background:#FAF8F5">
+              <option value="서울">서울특별시</option>
+              <option value="경기">경기도</option>
+              <option value="인천">인천광역시</option>
+              <option value="부산">부산광역시</option>
+            </select>
+          </div>
+          <div>
+            <div style="font-size:12.5px;font-weight:700;color:#5C5447;margin-bottom:6px">지역 (역·동)</div>
+            <select value="{{ area }}" onChange="{{ onArea }}" style="width:100%;box-sizing:border-box;padding:12px 14px;border:1px solid #D8D0C4;border-radius:12px;font-size:15px;font-family:'Pretendard',sans-serif;color:#1A1712;background:#FAF8F5">
+              <sc-for list="{{ areaOptions }}" as="opt" hint-placeholder-count="3">
+                <option value="{{ opt }}">{{ opt }}</option>
+              </sc-for>
+            </select>
+          </div>
+        </div>
+        <div style="margin-top:14px;display:flex;align-items:center;gap:10px;background:#F2EEE8;border-radius:12px;padding:12px 16px">
+          <span style="font-size:13px;color:#5C5447">조사 범위</span>
+          <span style="font-size:13.5px;font-weight:700;color:#115A40">{{ city }} {{ area }} 반경 500m, 향후 56일</span>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:12px;margin-top:30px">
+          <h3 style="margin:0;font-size:19px;font-weight:800;color:#0E4633;letter-spacing:-0.02em">분석 실행</h3>
+        </div>
+
+        <sc-if value="{{ isIdle }}" hint-placeholder-val="{{ true }}">
+          <button onClick="{{ run }}" style="margin-top:16px;width:100%;background:#1E8A63;color:#fff;border:none;cursor:pointer;font-weight:700;font-size:17px;padding:17px 0;border-radius:14px;box-shadow:0 10px 28px rgba(30,138,99,0.32);font-family:'Pretendard',sans-serif" style-hover="filter:brightness(0.94)" style-active="transform:scale(0.97)">크레딧 1개로 분석 시작 →</button>
+          <sc-if value="{{ noCredits }}" hint-placeholder-val="{{ false }}">
+            <p style="margin:10px 0 0;font-size:13px;color:#C0392B;font-weight:600">크레딧이 없습니다. 오른쪽에서 먼저 충전해 주세요.</p>
+          </sc-if>
+          <p style="margin:10px 0 0;font-size:12.5px;color:#A89E8E">실행 즉시 크레딧 1개가 차감됩니다. 커버리지가 부족한 지역은 차감 없이 안내됩니다.</p>
+        </sc-if>
+
+        <sc-if value="{{ isRunning }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:16px;background:#0E4633;border-radius:18px;padding:26px;color:#fff;position:relative;overflow:hidden">
+            <div style="position:absolute;right:-30px;bottom:-70px;width:160px;height:240px;background:#115A40;border-radius:80px 80px 0 0;opacity:0.6"></div>
+            <div style="position:relative">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span style="font-weight:700;font-size:15.5px">{{ stageLabel }}</span>
+                <span style="font-family:'Spline Sans Mono',monospace;font-size:14px;color:#A6D8C2">{{ pct }}%</span>
+              </div>
+              <div style="margin-top:12px;height:8px;background:rgba(255,255,255,0.15);border-radius:999px;overflow:hidden">
+                <div style="height:100%;background:linear-gradient(90deg,#1E8A63,#3DA37C);border-radius:999px;transition:width 0.25s ease-out;width:{{ pctW }}"></div>
+              </div>
+              <div style="margin-top:16px;display:flex;flex-direction:column;gap:6px">
+                <sc-for list="{{ stageRows }}" as="s" hint-placeholder-count="5">
+                  <div style="display:flex;align-items:center;gap:10px;font-size:13.5px;color:{{ s.color }}">
+                    <span style="font-family:'Spline Sans Mono',monospace;width:16px">{{ s.mark }}</span>
+                    <span>{{ s.label }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:16px;border:2px solid #1E8A63;border-radius:18px;padding:26px;background:#ECF6F1">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-family:'Spline Sans Mono',monospace;font-size:18px;color:#1E8A63;font-weight:700">✓</span>
+              <span style="font-weight:800;font-size:17px;color:#0E4633">보고서가 준비됐습니다</span>
+            </div>
+            <p style="margin:8px 0 16px;font-size:13.5px;color:#5C5447">{{ doneRegion }} · 전수 실측 가동률 · 주간가 분석 · 컨설턴트 평가 포함</p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <a href="리포트 웹뷰.dc.html" style="background:#1E8A63;color:#fff;font-weight:700;font-size:15px;padding:13px 28px;border-radius:12px" style-hover="filter:brightness(0.94)">보고서 열기 →</a>
+              <button onClick="{{ reset }}" style="border:1.5px solid #1E8A63;background:transparent;cursor:pointer;color:#115A40;font-weight:700;font-size:15px;padding:12px 24px;border-radius:12px;font-family:'Pretendard',sans-serif" style-hover="background:#fff">다른 지역 분석하기</button>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+
+      <!-- RIGHT -->
+      <div style="display:flex;flex-direction:column;gap:16px;opacity:{{ c3O }};transform:translateY({{ c3Y }});transition:opacity 0.8s ease 0.24s,transform 0.8s cubic-bezier(0.22,1,0.36,1) 0.24s">
+        <div style="background:#0E4633;color:#fff;border-radius:24px;padding:30px;position:relative;overflow:hidden">
+          <div style="position:absolute;right:-24px;bottom:-60px;width:140px;height:220px;background:#115A40;border-radius:70px 70px 0 0;opacity:0.55"></div>
+          <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(166,216,194,0.06) 1px, transparent 1px),linear-gradient(90deg, rgba(166,216,194,0.06) 1px, transparent 1px);background-size:36px 36px"></div>
+          <div style="position:relative">
+            <div style="font-size:13px;font-weight:700;color:#A6D8C2">보유 크레딧</div>
+            <div style="display:flex;align-items:baseline;gap:8px;margin-top:8px">
+              <span style="font-family:'Spline Sans Mono',monospace;font-size:46px;font-weight:700;line-height:1">{{ credits }}</span>
+              <span style="font-size:14px;color:#D2EBE0">개 보유</span>
+            </div>
+            <p style="margin:10px 0 0;font-size:12.5px;color:#A6D8C2">크레딧 1개 = 보고서 1건 · 유효기간 없음</p>
+          </div>
+        </div>
+
+        <div style="background:#fff;border:1px solid #E6E0D7;border-radius:24px;padding:26px;box-shadow:0 4px 20px rgba(26,23,18,0.06)">
+          <h3 style="margin:0 0 6px;font-size:16px;font-weight:800;color:#0E4633">크레딧 충전</h3>
+          <p style="margin:0 0 14px;font-size:12.5px;color:#1E8A63;font-weight:600">첫 가입 시 무료 크레딧 1개가 지급됩니다.</p>
+          <button onClick="{{ buy1 }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;background:#FAF8F5;border:1px solid #E6E0D7;border-radius:14px;padding:16px 18px;cursor:pointer;font-family:'Pretendard',sans-serif;margin-bottom:10px" style-hover="border-color:#1E8A63;background:#ECF6F1">
+            <span style="text-align:left"><span style="display:block;font-weight:700;font-size:15px;color:#1A1712">1 크레딧</span><span style="display:block;font-size:12.5px;color:#7E7567">보고서 1건</span></span>
+            <span style="font-family:'Spline Sans Mono',monospace;font-weight:700;font-size:17px;color:#115A40">3만원</span>
+          </button>
+          <button onClick="{{ buy6 }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;background:#FAF8F5;border:2px solid #1E8A63;border-radius:14px;padding:16px 18px;cursor:pointer;font-family:'Pretendard',sans-serif;position:relative" style-hover="background:#ECF6F1">
+            <span style="position:absolute;top:-11px;left:14px;background:#E8674C;color:#fff;font-size:10.5px;font-weight:700;padding:3px 12px;border-radius:999px">44% 절약</span>
+            <span style="text-align:left"><span style="display:block;font-weight:700;font-size:15px;color:#1A1712">6 크레딧</span><span style="display:block;font-size:12.5px;color:#7E7567">건당 1.7만원 꼴</span></span>
+            <span style="font-family:'Spline Sans Mono',monospace;font-weight:700;font-size:17px;color:#115A40">10만원</span>
+          </button>
+          <sc-if value="{{ justBought }}" hint-placeholder-val="{{ false }}">
+            <p style="margin:12px 0 0;font-size:13px;font-weight:600;color:#1E8A63">✓ 충전 완료: {{ justBought }}</p>
+          </sc-if>
+          <p style="margin:12px 0 0;font-size:11.5px;color:#A89E8E;line-height:1.6">프로토타입 화면입니다. 결제 연동 전이라 버튼을 누르면 바로 충전됩니다.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- MY REPORTS -->
+    <div style="max-width:1140px;margin:0 auto;padding:16px 32px 80px;box-sizing:border-box">
+      <h2 style="margin:0;font-size:24px;font-weight:800;letter-spacing:-0.02em;color:#0E4633">내 보고서</h2>
+      <sc-if value="{{ hasReports }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:18px;border-top:1px solid #E6E0D7">
+          <sc-for list="{{ reports }}" as="r" hint-placeholder-count="1">
+            <div style="display:flex;align-items:center;gap:24px;padding:18px 0;border-bottom:1px solid #E6E0D7" style-hover="background:rgba(26,23,18,0.02)">
+              <div style="font-family:'Spline Sans Mono',monospace;font-size:26px;font-weight:700;color:#A6D8C2;line-height:1;min-width:44px">{{ r.no }}</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-weight:700;font-size:15.5px;color:#0E4633">{{ r.region }}</div>
+                <div style="font-size:12.5px;color:#7E7567">{{ r.date }} 발행, 반경 500m 전수 실측</div>
+              </div>
+              <a href="리포트 웹뷰.dc.html" style="border:1.5px solid #1E8A63;color:#115A40;font-weight:700;font-size:13.5px;padding:9px 20px;border-radius:10px;white-space:nowrap" style-hover="background:#ECF6F1">열기 →</a>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ noReports }}" hint-placeholder-val="{{ true }}">
+        <p style="margin:14px 0 0;font-size:14px;color:#A89E8E">아직 생성한 보고서가 없습니다. 지역을 지정하고 분석을 실행해 보세요.</p>
+      </sc-if>
+    </div>
+
+    <footer style="border-top:1px solid #E6E0D7;background:#F2EEE8">
+      <div style="max-width:1140px;margin:0 auto;padding:24px 32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <img src="assets/logo-mark.svg" alt="" style="width:20px;height:20px">
+          <span style="font-weight:700;font-size:14px;color:#423C32">다니엘스테이</span>
+        </div>
+        <div style="font-size:12.5px;color:#A89E8E">보고서는 데이터 분석 자료이며 수익을 보장하지 않습니다 · © 2026 DanielStay</div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- 로그인 모달 -->
+  <sc-if value="{{ loginOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;z-index:100;background:rgba(4,29,19,0.55);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:24px">
+      <div style="background:#fff;border-radius:24px;padding:36px;width:100%;max-width:400px;box-sizing:border-box;box-shadow:0 30px 80px rgba(4,29,19,0.4);position:relative">
+        <button onClick="{{ closeLogin }}" style="position:absolute;top:18px;right:18px;border:none;background:transparent;cursor:pointer;font-size:16px;color:#A89E8E;font-family:'Pretendard',sans-serif" style-hover="color:#423C32">✕</button>
+        <img src="assets/logo-mark.svg" alt="" style="width:32px;height:32px">
+        <h3 style="margin:14px 0 6px;font-size:21px;font-weight:800;color:#0E4633;letter-spacing:-0.02em">로그인 / 가입</h3>
+        <p style="margin:0 0 20px;font-size:13.5px;color:#7E7567">첫 가입 시 무료 크레딧 1개를 드립니다. 바로 한 지역을 분석해 보세요.</p>
+        <div style="font-size:12.5px;font-weight:700;color:#5C5447;margin-bottom:6px">이름</div>
+        <input value="{{ loginName }}" onChange="{{ onLoginName }}" placeholder="이름을 입력해 주세요" style="width:100%;box-sizing:border-box;padding:12px 14px;border:1px solid #D8D0C4;border-radius:12px;font-size:15px;font-family:'Pretendard',sans-serif;color:#1A1712;background:#FAF8F5;margin-bottom:12px">
+        <div style="font-size:12.5px;font-weight:700;color:#5C5447;margin-bottom:6px">이메일</div>
+        <input value="{{ loginEmail }}" onChange="{{ onLoginEmail }}" placeholder="example@email.com" style="width:100%;box-sizing:border-box;padding:12px 14px;border:1px solid #D8D0C4;border-radius:12px;font-size:15px;font-family:'Pretendard',sans-serif;color:#1A1712;background:#FAF8F5">
+        <sc-if value="{{ loginErr }}" hint-placeholder-val="{{ false }}">
+          <p style="margin:10px 0 0;font-size:13px;color:#C0392B;font-weight:600">이름을 입력해 주세요.</p>
+        </sc-if>
+        <button onClick="{{ doLogin }}" style="margin-top:20px;width:100%;background:#1E8A63;color:#fff;border:none;cursor:pointer;font-weight:700;font-size:15.5px;padding:15px 0;border-radius:12px;box-shadow:0 8px 24px rgba(30,138,99,0.3);font-family:'Pretendard',sans-serif" style-hover="filter:brightness(0.94)" style-active="transform:scale(0.97)">시작하고 무료 크레딧 받기</button>
+        <p style="margin:14px 0 0;font-size:11.5px;color:#A89E8E;line-height:1.6">프로토타입 로그인입니다. 비밀번호 없이 이 기기에만 저장됩니다.</p>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const AREAS = {
+  '서울': ['서울역 서부', '강남역', '홍대입구', '성수동', '잠실새내', '여의도'],
+  '경기': ['판교역', '수원역', '일산 라페스타', '광교중앙'],
+  '인천': ['송도 센트럴파크', '부평역', '인천공항 인근'],
+  '부산': ['서면', '해운대', '남포동'],
+};
+const STAGES = ['반경 500m 매물 전수 수집', '향후 56일 캘린더 실측', '주간가(임대료+관리비) 분석', '원룸 vs 멀티룸 비교', '컨설턴트 평가 · 보고서 생성'];
+const LS = 'ds_self_report_v1';
+const clamp = (v) => Math.max(0, Math.min(1, v));
+const ease = (t) => 1 - Math.pow(1 - t, 3);
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    let saved = {};
+    try { saved = JSON.parse(localStorage.getItem(LS) || '{}'); } catch (e) {}
+    this.state = {
+      credits: typeof saved.credits === 'number' ? saved.credits : 0,
+      user: saved.user || null,
+      freeGranted: !!saved.freeGranted,
+      loginOpen: false, loginName: '', loginEmail: '', loginErr: false,
+      reports: Array.isArray(saved.reports) ? saved.reports : [],
+      city: '서울', area: '서울역 서부',
+      phase: 'idle', pct: 0, stageIdx: 0,
+      noCredits: false, justBought: '', doneRegion: '',
+      p: 0, consoleIn: false, force: false,
+    };
+  }
+  persist() {
+    try { localStorage.setItem(LS, JSON.stringify({ credits: this.state.credits, reports: this.state.reports, user: this.state.user, freeGranted: this.state.freeGranted })); } catch (e) {}
+  }
+  componentDidMount() {
+    // 단일 40ms 클록: 스크롤 + 분석 진행을 한 틱에서 처리 (구형 런타임이 중첩 setState 콜백을 누락하는 문제 회피)
+    this.clock = setInterval(() => {
+      const st = this.state;
+      const y = window.scrollY || document.documentElement.scrollTop || 0;
+      const vh = window.innerHeight || 800;
+      const span = vh * 2.2;
+      const p = clamp(y / span);
+      const consoleIn = st.force || y > span * 0.72;
+      const upd = {};
+      let dirty = false;
+      if (Math.abs(p - st.p) > 0.004 || consoleIn !== st.consoleIn) { upd.p = p; upd.consoleIn = consoleIn; dirty = true; }
+      if (st.phase === 'running') {
+        const timedOut = this.runStart && (Date.now() - this.runStart > 8000);
+        const pct = timedOut ? 100 : Math.min(100, st.pct + 1 + Math.random() * 1.2);
+        upd.pct = pct;
+        upd.stageIdx = Math.min(STAGES.length - 1, Math.floor(pct / (100 / STAGES.length)));
+        dirty = true;
+        if (pct >= 100) {
+          const now = new Date();
+          const date = now.getFullYear() + '.' + String(now.getMonth() + 1).padStart(2, '0') + '.' + String(now.getDate()).padStart(2, '0');
+          const no = String(st.reports.length + 1).padStart(2, '0');
+          upd.phase = 'done';
+          upd.reports = [{ no, region: st.doneRegion, date }].concat(st.reports);
+          try { localStorage.setItem(LS, JSON.stringify({ credits: st.credits, reports: upd.reports, user: st.user, freeGranted: st.freeGranted })); } catch (e) {}
+        }
+      }
+      if (dirty) this.setState(upd);
+    }, 40);
+    // failsafe: 3.5초 후 콘솔 리빌 강제 (환경 무관 콘텐츠 보장)
+    this.failsafe = setTimeout(() => this.setState({ force: true, consoleIn: true }), 3500);
+  }
+  componentWillUnmount() {
+    if (this.clock) clearInterval(this.clock);
+    if (this.failsafe) clearTimeout(this.failsafe);
+  }
+  startRun() {
+    if (!this.state.user) { this.setState({ loginOpen: true }); return; }
+    if (this.state.credits < 1) { this.setState({ noCredits: true }); return; }
+    const region = this.state.city + ' ' + this.state.area;
+    const credits = this.state.credits - 1;
+    this.runStart = Date.now();
+    this.setState({ credits, phase: 'running', pct: 0, stageIdx: 0, noCredits: false, doneRegion: region });
+    try { localStorage.setItem(LS, JSON.stringify({ credits, reports: this.state.reports, user: this.state.user, freeGranted: this.state.freeGranted })); } catch (e) {}
+  }
+  buy(n, label) {
+    if (!this.state.user) { this.setState({ loginOpen: true }); return; }
+    const credits = this.state.credits + n;
+    this.setState({ credits, justBought: label, noCredits: false });
+    try { localStorage.setItem(LS, JSON.stringify({ credits, reports: this.state.reports, user: this.state.user, freeGranted: this.state.freeGranted })); } catch (e) {}
+    if (this.boughtTimer) clearTimeout(this.boughtTimer);
+    this.boughtTimer = setTimeout(() => this.setState({ justBought: '' }), 2500);
+  }
+  doLogin() {
+    const name = (this.state.loginName || '').trim();
+    if (!name) { this.setState({ loginErr: true }); return; }
+    const first = !this.state.freeGranted;
+    const user = { name, email: (this.state.loginEmail || '').trim() };
+    const credits = first ? this.state.credits + 1 : this.state.credits;
+    this.setState({
+      user, credits, freeGranted: true,
+      loginOpen: false, loginErr: false,
+      justBought: first ? '가입 축하 무료 크레딧 1개' : '',
+      noCredits: false,
+    });
+    try { localStorage.setItem(LS, JSON.stringify({ credits, reports: this.state.reports, user, freeGranted: true })); } catch (e) {}
+    if (first) {
+      if (this.boughtTimer) clearTimeout(this.boughtTimer);
+      this.boughtTimer = setTimeout(() => this.setState({ justBought: '' }), 3500);
+    }
+  }
+  renderVals() {
+    const s = this.state;
+    const p = s.p;
+    // 도어웨이 저니 타임라인
+    const openT = ease(clamp(p / 0.58));           // 문이 커지는 구간
+    const archScale = 1 + openT * 8.5;
+    const dataK = ease(clamp((p - 0.5) / 0.22));   // 데이터 공간 카운트업
+    const capA = s.force && p < 0.01 ? 1 : clamp(1 - (p - 0.1) / 0.1) * clamp(p * 40 + 1);
+    const capB = clamp((p - 0.2) / 0.08) * clamp(1 - (p - 0.44) / 0.08);
+    const capC = clamp((p - 0.78) / 0.1);
+    const areaOptions = AREAS[s.city] || [];
+    const stageRows = STAGES.map((label, i) => ({
+      label,
+      mark: s.phase === 'running' ? (i < s.stageIdx ? '✓' : (i === s.stageIdx ? '●' : '·')) : '·',
+      color: i < s.stageIdx ? '#A6D8C2' : (i === s.stageIdx ? '#fff' : 'rgba(255,255,255,0.4)'),
+    }));
+    const cIn = s.consoleIn;
+    return {
+      credits: s.credits,
+      loggedIn: !!s.user, loggedOut: !s.user,
+      userName: s.user ? s.user.name : '',
+      loginOpen: s.loginOpen, loginName: s.loginName, loginEmail: s.loginEmail, loginErr: s.loginErr,
+      openLogin: () => this.setState({ loginOpen: true, loginErr: false }),
+      closeLogin: () => this.setState({ loginOpen: false, loginErr: false }),
+      onLoginName: (e) => this.setState({ loginName: e.target.value, loginErr: false }),
+      onLoginEmail: (e) => this.setState({ loginEmail: e.target.value }),
+      doLogin: () => this.doLogin(),
+      logout: () => {
+        this.setState({ user: null });
+        try { localStorage.setItem(LS, JSON.stringify({ credits: s.credits, reports: s.reports, user: null, freeGranted: s.freeGranted })); } catch (e) {}
+      },
+      // hero
+      archT: 'scale(' + archScale.toFixed(3) + ')',
+      gridO: (0.3 + openT * 0.7).toFixed(2),
+      knobO: (1 - openT * 1.6).toFixed(2),
+      ambientO: (1 - clamp((p - 0.4) / 0.2) * 0.7).toFixed(2),
+      dataO: (dataK * clamp(1 - (p - 0.82) / 0.1)).toFixed(2),
+      dataY: ((1 - dataK) * 30).toFixed(0) + 'px',
+      occVal: (71.3 * dataK).toFixed(1),
+      unitVal: Math.round(47 * dataK),
+      dayVal: Math.round(56 * dataK),
+      capAO: clamp(capA).toFixed(2), capAY: (clamp(1 - capA) * -20).toFixed(0) + 'px',
+      capBO: capB.toFixed(2), capBY: ((1 - capB) * 24).toFixed(0) + 'px',
+      capCO: capC.toFixed(2), capCY: ((1 - capC) * 24).toFixed(0) + 'px',
+      hintO: clamp(1 - p * 6).toFixed(2),
+      // console reveal
+      c1O: cIn ? 1 : 0, c1Y: cIn ? '0px' : '28px',
+      c2O: cIn ? 1 : 0, c2Y: cIn ? '0px' : '36px',
+      c3O: cIn ? 1 : 0, c3Y: cIn ? '0px' : '36px',
+      // console state
+      city: s.city, area: s.area, areaOptions,
+      onCity: (e) => { const c = e.target.value; this.setState({ city: c, area: (AREAS[c] || [''])[0] }); },
+      onArea: (e) => this.setState({ area: e.target.value }),
+      isIdle: s.phase === 'idle', isRunning: s.phase === 'running', isDone: s.phase === 'done',
+      noCredits: s.noCredits,
+      run: () => this.startRun(),
+      reset: () => this.setState({ phase: 'idle', pct: 0, stageIdx: 0 }),
+      pct: Math.round(s.pct), pctW: Math.round(s.pct) + '%',
+      stageLabel: STAGES[s.stageIdx] || STAGES[0],
+      stageRows,
+      doneRegion: s.doneRegion,
+      justBought: s.justBought,
+      buy1: () => this.buy(1, '1 크레딧 (3만원)'),
+      buy6: () => this.buy(6, '6 크레딧 (10만원)'),
+      reports: s.reports,
+      hasReports: s.reports.length > 0,
+      noReports: s.reports.length === 0,
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+/* ============================================================
+   다니엘스테이 디자인 시스템 — 글로벌 진입점
+   consumers는 이 파일 하나만 link 하면 됩니다.
+   (규칙: @import 목록만 — 인라인 규칙 금지)
+   ============================================================ */
+
+@import "./tokens/fonts.css";
+@import "./tokens/colors.css";
+@import "./tokens/typography.css";
+@import "./tokens/spacing.css";
+@import "./tokens/base.css";

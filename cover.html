@@ -1,0 +1,237 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<title>다니엘스테이 보고서</title><style>
+/* ============================================================
+   다니엘스테이 위탁운영계획서 — 공통 디자인 토큰
+   danielstay.html 번들에서 추출한 실제 팔레트 기반.
+   모든 섹션 조각은 이 파일의 변수·클래스만 사용한다.
+   ============================================================ */
+
+:root {
+  /* Brand green scale */
+  --g-50:  #ECF6F1;
+  --g-100: #D2EBE0;
+  --g-200: #A6D8C2;
+  --g-300: #6FBF9E;
+  --g-400: #3DA37C;
+  --g-500: #1E8A63;
+  --g-600: #16704F;
+  --g-700: #115A40;
+  --g-800: #0E4633;  /* primary */
+  --g-900: #0A3526;
+
+  /* Warm neutrals */
+  --paper:   #FAF8F5;
+  --n-100:   #F2EEE8;
+  --n-200:   #E6E0D7;
+  --n-300:   #D2C9BB;
+  --n-400:   #A89E8E;
+  --n-500:   #7E7567;
+  --n-600:   #5C5447;
+  --n-700:   #423C32;
+  --n-800:   #2B271F;
+  --n-900:   #1A1712;
+
+  /* Accent (리스크·주의 전용, 절제 사용) */
+  --terra-100: #FBE3DC;
+  --terra-300: #F2A795;
+  --terra-500: #E8674C;
+  --terra-600: #D24E33;
+  --terra-700: #AE3C25;
+
+  /* Semantic */
+  --ok:     #1E8A63;
+  --warn:   #E0A526;
+  --danger: #D14343;
+  --info:   #2E6FB7;
+  --ok-bg:     #ECF6F1;
+  --warn-bg:   #FBF1D9;
+  --danger-bg: #FAE2E2;
+  --info-bg:   #E3EEF8;
+
+  /* Typography */
+  --font-sans: "Pretendard", "Pretendard Variable", -apple-system, BlinkMacSystemFont,
+               "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", Consolas, "Malgun Gothic", monospace;
+  --font-display: var(--font-sans);
+  --font-body:    var(--font-sans);
+  --font-data:    var(--font-mono);
+}
+
+/* ---------- base ---------- */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--paper);
+  color: var(--n-800);
+  line-height: 1.65;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+img, svg { max-width: 100%; display: block; }
+
+/* ---------- layout ---------- */
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+
+.sec { padding: 72px 0; border-top: 1px solid var(--n-200); }
+.sec:first-of-type { border-top: none; }
+.sec-alt { background: var(--n-100); }
+
+/* 섹션 헤더: 번호 마커 + 타이틀 */
+.sec-head { display: flex; align-items: baseline; gap: 16px; margin-bottom: 40px; }
+.sec-num {
+  font-family: var(--font-data);
+  font-size: 14px; font-weight: 600;
+  color: var(--g-500);
+  letter-spacing: 0.08em;
+}
+.sec-title {
+  font-family: var(--font-display);
+  font-size: 32px; font-weight: 700;
+  color: var(--g-800);
+  letter-spacing: -0.02em;
+}
+.sec-sub { font-size: 16px; color: var(--n-500); margin-top: 8px; }
+
+/* ---------- components ---------- */
+.card {
+  background: #FFFFFF;
+  border: 1px solid var(--n-200);
+  border-radius: 12px;
+  padding: 28px;
+}
+.card + .card { margin-top: 16px; }
+.card-grid { display: grid; gap: 16px; }
+.card-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+.card-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.card-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+/* KPI: 핵심 숫자는 모노 + 딥그린 */
+.kpi { display: flex; flex-direction: column; gap: 4px; }
+.kpi .kpi-label { font-size: 13px; color: var(--n-500); letter-spacing: 0.02em; }
+.kpi .kpi-value {
+  font-family: var(--font-data);
+  font-size: 30px; font-weight: 700;
+  color: var(--g-800); letter-spacing: -0.01em;
+}
+.kpi .kpi-note { font-size: 12px; color: var(--n-400); }
+
+/* 표: 장부 스타일 */
+table.ledger { width: 100%; border-collapse: collapse; font-size: 14px; }
+table.ledger th {
+  text-align: left; font-weight: 600; color: var(--n-600);
+  background: var(--n-100);
+  padding: 10px 14px; border-bottom: 2px solid var(--n-300);
+  white-space: nowrap;
+}
+table.ledger td { padding: 10px 14px; border-bottom: 1px solid var(--n-200); vertical-align: top; }
+table.ledger td.num { font-family: var(--font-data); text-align: right; color: var(--g-800); }
+table.ledger tr.total td { font-weight: 700; border-top: 2px solid var(--n-300); background: var(--g-50); }
+.table-scroll { overflow-x: auto; }
+
+/* 배지 */
+.badge {
+  display: inline-block; padding: 3px 10px; border-radius: 999px;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.02em;
+}
+.badge-ok     { background: var(--ok-bg);     color: var(--g-600); }
+.badge-warn   { background: var(--warn-bg);   color: #8a6410; }
+.badge-danger { background: var(--danger-bg); color: var(--terra-700); }
+.badge-info   { background: var(--info-bg);   color: var(--info); }
+.badge-muted  { background: var(--n-100);     color: var(--n-500); }
+
+/* 타임라인 (운영계획용) */
+.timeline { list-style: none; position: relative; padding-left: 28px; }
+.timeline::before {
+  content: ""; position: absolute; left: 8px; top: 6px; bottom: 6px;
+  width: 2px; background: var(--g-200);
+}
+.timeline li { position: relative; padding: 0 0 28px 8px; }
+.timeline li::before {
+  content: ""; position: absolute; left: -26px; top: 6px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--g-500); border: 3px solid var(--g-100);
+}
+.timeline .tl-step { font-family: var(--font-data); font-size: 12px; color: var(--g-500); font-weight: 600; }
+.timeline .tl-title { font-weight: 700; color: var(--n-800); margin: 2px 0 4px; }
+.timeline .tl-desc { font-size: 14px; color: var(--n-600); }
+
+/* 리스크 카드 (테라코타 액센트는 여기만) */
+.risk { border-left: 4px solid var(--terra-500); }
+.risk .risk-title { font-weight: 700; color: var(--terra-700); margin-bottom: 6px; }
+.risk .risk-mitigation { color: var(--g-700); font-size: 14px; }
+
+/* 각주·캐비앳 */
+.footnote {
+  font-size: 12.5px; color: var(--n-500);
+  border-top: 1px dashed var(--n-300);
+  padding-top: 12px; margin-top: 24px;
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 1024px) {
+  .card-grid.cols-4 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .wrap { padding: 0 20px; }
+  .sec { padding: 48px 0; }
+  .sec-title { font-size: 26px; }
+  .card-grid.cols-3, .card-grid.cols-2 { grid-template-columns: 1fr; }
+  .kpi .kpi-value { font-size: 24px; }
+}
+@media (max-width: 480px) {
+  .card-grid.cols-4 { grid-template-columns: 1fr; }
+  .card { padding: 20px; }
+}
+
+/* ---------- print (A4 보고서) ---------- */
+@media print {
+  body { background: #fff; font-size: 12px; }
+  .sec { padding: 24px 0; page-break-inside: avoid; }
+  .card { border: 1px solid #ccc; box-shadow: none; }
+  .no-print { display: none !important; }
+}
+
+html,body{margin:0;padding:0}
+body{background:var(--g-900);color:var(--paper);width:1280px;height:1600px;
+ display:flex;flex-direction:column;justify-content:space-between;
+ padding:96px 88px;box-sizing:border-box;position:relative;overflow:hidden}
+.rule{height:3px;background:var(--g-500);width:132px;margin:0 0 40px}
+.eyebrow{font-family:var(--font-data);font-size:19px;letter-spacing:.34em;
+ color:var(--g-300);text-transform:uppercase;margin-bottom:34px}
+h1{font-family:var(--font-display);font-size:104px;line-height:1.06;font-weight:800;
+ letter-spacing:-.035em;margin:0 0 30px;color:#fff}
+.sub{font-size:32px;color:var(--g-100);font-weight:600;margin-bottom:12px}
+.sub2{font-size:21px;color:var(--g-200);opacity:.82}
+.badges{display:flex;gap:12px;margin-top:44px;flex-wrap:wrap}
+.b{font-family:var(--font-data);font-size:16px;padding:9px 18px;border-radius:999px;
+ border:1px solid var(--g-600);background:rgba(255,255,255,.05);color:var(--g-100)}
+.b.hi{background:var(--g-500);border-color:var(--g-400);color:#fff;font-weight:600}
+.meta{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;
+ border-top:1px solid rgba(255,255,255,.16);padding-top:32px}
+.meta .k{font-family:var(--font-data);font-size:13px;letter-spacing:.16em;
+ color:var(--g-300);text-transform:uppercase;margin-bottom:9px}
+.meta .v{font-size:20px;color:var(--paper);font-weight:600}
+.brand{position:absolute;right:88px;top:96px;text-align:right}
+.brand .n{font-family:var(--font-display);font-size:25px;font-weight:800;letter-spacing:-.02em;color:#fff}
+.brand .t{font-family:var(--font-data);font-size:13px;letter-spacing:.2em;color:var(--g-300);margin-top:6px}
+.glow{position:absolute;right:-260px;bottom:-320px;width:900px;height:900px;border-radius:50%;
+ background:radial-gradient(circle,rgba(30,138,99,.34) 0%,rgba(30,138,99,0) 68%)}
+</style></head><body>
+<div class="glow"></div>
+<div class="brand"><div class="n">DanielStay</div><div class="t">SHORT-STAY OPERATIONS</div></div>
+<div>
+  <div class="eyebrow">Market Validation Report</div>
+  <div class="rule"></div>
+  <h1>다니엘스테이<br>보고서</h1>
+  <div class="sub">상현역 단기임대 시장검증</div>
+  <div class="sub2">용인시 수지구 상현동 · 신분당선 상현역 · 반경 500m</div>
+  <div class="badges"><span class="b hi">전수 조사 34실</span>
+  <span class="b">통합 가동률 61.7%</span><span class="b">주간가 중위 38.0만</span></div>
+</div>
+<div class="meta">
+  <div><div class="k">실측일</div><div class="v">2026-08-21</div></div>
+  <div><div class="k">측정 창</div><div class="v">향후 8주 (56일)</div></div>
+  <div><div class="k">데이터</div><div class="v">33m2 실측</div></div>
+</div>
+</body></html>

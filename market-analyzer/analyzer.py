@@ -25,6 +25,7 @@ import argparse
 
 import config
 import locate                    # 지역명 자유 입력 자동 해석(사전에 없을 때)
+import mapimg                    # 분석 반경 지도 이미지(Pillow 없으면 자동 생략)
 import model                     # import 시점에 앵커 자기검증 실행(실패하면 여기서 중단)
 import molit
 import m33
@@ -155,6 +156,8 @@ def main(argv=None):
     ap.add_argument("--window", choices=("past", "future"), default="future",
                     help="선점률 측정 창: future=향후 N주(기본·유일 지원). "
                          "past는 33m2 API가 과거 날짜를 반환하지 않아 미지원")
+    ap.add_argument("--no-map", action="store_true",
+                    help="분석 반경 지도 이미지 생성 생략(기본: 생성)")
     ap.add_argument("--session-file", help="33m2 로그인 세션 파일(쿠키/Bearer)")
     ap.add_argument("--no-cache", action="store_true", help="MOLIT 캐시 미사용")
     # 수동 위치(사전에 없을 때)
@@ -279,6 +282,14 @@ def main(argv=None):
         "locate_evidence": locate_evidence,
     }
     ctx["caveats"] = build_caveats(ctx)
+
+    # 지도 이미지(분석 반경 + 매물 마커) — 실패해도 리포트는 정상 생성
+    if not args.no_map:
+        map_path = mapimg.render_for_report(region, ctx["date"], lat, lon,
+                                            args.radius, supply, occupancy)
+        if map_path:
+            ctx["map_path"] = map_path
+            print(f"      지도 이미지: {map_path}")
 
     # 분석·판단(판단룰 엔진) — 품질교락·신뢰등급·타채널 해석·추천
     ctx["analysis"] = rules.analyze(ctx)

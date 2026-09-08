@@ -1,0 +1,95 @@
+/* ============================================================
+   다니엘스테이 — Color Tokens
+   기본 테마: "스테이 그린"
+   - 공간·성장·신뢰를 상징하는 딥 에메랄드 시그니처
+   - 따뜻한 샌드 뉴트럴 (호스피탈리티 온기)
+   - 코랄 보조 강조 (젊고 트렌디한 포인트, 절제해서 사용)
+   ============================================================ */
+
+:root {
+  /* ---- Brand / Forest (시그니처 그린) ---- */
+  --forest-50:  #ECF6F1;
+  --forest-100: #D2EBE0;
+  --forest-200: #A6D8C2;
+  --forest-300: #6FBF9E;
+  --forest-400: #3DA37C;
+  --forest-500: #1E8A63;
+  --forest-600: #16704F;
+  --forest-700: #115A40;
+  --forest-800: #0E4633;
+  --forest-900: #0A3526;
+
+  /* ---- Warm neutral / Sand (따뜻한 뉴트럴) ---- */
+  --sand-0:   #FFFFFF;
+  --sand-50:  #FAF8F5;
+  --sand-100: #F2EEE8;
+  --sand-200: #E6E0D7;
+  --sand-300: #D2C9BB;
+  --sand-400: #A89E8E;
+  --sand-500: #7E7567;
+  --sand-600: #5C5447;
+  --sand-700: #423C32;
+  --sand-800: #2B271F;
+  --sand-900: #1A1712;
+
+  /* ---- Accent / Coral (젊은 포인트, CTA 강조) ---- */
+  --coral-100: #FBE3DC;
+  --coral-300: #F2A795;
+  --coral-400: #EE8770;
+  --coral-500: #E8674C;
+  --coral-600: #D24E33;
+  --coral-700: #AE3C25;
+
+  /* ---- Semantic raw ---- */
+  --green:  #1E8A63;
+  --amber:  #E0A526;
+  --red:    #D14343;
+  --blue:   #2E6FB7;
+
+  /* ============ Semantic aliases ============ */
+  /* Brand */
+  --brand:           var(--forest-500);
+  --brand-strong:    var(--forest-700);
+  --brand-soft:      var(--forest-50);
+  --brand-contrast:  var(--sand-0);
+  --accent:          var(--coral-500);
+  --accent-strong:   var(--coral-600);
+  --accent-soft:     var(--coral-100);
+
+  /* Text */
+  --text-strong:     var(--sand-900);
+  --text-body:       var(--sand-700);
+  --text-muted:      var(--sand-500);
+  --text-subtle:     var(--sand-400);
+  --text-inverse:    var(--sand-0);
+  --text-brand:      var(--forest-700);
+  --text-on-brand:   var(--sand-0);
+
+  /* Surfaces */
+  --surface-page:    var(--sand-50);
+  --surface-card:    var(--sand-0);
+  --surface-sunken:  var(--sand-100);
+  --surface-raised:  var(--sand-0);
+  --surface-ink:     var(--sand-900);
+  --surface-brand:   var(--forest-700);
+  --surface-brand-soft: var(--forest-50);
+
+  /* Borders */
+  --border-subtle:   var(--sand-200);
+  --border-default:  var(--sand-300);
+  --border-strong:   var(--sand-400);
+  --border-brand:    var(--forest-500);
+
+  /* Status */
+  --success:         var(--forest-500);
+  --success-soft:    var(--forest-50);
+  --warning:         var(--amber);
+  --warning-soft:    #FBF1D9;
+  --danger:          var(--red);
+  --danger-soft:     #FAE2E2;
+  --info:            var(--blue);
+  --info-soft:       #E3EEF8;
+
+  /* Focus ring */
+  --ring:            color-mix(in oklab, var(--forest-500) 45%, transparent);
+}

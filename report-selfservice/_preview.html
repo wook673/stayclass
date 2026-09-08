@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script>
+(function(){
+  var DATA = {"cities": {"경기": ["영통역", "동탄역", "상현역", "정자역", "서현역", "오리역", "수원역", "평촌역", "광교중앙역", "원천동", "상갈역"]}, "session": {"ok": true, "source": "browser"}, "reports": [{"no": "11", "region": "상현역", "date": "2026.07.28", "url": "#r11"}, {"no": "10", "region": "동탄역", "date": "2026.07.27", "url": "#r10"}, {"no": "09", "region": "영통역", "date": "2026.07.23", "url": "#r09"}]};
+  var _f = window.fetch;
+  window.fetch = function(url, opts){
+    var u = String((url && url.url) ? url.url : url);
+    if (u.indexOf('cdn.jsdelivr.net') >= 0 || u.indexOf('fonts.') >= 0) return _f.apply(this, arguments);
+    return Promise.resolve(new Response(JSON.stringify(DATA), {status:200, headers:{'Content-Type':'application/json'}}));
+  };
+})();
+</script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>다니엘스테이 · 단기임대 시장검증 셀프서비스</title>
+<link rel="stylesheet" href="./_ds/design-system-921ebfd8-579e-49fe-b7f9-dff3128c00d6/tokens/fonts.css">
+<link rel="stylesheet" href="./_ds/design-system-921ebfd8-579e-49fe-b7f9-dff3128c00d6/tokens/colors.css">
+<link rel="stylesheet" href="./_ds/design-system-921ebfd8-579e-49fe-b7f9-dff3128c00d6/tokens/typography.css">
+<link rel="stylesheet" href="./_ds/design-system-921ebfd8-579e-49fe-b7f9-dff3128c00d6/tokens/spacing.css">
+<link rel="stylesheet" href="./_ds/design-system-921ebfd8-579e-49fe-b7f9-dff3128c00d6/tokens/base.css">
+<link rel="stylesheet" href="./_ds/design-system-921ebfd8-579e-49fe-b7f9-dff3128c00d6/styles.css">
+<style>
+  body{margin:0;background:#FAF8F5;font-family:var(--font-sans);color:#423C32;word-break:keep-all;-webkit-font-smoothing:antialiased}
+  /* 디자인시스템 fonts.css 의 Pretendard 는 jsdelivr /gh/ 경로라 403 이 떨어진다(레포가 커서
+     gh 서빙 대상이 아님). 같은 폰트를 /npm/ 경로로 다시 선언해 덮어쓴다. */
+  @font-face{
+    font-family:"Pretendard Variable";
+    font-weight:100 900;
+    font-style:normal;
+    font-display:swap;
+    src:url("https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/variable/woff2/PretendardVariable.woff2") format("woff2-variations");
+  }
+  a{color:#115A40;text-decoration:none}
+  a:hover{color:#16704F}
+  @keyframes dsDrift{0%{transform:translateY(0)}50%{transform:translateY(-18px)}100%{transform:translateY(0)}}
+  @keyframes dsPulse{0%,100%{opacity:0.35}50%{opacity:0.9}}
+  @keyframes dsDash{to{stroke-dashoffset:0}}
+  /* 원본 시안의 인라인 hover/active 속성을 대체하는 CSS 규칙 */
+  .ds-quiet:hover{color:#fff}
+  .ds-primary:hover{filter:brightness(0.94)}
+  .ds-primary:active{transform:scale(0.97)}
+  .ds-outline:hover{background:#fff}
+  .ds-buy1:hover{border-color:#1E8A63;background:#ECF6F1}
+  .ds-buy6:hover{background:#ECF6F1}
+  .ds-reprow:hover{background:rgba(26,23,18,0.02)}
+  .ds-open:hover{background:#ECF6F1}
+  .ds-x:hover{color:#423C32}
+  .ds-retry:hover{background:#fff}
+</style>
+</head>
+<body>
+<div style="font-size:16px;line-height:1.65">
+
+  <!-- HERO: 도어웨이 스크롤 저니 (320vh) -->
+  <div style="height:320vh;position:relative;background:#06281A">
+    <div style="position:sticky;top:0;height:100vh;overflow:hidden;background:radial-gradient(120% 90% at 50% 110%, #0A3526 0%, #06281A 60%, #041D13 100%)">
+
+      <!-- nav -->
+      <div style="position:absolute;top:0;left:0;right:0;z-index:30;display:flex;justify-content:space-between;align-items:center;max-width:1140px;margin:0 auto;padding:22px 32px;box-sizing:border-box">
+        <div style="display:flex;align-items:center;gap:10px">
+          <img src="./assets/logo-mark-inverse.svg" alt="" style="width:26px;height:26px">
+          <span style="font-weight:800;font-size:16px;color:#fff;letter-spacing:-0.02em">다니엘스테이</span>
+          <span id="sessBadge" style="display:none;align-items:center;gap:6px;background:rgba(255,255,255,0.07);border:1px solid rgba(166,216,194,0.28);border-radius:999px;padding:5px 12px;backdrop-filter:blur(6px);margin-left:4px">
+            <span id="sessDot" style="width:6px;height:6px;border-radius:999px;background:#3DA37C;display:inline-block;flex:none"></span>
+            <span id="sessText" style="font-size:11.5px;font-weight:600;color:#A6D8C2;letter-spacing:-0.01em;white-space:nowrap">세션 확인 중</span>
+          </span>
+        </div>
+        <div id="navIn" style="display:none;align-items:center;gap:12px">
+          <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.08);border:1px solid rgba(166,216,194,0.3);border-radius:999px;padding:6px 16px;backdrop-filter:blur(6px)">
+            <span style="font-size:12px;font-weight:600;color:#A6D8C2">내 크레딧</span>
+            <span id="navCredits" style="font-family:'Spline Sans Mono',monospace;font-size:15px;font-weight:700;color:#fff">0</span>
+          </div>
+          <span id="navUser" style="font-size:13px;font-weight:600;color:#D2EBE0"></span>
+          <button id="btnLogout" class="ds-quiet" style="border:none;background:transparent;cursor:pointer;font-size:12.5px;color:#A6D8C2;font-family:var(--font-sans);padding:0">로그아웃</button>
+        </div>
+        <button id="btnLoginTop" class="ds-primary" style="background:#1E8A63;color:#fff;border:none;cursor:pointer;font-weight:700;font-size:13.5px;padding:10px 20px;border-radius:999px;font-family:var(--font-sans);box-shadow:0 6px 18px rgba(30,138,99,0.35)">로그인하고 무료 크레딧 받기</button>
+      </div>
+
+      <!-- 떠다니는 데이터 글리프 -->
+      <div id="ambient" style="position:absolute;inset:0;z-index:1;pointer-events:none;opacity:1">
+        <span style="position:absolute;top:18%;left:12%;font-family:'Spline Sans Mono',monospace;font-size:13px;color:rgba(166,216,194,0.35);animation:dsDrift 7s ease-in-out infinite">71.3%</span>
+        <span style="position:absolute;top:64%;left:8%;font-family:'Spline Sans Mono',monospace;font-size:11px;color:rgba(166,216,194,0.25);animation:dsDrift 9s ease-in-out infinite 1.2s">₩47.5M</span>
+        <span style="position:absolute;top:26%;right:10%;font-family:'Spline Sans Mono',monospace;font-size:12px;color:rgba(166,216,194,0.3);animation:dsDrift 8s ease-in-out infinite 0.6s">56일 실측</span>
+        <span style="position:absolute;top:70%;right:14%;font-family:'Spline Sans Mono',monospace;font-size:13px;color:rgba(166,216,194,0.3);animation:dsDrift 10s ease-in-out infinite 2s">500m</span>
+        <span style="position:absolute;top:44%;left:20%;width:5px;height:5px;border-radius:999px;background:#3DA37C;animation:dsPulse 3.4s ease-in-out infinite"></span>
+        <span style="position:absolute;top:36%;right:22%;width:4px;height:4px;border-radius:999px;background:#3DA37C;animation:dsPulse 4.2s ease-in-out infinite 1s"></span>
+      </div>
+
+      <!-- 도어웨이 -->
+      <div id="arch" style="position:absolute;left:50%;bottom:0;z-index:2;width:340px;height:74vh;margin-left:-170px;transform-origin:50% 100%;transform:scale(1);border-radius:170px 170px 0 0;background:linear-gradient(180deg, #115A40 0%, #0E4633 55%, #0A3526 100%);box-shadow:0 0 0 1px rgba(166,216,194,0.35), 0 0 120px rgba(30,138,99,0.35) inset, 0 -20px 80px rgba(30,138,99,0.25);overflow:hidden">
+        <div id="archGrid" style="position:absolute;inset:0;background-image:linear-gradient(rgba(166,216,194,0.09) 1px, transparent 1px),linear-gradient(90deg, rgba(166,216,194,0.09) 1px, transparent 1px);background-size:44px 44px;opacity:0.3"></div>
+        <div id="archKnob" style="position:absolute;left:50%;top:16%;width:6px;height:6px;margin-left:60px;border-radius:999px;background:#A6D8C2;opacity:1"></div>
+      </div>
+
+      <!-- 문 안: 데이터 공간 -->
+      <div id="dataWrap" style="position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none">
+        <div id="dataInner" style="display:flex;gap:9vw;text-align:center;transform:translateY(30px)">
+          <div>
+            <div style="font-family:'Spline Sans Mono',monospace;font-size:clamp(38px,5.5vw,64px);font-weight:700;color:#fff;line-height:1;letter-spacing:-0.02em"><span id="occVal">0.0</span><span style="font-size:0.5em;color:#A6D8C2">%</span></div>
+            <div style="margin-top:12px;font-size:13px;font-weight:600;color:#A6D8C2">통합 가동률 (실측)</div>
+          </div>
+          <div>
+            <div style="font-family:'Spline Sans Mono',monospace;font-size:clamp(38px,5.5vw,64px);font-weight:700;color:#fff;line-height:1;letter-spacing:-0.02em"><span id="unitVal">0</span></div>
+            <div style="margin-top:12px;font-size:13px;font-weight:600;color:#A6D8C2">반경 500m 전수 매물</div>
+          </div>
+          <div>
+            <div style="font-family:'Spline Sans Mono',monospace;font-size:clamp(38px,5.5vw,64px);font-weight:700;color:#fff;line-height:1;letter-spacing:-0.02em"><span id="dayVal">0</span></div>
+            <div style="margin-top:12px;font-size:13px;font-weight:600;color:#A6D8C2">고정 측정 창 (일)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 캡션 A -->
+      <div id="capA" style="position:absolute;left:0;right:0;top:24%;z-index:10;text-align:center;padding:0 24px;opacity:1;transform:translateY(0px)">
+        <div style="font-size:13.5px;font-weight:600;color:#A6D8C2">단기임대 시장검증 셀프서비스</div>
+        <h1 style="margin:16px 0 0;font-size:clamp(30px,4.6vw,52px);line-height:1.18;letter-spacing:-0.03em;color:#fff;font-weight:800;text-shadow:0 2px 30px rgba(4,29,19,0.6)">계약하기 전에,<br>그 지역의 문을 먼저 열어보세요</h1>
+      </div>
+
+      <!-- 캡션 B -->
+      <div id="capB" style="position:absolute;left:0;right:0;top:30%;z-index:10;text-align:center;padding:0 24px;opacity:0;transform:translateY(24px)">
+        <h2 style="margin:0;font-size:clamp(24px,3.4vw,38px);line-height:1.25;letter-spacing:-0.02em;color:#fff;font-weight:800;text-shadow:0 2px 30px rgba(4,29,19,0.6)">문 너머엔 감이 아니라<br>실측 데이터가 있습니다</h2>
+        <p style="margin:14px 0 0;font-size:15px;color:#A6D8C2">반경 500m 전수 조사 · 향후 56일 캘린더 실측</p>
+      </div>
+
+      <!-- 캡션 C -->
+      <div id="capC" style="position:absolute;left:0;right:0;bottom:12%;z-index:10;text-align:center;padding:0 24px;opacity:0;transform:translateY(24px)">
+        <h2 style="margin:0;font-size:clamp(22px,3vw,34px);letter-spacing:-0.02em;color:#fff;font-weight:800">크레딧 충전 → 지역 지정 → 실행</h2>
+        <p style="margin:10px 0 0;font-size:14.5px;color:#A6D8C2">아래에서 바로 시작할 수 있습니다</p>
+      </div>
+
+      <!-- 스크롤 힌트 -->
+      <div id="hint" style="position:absolute;left:0;right:0;bottom:5%;z-index:10;text-align:center;opacity:1">
+        <div style="margin:0 auto;width:1px;height:34px;background:linear-gradient(180deg,#3DA37C,transparent)"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONSOLE -->
+  <div style="background:#FAF8F5;position:relative">
+    <svg viewBox="0 0 1200 60" preserveAspectRatio="none" style="display:block;width:100%;height:60px;background:#06281A"><path d="M0,60 L1200,60 L1200,58 C900,10 300,10 0,58 Z" fill="#FAF8F5"></path></svg>
+
+    <div id="c1" style="max-width:1140px;margin:0 auto;padding:36px 32px 0;box-sizing:border-box;display:grid;grid-template-columns:1fr 0.95fr;gap:40px;align-items:center;opacity:0;transform:translateY(28px);transition:opacity 0.8s ease,transform 0.8s cubic-bezier(0.22,1,0.36,1)">
+      <div>
+        <h2 style="margin:0;font-size:clamp(26px,3.4vw,34px);font-weight:800;letter-spacing:-0.03em;color:#0E4633">이런 보고서가<br>바로 만들어집니다</h2>
+        <p style="margin:10px 0 0;font-size:15px;color:#7E7567;max-width:480px">반경 500m 지도 위 전수 실측 가동률·주간가 분석. 크레딧 1개로 원하는 지역의 원본을 받아보세요.</p>
+      </div>
+      <!-- height+overflow 로 잘라낸다: report-p2.jpg 가 세로 1:3.76 이라 원본 시안(min-height만 지정)
+           에서는 1105px 로 흘러넘쳐 아래 '내 보고서'의 열기 버튼을 덮어 클릭을 막았다. -->
+      <div style="position:relative;height:420px">
+        <!-- 이미지만 마스크로 페이드아웃시킨다. pill 은 이 래퍼 밖에 둬야 같이 흐려지지 않는다. -->
+        <div style="position:absolute;inset:0;overflow:hidden;-webkit-mask-image:linear-gradient(to bottom,#000 58%,transparent 97%);mask-image:linear-gradient(to bottom,#000 58%,transparent 97%)">
+        <div style="position:absolute;top:24px;right:0;width:58%;border-radius:12px;overflow:hidden;border:1px solid #E6E0D7;box-shadow:0 18px 40px rgba(26,23,18,0.16);transform:rotate(2.5deg)">
+          <img src="./assets/report-p2.jpg" alt="보고서 예시, 컨설턴트 평가" style="display:block;width:100%">
+          <!-- blur(5px) 는 축소 렌더된 차트 영역을 완전히 뭉개 무늬 없는 색면으로 만들어
+               렌더 오류처럼 보였다. 2.5px 로 낮춰 '흐린 지면'의 결은 남기되 판독은 막는다. -->
+          <div style="position:absolute;left:0;right:0;top:14%;bottom:0;backdrop-filter:blur(2.5px);-webkit-backdrop-filter:blur(2.5px)"></div>
+        </div>
+        <div style="position:absolute;top:0;left:0;width:62%;border-radius:12px;overflow:hidden;border:1px solid #E6E0D7;box-shadow:0 18px 44px rgba(26,23,18,0.2);transform:rotate(-2deg)">
+          <img src="./assets/report-p1.jpg" alt="보고서 예시, 반경 500m 지도 실측" style="display:block;width:100%">
+          <div style="position:absolute;left:0;right:0;top:16%;height:28%;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)"></div>
+        </div>
+        </div>
+        <div style="position:absolute;left:8%;bottom:6px;background:#0E4633;color:#fff;font-size:12px;font-weight:700;padding:8px 16px;border-radius:999px;box-shadow:0 8px 20px rgba(14,70,51,0.3)">실제 발송 보고서 미리보기, 원본은 구매 시 제공</div>
+      </div>
+    </div>
+
+    <div style="max-width:1140px;margin:0 auto;padding:32px;box-sizing:border-box;display:grid;grid-template-columns:1.15fr 0.85fr;gap:24px;align-items:start">
+
+      <!-- LEFT -->
+      <div id="c2" style="background:#fff;border:1px solid #E6E0D7;border-radius:24px;padding:36px;box-shadow:0 4px 20px rgba(26,23,18,0.06);opacity:0;transform:translateY(36px);transition:opacity 0.8s ease 0.12s,transform 0.8s cubic-bezier(0.22,1,0.36,1) 0.12s">
+        <div style="display:flex;align-items:center;gap:12px">
+          <h3 style="margin:0;font-size:19px;font-weight:800;color:#0E4633;letter-spacing:-0.02em">분석 지역 지정</h3>
+        </div>
+        <p style="margin:8px 0 18px;font-size:13.5px;color:#7E7567">역·동 단위로 지정합니다. 지정 지점 반경 500m가 전수 조사 범위입니다.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div>
+            <div style="font-size:12.5px;font-weight:700;color:#5C5447;margin-bottom:6px">시/도</div>
+            <select id="citySel" style="width:100%;box-sizing:border-box;padding:12px 14px;border:1px solid #D8D0C4;border-radius:12px;font-size:15px;font-family:var(--font-sans);color:#1A1712;background:#FAF8F5"></select>
+          </div>
+          <div>
+            <div style="font-size:12.5px;font-weight:700;color:#5C5447;margin-bottom:6px">지역 (역·동)</div>
+            <select id="areaSel" style="width:100%;box-sizing:border-box;padding:12px 14px;border:1px solid #D8D0C4;border-radius:12px;font-size:15px;font-family:var(--font-sans);color:#1A1712;background:#FAF8F5"></select>
+            <input id="areaInp" type="text" placeholder="예: 수지구청역, 신논현역, 상갈동" style="display:none;width:100%;box-sizing:border-box;padding:12px 14px;border:1px solid #D8D0C4;border-radius:12px;font-size:15px;font-family:var(--font-sans);color:#1A1712;background:#FAF8F5">
+          </div>
+        </div>
+        <div style="margin-top:14px;display:flex;align-items:center;gap:10px;background:#F2EEE8;border-radius:12px;padding:12px 16px">
+          <span style="font-size:13px;color:#5C5447">조사 범위</span>
+          <span id="rangeTxt" style="font-size:13.5px;font-weight:700;color:#115A40">반경 500m, 향후 56일</span>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:12px;margin-top:30px">
+          <h3 style="margin:0;font-size:19px;font-weight:800;color:#0E4633;letter-spacing:-0.02em">분석 실행</h3>
+        </div>
+
+        <!-- idle -->
+        <div id="phIdle">
+          <button id="btnRun" class="ds-primary" style="margin-top:16px;width:100%;background:#1E8A63;color:#fff;border:none;cursor:pointer;font-weight:700;font-size:17px;padding:17px 0;border-radius:14px;box-shadow:0 10px 28px rgba(30,138,99,0.32);font-family:var(--font-sans)">크레딧 1개로 분석 시작 →</button>
+          <p id="noCredits" style="display:none;margin:10px 0 0;font-size:13px;color:#C0392B;font-weight:600">크레딧이 없습니다. 오른쪽에서 먼저 충전해 주세요.</p>
+          <p style="margin:10px 0 0;font-size:12.5px;color:#A89E8E">실행 즉시 크레딧 1개가 차감됩니다. 커버리지가 부족한 지역은 차감 없이 안내됩니다.</p>
+        </div>
+
+        <!-- running -->
+        <div id="phRun" style="display:none">
+          <div style="margin-top:16px;background:#0E4633;border-radius:18px;padding:26px;color:#fff;position:relative;overflow:hidden">
+            <div style="position:absolute;right:-30px;bottom:-70px;width:160px;height:240px;background:#115A40;border-radius:80px 80px 0 0;opacity:0.6"></div>
+            <div style="position:relative">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <span id="stageLabel" style="font-weight:700;font-size:15.5px">반경 500m 매물 전수 수집</span>
+                <span id="pctTxt" style="font-family:'Spline Sans Mono',monospace;font-size:14px;color:#A6D8C2">0%</span>
+              </div>
+              <div style="margin-top:12px;height:8px;background:rgba(255,255,255,0.15);border-radius:999px;overflow:hidden">
+                <div id="pctBar" style="height:100%;background:linear-gradient(90deg,#1E8A63,#3DA37C);border-radius:999px;transition:width 0.25s ease-out;width:0%"></div>
+              </div>
+              <div id="stageRows" style="margin-top:16px;display:flex;flex-direction:column;gap:6px"></div>
+            </div>
+          </div>
+          <p style="margin:10px 0 0;font-size:12.5px;color:#A89E8E">전수 수집·실측에 수 분이 걸릴 수 있습니다. 이 창을 열어 두세요.</p>
+        </div>
+
+        <!-- done -->
+        <div id="phDone" style="display:none">
+          <div style="margin-top:16px;border:2px solid #1E8A63;border-radius:18px;padding:26px;background:#ECF6F1">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-family:'Spline Sans Mono',monospace;font-size:18px;color:#1E8A63;font-weight:700">✓</span>
+              <span style="font-weight:800;font-size:17px;color:#0E4633">보고서가 준비됐습니다</span>
+            </div>
+            <p id="doneDesc" style="margin:8px 0 16px;font-size:13.5px;color:#5C5447">전수 실측 가동률 · 주간가 분석 · 컨설턴트 평가 포함</p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <a id="doneLink" href="#" target="_blank" rel="noopener" class="ds-primary" style="background:#1E8A63;color:#fff;font-weight:700;font-size:15px;padding:13px 28px;border-radius:12px">보고서 열기 →</a>
+              <button id="btnReset" class="ds-outline" style="border:1.5px solid #1E8A63;background:transparent;cursor:pointer;color:#115A40;font-weight:700;font-size:15px;padding:12px 24px;border-radius:12px;font-family:var(--font-sans)">다른 지역 분석하기</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- error -->
+        <div id="phErr" style="display:none">
+          <div style="margin-top:16px;border:2px solid #E8674C;border-radius:18px;padding:26px;background:#FBEEE9">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-family:'Spline Sans Mono',monospace;font-size:18px;color:#C0392B;font-weight:700">!</span>
+              <span style="font-weight:800;font-size:17px;color:#8E3020">분석을 끝내지 못했습니다</span>
+            </div>
+            <p id="errMsg" style="margin:8px 0 16px;font-size:13.5px;color:#5C5447;white-space:pre-line"></p>
+            <button id="btnRetry" class="ds-retry" style="border:1.5px solid #E8674C;background:transparent;cursor:pointer;color:#8E3020;font-weight:700;font-size:15px;padding:12px 24px;border-radius:12px;font-family:var(--font-sans)">다시 시도</button>
+            <p style="margin:12px 0 0;font-size:12.5px;color:#A89E8E">크레딧은 차감되지 않습니다.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT -->
+      <div id="c3" style="display:flex;flex-direction:column;gap:16px;opacity:0;transform:translateY(36px);transition:opacity 0.8s ease 0.24s,transform 0.8s cubic-bezier(0.22,1,0.36,1) 0.24s">
+        <div style="background:#0E4633;color:#fff;border-radius:24px;padding:30px;position:relative;overflow:hidden">
+          <div style="position:absolute;right:-24px;bottom:-60px;width:140px;height:220px;background:#115A40;border-radius:70px 70px 0 0;opacity:0.55"></div>
+          <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(166,216,194,0.06) 1px, transparent 1px),linear-gradient(90deg, rgba(166,216,194,0.06) 1px, transparent 1px);background-size:36px 36px"></div>
+          <div style="position:relative">
+            <div style="font-size:13px;font-weight:700;color:#A6D8C2">보유 크레딧</div>
+            <div style="display:flex;align-items:baseline;gap:8px;margin-top:8px">
+              <span id="bigCredits" style="font-family:'Spline Sans Mono',monospace;font-size:46px;font-weight:700;line-height:1">0</span>
+              <span style="font-size:14px;color:#D2EBE0">개 보유</span>
+            </div>
+            <p style="margin:10px 0 0;font-size:12.5px;color:#A6D8C2">크레딧 1개 = 보고서 1건 · 유효기간 없음</p>
+          </div>
+        </div>
+
+        <div style="background:#fff;border:1px solid #E6E0D7;border-radius:24px;padding:26px;box-shadow:0 4px 20px rgba(26,23,18,0.06)">
+          <h3 style="margin:0 0 6px;font-size:16px;font-weight:800;color:#0E4633">크레딧 충전</h3>
+          <p style="margin:0 0 14px;font-size:12.5px;color:#1E8A63;font-weight:600">첫 가입 시 무료 크레딧 1개가 지급됩니다.</p>
+          <button id="btnBuy1" class="ds-buy1" style="width:100%;display:flex;justify-content:space-between;align-items:center;background:#FAF8F5;border:1px solid #E6E0D7;border-radius:14px;padding:16px 18px;cursor:pointer;font-family:var(--font-sans);margin-bottom:10px">
+            <span style="text-align:left"><span style="display:block;font-weight:700;font-size:15px;color:#1A1712">1 크레딧</span><span style="display:block;font-size:12.5px;color:#7E7567">보고서 1건</span></span>
+            <span style="font-family:'Spline Sans Mono',monospace;font-weight:700;font-size:17px;color:#115A40">3만원</span>
+          </button>
+          <button id="btnBuy6" class="ds-buy6" style="width:100%;display:flex;justify-content:space-between;align-items:center;background:#FAF8F5;border:2px solid #1E8A63;border-radius:14px;padding:16px 18px;cursor:pointer;font-family:var(--font-sans);position:relative">
+            <span style="position:absolute;top:-11px;left:14px;background:#E8674C;color:#fff;font-size:10.5px;font-weight:700;padding:3px 12px;border-radius:999px">44% 절약</span>
+            <span style="text-align:left"><span style="display:block;font-weight:700;font-size:15px;color:#1A1712">6 크레딧</span><span style="display:block;font-size:12.5px;color:#7E7567">건당 1.7만원 꼴</span></span>
+            <span style="font-family:'Spline Sans Mono',monospace;font-weight:700;font-size:17px;color:#115A40">10만원</span>
+          </button>
+          <p id="justBought" style="display:none;margin:12px 0 0;font-size:13px;font-weight:600;color:#1E8A63"></p>
+          <p style="margin:12px 0 0;font-size:11.5px;color:#A89E8E;line-height:1.6">프로토타입 화면입니다. 결제 연동 전이라 버튼을 누르면 바로 충전됩니다.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- MY REPORTS -->
+    <div style="max-width:1140px;margin:0 auto;padding:16px 32px 80px;box-sizing:border-box">
+      <h2 style="margin:0;font-size:24px;font-weight:800;letter-spacing:-0.02em;color:#0E4633">내 보고서</h2>
+      <div id="repList" style="display:none;margin-top:18px;border-top:1px solid #E6E0D7"></div>
+      <p id="repEmpty" style="margin:14px 0 0;font-size:14px;color:#A89E8E">아직 생성한 보고서가 없습니다. 지역을 지정하고 분석을 실행해 보세요.</p>
+    </div>
+
+    <footer style="border-top:1px solid #E6E0D7;background:#F2EEE8">
+      <div style="max-width:1140px;margin:0 auto;padding:24px 32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <img src="./assets/logo-mark.svg" alt="" style="width:20px;height:20px">
+          <span style="font-weight:700;font-size:14px;color:#423C32">다니엘스테이</span>
+        </div>
+        <div style="font-size:12.5px;color:#A89E8E">보고서는 데이터 분석 자료이며 수익을 보장하지 않습니다 · © 2026 DanielStay</div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- 로그인 모달 -->
+  <div id="loginModal" style="display:none;position:fixed;inset:0;z-index:100;background:rgba(4,29,19,0.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:24px">
+    <div style="background:#fff;border-radius:24px;padding:36px;width:100%;max-width:400px;box-sizing:border-box;box-shadow:0 30px 80px rgba(4,29,19,0.4);position:relative">
+      <button id="btnCloseLogin" class="ds-x" style="position:absolute;top:18px;right:18px;border:none;background:transparent;cursor:pointer;font-size:16px;color:#A89E8E;font-family:var(--font-sans)">✕</button>
+      <img src="./assets/logo-mark.svg" alt="" style="width:32px;height:32px">
+      <h3 style="margin:14px 0 6px;font-size:21px;font-weight:800;color:#0E4633;letter-spacing:-0.02em">로그인 / 가입</h3>
+      <p style="margin:0 0 20px;font-size:13.5px;color:#7E7567">첫 가입 시 무료 크레딧 1개를 드립니다. 바로 한 지역을 분석해 보세요.</p>
+      <div style="font-size:12.5px;font-weight:700;color:#5C5447;margin-bottom:6px">이름</div>
+      <input id="loginName" type="text" placeholder="이름을 입력해 주세요" style="width:100%;box-sizing:border-box;padding:12px 14px;border:1px solid #D8D0C4;border-radius:12px;font-size:15px;font-family:var(--font-sans);color:#1A1712;background:#FAF8F5;margin-bottom:12px">
+      <div style="font-size:12.5px;font-weight:700;color:#5C5447;margin-bottom:6px">이메일</div>
+      <input id="loginEmail" type="email" placeholder="example@email.com" style="width:100%;box-sizing:border-box;padding:12px 14px;border:1px solid #D8D0C4;border-radius:12px;font-size:15px;font-family:var(--font-sans);color:#1A1712;background:#FAF8F5">
+      <p id="loginErr" style="display:none;margin:10px 0 0;font-size:13px;color:#C0392B;font-weight:600">이름을 입력해 주세요.</p>
+      <button id="btnDoLogin" class="ds-primary" style="margin-top:20px;width:100%;background:#1E8A63;color:#fff;border:none;cursor:pointer;font-weight:700;font-size:15.5px;padding:15px 0;border-radius:12px;box-shadow:0 8px 24px rgba(30,138,99,0.3);font-family:var(--font-sans)">시작하고 무료 크레딧 받기</button>
+      <p style="margin:14px 0 0;font-size:11.5px;color:#A89E8E;line-height:1.6">프로토타입 로그인입니다. 비밀번호 없이 이 기기에만 저장됩니다.</p>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  'use strict';
+
+  var STAGES = ["반경 500m 매물 전수 수집", "향후 56일 캘린더 실측", "주간가(임대료+관리비) 분석", "원룸 vs 멀티룸 비교", "컨설턴트 평가 · 보고서 생성"];
+  var BOOT_FALLBACK = null;
+  var CUSTOM = '직접 입력';
+  var LS = 'ds_self_report_v1';
+  var RADIUS = 500;
+  var POLL_MS = 1500;
+
+  function clamp(v) { return Math.max(0, Math.min(1, v)); }
+  function ease(t) { return 1 - Math.pow(1 - t, 3); }
+  function $(id) { return document.getElementById(id); }
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(LS) || '{}') || {}; } catch (e) { saved = {}; }
+
+  var S = {
+    credits: typeof saved.credits === 'number' ? saved.credits : 0,
+    user: saved.user || null,
+    freeGranted: !!saved.freeGranted,
+    loginOpen: false,
+    justBought: '',
+    cities: BOOT_FALLBACK || {},
+    city: '', area: '', custom: '', cityTouched: false,
+    session: null,
+    reports: [],
+    phase: 'idle', pct: 0, stageIdx: 0,
+    reportUrl: '', errMsg: '', doneRegion: '',
+    p: -1, consoleIn: false, force: false,
+    jobId: null
+  };
+
+  function persist() {
+    try {
+      localStorage.setItem(LS, JSON.stringify({
+        credits: S.credits, user: S.user, freeGranted: S.freeGranted
+      }));
+    } catch (e) {}
+  }
+
+  /* ───────── 지역 선택 ───────── */
+
+  function cityNames() {
+    var ks = [];
+    for (var k in S.cities) { if (Object.prototype.hasOwnProperty.call(S.cities, k)) ks.push(k); }
+    ks.push(CUSTOM);
+    return ks;
+  }
+
+  function paintCities() {
+    var sel = $('citySel');
+    var names = cityNames();
+    // 사용자가 아직 고르지 않았으면 부트스트랩이 오는 대로 첫 등록 시/도로 맞춘다.
+    if (names.indexOf(S.city) < 0 || !S.cityTouched) { S.city = names[0] || CUSTOM; }
+    sel.innerHTML = names.map(function (n) {
+      return '<option value="' + esc(n) + '"' + (n === S.city ? ' selected' : '') + '>' + esc(n) + '</option>';
+    }).join('');
+    paintAreas();
+  }
+
+  function paintAreas() {
+    var sel = $('areaSel');
+    var inp = $('areaInp');
+    if (S.city === CUSTOM) {
+      sel.style.display = 'none';
+      inp.style.display = 'block';
+      inp.value = S.custom;
+    } else {
+      inp.style.display = 'none';
+      sel.style.display = 'block';
+      var list = S.cities[S.city] || [];
+      if (list.indexOf(S.area) < 0) { S.area = list[0] || ''; }
+      sel.innerHTML = list.map(function (a) {
+        return '<option value="' + esc(a) + '"' + (a === S.area ? ' selected' : '') + '>' + esc(a) + '</option>';
+      }).join('');
+    }
+    paintRange();
+  }
+
+  function regionValue() {
+    return S.city === CUSTOM ? (S.custom || '').trim() : (S.area || '').trim();
+  }
+
+  function regionLabel() {
+    var r = regionValue();
+    if (!r) { return ''; }
+    return S.city === CUSTOM ? r : (S.city + ' ' + r);
+  }
+
+  function paintRange() {
+    var label = regionLabel();
+    $('rangeTxt').textContent = label
+      ? (label + ' 반경 ' + RADIUS + 'm, 향후 56일')
+      : ('분석할 지역을 입력해 주세요 · 반경 ' + RADIUS + 'm, 향후 56일');
+  }
+
+  /* ───────── 헤더 / 크레딧 / 세션 ───────── */
+
+  function paintNav() {
+    var inOk = !!S.user;
+    $('navIn').style.display = inOk ? 'flex' : 'none';
+    $('btnLoginTop').style.display = inOk ? 'none' : 'block';
+    $('navCredits').textContent = String(S.credits);
+    $('navUser').textContent = inOk ? (S.user.name + '님') : '';
+    $('bigCredits').textContent = String(S.credits);
+  }
+
+  function paintSession() {
+    var b = $('sessBadge');
+    if (!S.session) { b.style.display = 'none'; return; }
+    b.style.display = 'inline-flex';
+    var ok = !!S.session.ok;
+    $('sessDot').style.background = ok ? '#3DA37C' : '#E8674C';
+    $('sessText').style.color = ok ? '#A6D8C2' : '#F3B9AC';
+    b.style.borderColor = ok ? 'rgba(166,216,194,0.28)' : 'rgba(232,103,76,0.45)';
+    $('sessText').textContent = ok ? '실측 세션 연결됨' : '세션 없음 — 공급·주간가만 산출';
+  }
+
+  function paintBought() {
+    var el = $('justBought');
+    if (S.justBought) {
+      el.style.display = 'block';
+      el.textContent = '✓ 충전 완료: ' + S.justBought;
+    } else {
+      el.style.display = 'none';
+    }
+  }
+
+  /* ───────── 보고서 목록 ───────── */
+
+  function paintReports() {
+    var list = S.reports || [];
+    var box = $('repList');
+    if (!list.length) {
+      box.style.display = 'none';
+      box.innerHTML = '';
+      $('repEmpty').style.display = 'block';
+      return;
+    }
+    $('repEmpty').style.display = 'none';
+    box.style.display = 'block';
+    box.innerHTML = list.map(function (r) {
+      return '' +
+        '<div class="ds-reprow" style="display:flex;align-items:center;gap:24px;padding:18px 0;border-bottom:1px solid #E6E0D7">' +
+          '<div style="font-family:\'Spline Sans Mono\',monospace;font-size:26px;font-weight:700;color:#A6D8C2;line-height:1;min-width:44px">' + esc(r.no) + '</div>' +
+          '<div style="flex:1;min-width:0">' +
+            '<div style="font-weight:700;font-size:15.5px;color:#0E4633">' + esc(r.region) + '</div>' +
+            '<div style="font-size:12.5px;color:#7E7567">' + esc(r.date) + ' 발행, 반경 ' + RADIUS + 'm 전수 실측</div>' +
+          '</div>' +
+          '<a class="ds-open" href="' + esc(r.url || '#') + '" target="_blank" rel="noopener" style="border:1.5px solid #1E8A63;color:#115A40;font-weight:700;font-size:13.5px;padding:9px 20px;border-radius:10px;white-space:nowrap">열기 →</a>' +
+        '</div>';
+    }).join('');
+  }
+
+  /* ───────── 분석 단계 ───────── */
+
+  function paintStages() {
+    var rows = STAGES.map(function (label, i) {
+      var running = S.phase === 'running';
+      var mark = running ? (i < S.stageIdx ? '✓' : (i === S.stageIdx ? '●' : '·')) : '·';
+      var color = i < S.stageIdx ? '#A6D8C2' : (i === S.stageIdx ? '#fff' : 'rgba(255,255,255,0.4)');
+      return '' +
+        '<div style="display:flex;align-items:center;gap:10px;font-size:13.5px;color:' + color + '">' +
+          '<span style="font-family:\'Spline Sans Mono\',monospace;width:16px">' + mark + '</span>' +
+          '<span>' + esc(label) + '</span>' +
+        '</div>';
+    }).join('');
+    $('stageRows').innerHTML = rows;
+    var pct = Math.round(S.pct);
+    $('pctTxt').textContent = pct + '%';
+    $('pctBar').style.width = pct + '%';
+    $('stageLabel').textContent = STAGES[S.stageIdx] || STAGES[0];
+  }
+
+  function paintPhase() {
+    $('phIdle').style.display = S.phase === 'idle' ? 'block' : 'none';
+    $('phRun').style.display = S.phase === 'running' ? 'block' : 'none';
+    $('phDone').style.display = S.phase === 'done' ? 'block' : 'none';
+    $('phErr').style.display = S.phase === 'error' ? 'block' : 'none';
+    if (S.phase === 'running') { paintStages(); }
+    if (S.phase === 'done') {
+      $('doneDesc').textContent = (S.doneRegion ? S.doneRegion + ' · ' : '') +
+        '전수 실측 가동률 · 주간가 분석 · 컨설턴트 평가 포함';
+      $('doneLink').setAttribute('href', S.reportUrl || '#');
+    }
+    if (S.phase === 'error') {
+      $('errMsg').textContent = S.errMsg || '알 수 없는 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.';
+    }
+  }
+
+  /* ───────── 히어로 스크롤 저니 ───────── */
+
+  function paintHero(p) {
+    var openT = ease(clamp(p / 0.58));
+    var archScale = 1 + openT * 8.5;
+    var dataK = ease(clamp((p - 0.5) / 0.22));
+    var capA = (S.force && p < 0.01) ? 1 : clamp(1 - (p - 0.1) / 0.1) * clamp(p * 40 + 1);
+    var capB = clamp((p - 0.2) / 0.08) * clamp(1 - (p - 0.44) / 0.08);
+    var capC = clamp((p - 0.78) / 0.1);
+
+    $('arch').style.transform = 'scale(' + archScale.toFixed(3) + ')';
+    $('archGrid').style.opacity = (0.3 + openT * 0.7).toFixed(2);
+    $('archKnob').style.opacity = (1 - openT * 1.6).toFixed(2);
+    $('ambient').style.opacity = (1 - clamp((p - 0.4) / 0.2) * 0.7).toFixed(2);
+    $('dataWrap').style.opacity = (dataK * clamp(1 - (p - 0.82) / 0.1)).toFixed(2);
+    $('dataInner').style.transform = 'translateY(' + ((1 - dataK) * 30).toFixed(0) + 'px)';
+    $('occVal').textContent = (71.3 * dataK).toFixed(1);
+    $('unitVal').textContent = String(Math.round(47 * dataK));
+    $('dayVal').textContent = String(Math.round(56 * dataK));
+    $('capA').style.opacity = clamp(capA).toFixed(2);
+    $('capA').style.transform = 'translateY(' + (clamp(1 - capA) * -20).toFixed(0) + 'px)';
+    $('capB').style.opacity = capB.toFixed(2);
+    $('capB').style.transform = 'translateY(' + ((1 - capB) * 24).toFixed(0) + 'px)';
+    $('capC').style.opacity = capC.toFixed(2);
+    $('capC').style.transform = 'translateY(' + ((1 - capC) * 24).toFixed(0) + 'px)';
+    $('hint').style.opacity = clamp(1 - p * 6).toFixed(2);
+  }
+
+  function paintReveal() {
+    var on = S.consoleIn;
+    ['c1', 'c2', 'c3'].forEach(function (id, i) {
+      var el = $(id);
+      el.style.opacity = on ? '1' : '0';
+      el.style.transform = on ? 'translateY(0px)' : ('translateY(' + (i === 0 ? 28 : 36) + 'px)');
+    });
+  }
+
+  /* ───────── 분석 실행 (서버 폴링) ───────── */
+
+  var pollTimer = null;
+
+  function stopPoll() {
+    if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+  }
+
+  function fail(msg) {
+    stopPoll();
+    S.phase = 'error';
+    S.errMsg = msg || '분석에 실패했습니다.';
+    paintPhase();
+  }
+
+  function startRun() {
+    var region = regionValue();
+    if (!region) {
+      fail('분석할 지역을 먼저 지정해 주세요. 등록된 역을 고르거나 "직접 입력"으로 지역명을 적으면 됩니다.');
+      return;
+    }
+    // 로그인·크레딧으로 분석을 막지 않는다 (사장님 지시). 크레딧은 있으면 차감만.
+    if (S.credits > 0) { S.credits -= 1; persist(); paintNav(); }
+    S.phase = 'running';
+    S.pct = 0;
+    S.stageIdx = 0;
+    S.errMsg = '';
+    S.reportUrl = '';
+    S.jobId = null;
+    S.doneRegion = regionLabel();
+    paintPhase();
+
+    fetch('/api/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ region: region, radius: RADIUS })
+    }).then(function (res) {
+      return res.json().catch(function () { return { error: '서버 응답을 읽지 못했습니다.' }; });
+    }).then(function (d) {
+      if (!d || d.error) { fail((d && d.error) || '분석을 시작하지 못했습니다.'); return; }
+      if (!d.job_id) { fail('서버가 작업 번호를 돌려주지 않았습니다.'); return; }
+      S.jobId = d.job_id;
+      stopPoll();
+      pollTimer = setInterval(poll, POLL_MS);
+      poll();
+    }).catch(function () {
+      fail('서버에 연결하지 못했습니다. 프로그램이 실행 중인지 확인해 주세요.');
+    });
+  }
+
+  function poll() {
+    if (!S.jobId) { return; }
+    fetch('/api/job?id=' + encodeURIComponent(S.jobId)).then(function (res) {
+      return res.json().catch(function () { return null; });
+    }).then(function (d) {
+      if (!d) { return; }
+      if (d.status === 'error') { fail(d.error || '분석 중 오류가 발생했습니다.'); return; }
+      if (typeof d.pct === 'number') { S.pct = Math.max(0, Math.min(100, d.pct)); }
+      if (typeof d.stage_idx === 'number') {
+        S.stageIdx = Math.max(0, Math.min(STAGES.length - 1, d.stage_idx));
+      }
+      if (d.status === 'done') {
+        stopPoll();
+        S.pct = 100;
+        S.reportUrl = d.report_url || '';
+        S.phase = 'done';
+        paintPhase();
+        loadBootstrap();
+        return;
+      }
+      paintStages();
+    }).catch(function () {
+      /* 일시적 네트워크 오류는 다음 폴링에서 회복 */
+    });
+  }
+
+  /* ───────── 로그인 / 충전 (localStorage, 분석은 막지 않음) ───────── */
+
+  function openLogin() {
+    S.loginOpen = true;
+    $('loginModal').style.display = 'flex';
+    $('loginErr').style.display = 'none';
+  }
+
+  function closeLogin() {
+    S.loginOpen = false;
+    $('loginModal').style.display = 'none';
+    $('loginErr').style.display = 'none';
+  }
+
+  var boughtTimer = null;
+
+  function flashBought(label, ms) {
+    S.justBought = label;
+    paintBought();
+    if (boughtTimer) { clearTimeout(boughtTimer); }
+    if (label) {
+      boughtTimer = setTimeout(function () { S.justBought = ''; paintBought(); }, ms || 2500);
+    }
+  }
+
+  function buy(n, label) {
+    if (!S.user) { openLogin(); return; }
+    S.credits += n;
+    persist();
+    paintNav();
+    flashBought(label, 2500);
+  }
+
+  function doLogin() {
+    var name = ($('loginName').value || '').trim();
+    if (!name) { $('loginErr').style.display = 'block'; return; }
+    var first = !S.freeGranted;
+    S.user = { name: name, email: ($('loginEmail').value || '').trim() };
+    if (first) { S.credits += 1; }
+    S.freeGranted = true;
+    persist();
+    closeLogin();
+    paintNav();
+    flashBought(first ? '가입 축하 무료 크레딧 1개' : '', 3500);
+  }
+
+  function logout() {
+    S.user = null;
+    persist();
+    paintNav();
+  }
+
+  /* ───────── 부트스트랩 ───────── */
+
+  function loadBootstrap() {
+    fetch('/api/bootstrap').then(function (res) {
+      return res.json().catch(function () { return null; });
+    }).then(function (d) {
+      if (!d) { S.session = { ok: false }; paintSession(); return; }
+      if (d.cities && typeof d.cities === 'object') {
+        S.cities = d.cities;
+        paintCities();
+      }
+      S.session = d.session || { ok: false };
+      paintSession();
+      S.reports = Array.isArray(d.reports) ? d.reports : [];
+      paintReports();
+    }).catch(function () {
+      S.session = { ok: false };
+      paintSession();
+    });
+  }
+
+  /* ───────── 배선 ───────── */
+
+  $('citySel').addEventListener('change', function (e) {
+    S.city = e.target.value;
+    S.cityTouched = true;
+    paintAreas();
+  });
+  $('areaSel').addEventListener('change', function (e) {
+    S.area = e.target.value;
+    paintRange();
+  });
+  $('areaInp').addEventListener('input', function (e) {
+    S.custom = e.target.value;
+    paintRange();
+  });
+  $('btnRun').addEventListener('click', startRun);
+  $('btnReset').addEventListener('click', function () {
+    stopPoll();
+    S.phase = 'idle'; S.pct = 0; S.stageIdx = 0; S.jobId = null;
+    paintPhase();
+  });
+  $('btnRetry').addEventListener('click', startRun);
+  $('btnLoginTop').addEventListener('click', openLogin);
+  $('btnCloseLogin').addEventListener('click', closeLogin);
+  $('btnDoLogin').addEventListener('click', doLogin);
+  $('btnLogout').addEventListener('click', logout);
+  $('btnBuy1').addEventListener('click', function () { buy(1, '1 크레딧 (3만원)'); });
+  $('btnBuy6').addEventListener('click', function () { buy(6, '6 크레딧 (10만원)'); });
+  $('loginName').addEventListener('input', function () { $('loginErr').style.display = 'none'; });
+  $('loginModal').addEventListener('click', function (e) {
+    if (e.target === $('loginModal')) { closeLogin(); }
+  });
+
+  /* ───────── 단일 40ms 클록 + 3.5초 failsafe ───────── */
+
+  setInterval(function () {
+    var y = window.scrollY || document.documentElement.scrollTop || 0;
+    var vh = window.innerHeight || 800;
+    var span = vh * 2.2;
+    var p = clamp(y / span);
+    var consoleIn = S.force || y > span * 0.72;
+    if (Math.abs(p - S.p) > 0.004) { S.p = p; paintHero(p); }
+    if (consoleIn !== S.consoleIn) { S.consoleIn = consoleIn; paintReveal(); }
+  }, 40);
+
+  setTimeout(function () {
+    S.force = true;
+    if (!S.consoleIn) { S.consoleIn = true; paintReveal(); }
+  }, 3500);
+
+  /* ───────── 초기 페인트 ───────── */
+
+  paintCities();
+  paintNav();
+  paintBought();
+  paintReports();
+  paintPhase();
+  paintHero(0);
+  paintReveal();
+  loadBootstrap();
+})();
+</script>
+</body>
+</html>

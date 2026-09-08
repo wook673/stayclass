@@ -6,6 +6,7 @@ HTML은 plan_src/tokens.css 를 인라인하고 다니엘스테이 딥그린 디
 """
 from __future__ import annotations
 
+import base64
 import datetime
 import html
 import os
@@ -44,6 +45,47 @@ def _window_label(ctx) -> str:
     end = today + datetime.timedelta(days=weeks * 7)
     return (f"향후 {weeks}주 선점률 (예약+차단, 측정일 {today.isoformat()} 기준 "
             f"~ {end.isoformat()} 직전)")
+
+
+def _map_caption(ctx) -> str:
+    """지도 캡션 — 반경·매물수·측정일·출처."""
+    sup = ctx.get("supply") or {}
+    n = sup.get("n_kept") or 0
+    top = ("· 번호 마커 = 선점률 상위 지점 " if (ctx.get("occupancy") or {}).get("ok")
+           else "")
+    return (f"분석 반경 {ctx['radius']:.0f}m · 오피스텔 원룸 {n}건 · "
+            f"측정일 {ctx['date']} {top}"
+            f"· 매물 위치: 삼삼엠투(33m2) 지도 API · "
+            f"배경 지도: © OpenStreetMap contributors")
+
+
+def _map_md(ctx) -> list:
+    """Markdown 지도 블록(상대경로 이미지). 지도 없으면 빈 리스트."""
+    p = ctx.get("map_path")
+    if not p or not os.path.exists(p):
+        return []
+    return [f"![분석 반경 {ctx['radius']:.0f}m 지도]({os.path.basename(p)})", "",
+            f"_{_map_caption(ctx)}_", ""]
+
+
+def _map_html(ctx) -> str:
+    """HTML 지도 블록 — PNG를 base64 data URI로 인라인(단일 파일 유지)."""
+    p = ctx.get("map_path")
+    if not p or not os.path.exists(p):
+        return ""
+    try:
+        with open(p, "rb") as f:
+            b64 = base64.b64encode(f.read()).decode("ascii")
+    except OSError:
+        return ""
+    return (
+        "<figure class=\"map-figure\" style=\"margin:0 0 24px\">"
+        f"<img src=\"data:image/png;base64,{b64}\" "
+        f"alt=\"분석 반경 {ctx['radius']:.0f}m 지도\" "
+        "style=\"width:100%;max-width:768px;height:auto;display:block;"
+        "border:1px solid rgba(0,0,0,.12);border-radius:10px\">"
+        f"<figcaption class=\"footnote\" style=\"margin-top:8px\">"
+        f"{_h(_map_caption(ctx))}</figcaption></figure>")
 
 
 def _top_rooms(occ, n=5):
@@ -163,8 +205,9 @@ def build_md(ctx) -> str:
         out += ["## 0. 위치 자동 해석 (방법론)", ""]
         out += [f"- {e}" for e in ctx["locate_evidence"]]
         out += [""]
-    out += ["## 1. 공급 스캔 (33m2, 오피스텔 원룸)", "",
-           f"- 반경 내 {sup['n_total']}건 → 유형제외 {sup['n_type_excluded']} · "
+    out += ["## 1. 공급 스캔 (33m2, 오피스텔 원룸)", ""]
+    out += _map_md(ctx)
+    out += [f"- 반경 내 {sup['n_total']}건 → 유형제외 {sup['n_type_excluded']} · "
            f"비원룸제외 {sup['n_notroom_excluded']} → **유지 {sup['n_kept']}건**",
            f"- 주간가(임대료+관리비): 중위 **{_won(w['median'])}** / "
            f"최저 {_won(w['min'])} / 최고 {_won(w['max'])} (n={w['n']})", "",
@@ -445,6 +488,7 @@ def build_html(ctx) -> str:
     else:
         locate_html = ""
     analysis_html = _html_analysis(ctx.get("analysis"))
+    map_html = _map_html(ctx)
     occ_note = (f"실측 {_pct(ctx['occ_used'])}" if ctx.get("occ_measured")
                 else "미측정(세션 필요)")
 
@@ -506,6 +550,7 @@ def build_html(ctx) -> str:
   <div class="sec-head"><span class="sec-num">04</span>
     <div><div class="sec-title">공급 스캔</div>
     <div class="sec-sub">삼삼엠투(33m2) 오피스텔 원룸 · 비로그인 지도 API</div></div></div>
+  {map_html}
   <div class="card-grid cols-4">
     <div class="card kpi"><span class="kpi-label">유지 매물</span>
       <span class="kpi-value">{sup['n_kept']}</span>

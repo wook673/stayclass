@@ -7,8 +7,9 @@ CLI(analyzer.py) 파이프라인을 브라우저에서 쓸 수 있게 감싼 최
   python web.py            # http://localhost:8899
 
 기능:
-  - 메인: 지역명/반경 입력 폼, 등록역 칩, 최근 리포트 목록, 세션 배지
-  - 분석: 폼 제출 → analyzer 파이프라인 직접 호출(동기) → 리포트로 리다이렉트
+  - 메인: ui.render_page() (Claude Design 기반 새 UI). 실패 시 render_form() 폴백
+  - API : /api/bootstrap, /api/analyze(비동기 잡), /api/job
+  - 정적: /static/... (report-selfservice/ 아래, 경로 탐색 방지)
   - 열람: output/ 리포트 서빙(경로 탐색 방지)
 """
 from __future__ import annotations
@@ -21,14 +22,20 @@ if hasattr(sys.stderr, "reconfigure"):
     sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 import html
+import json
+import math
 import os
+import re
 import threading
+import time
 import traceback
 import urllib.parse
+import uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 import config
 import locate
+import mapimg
 import model  # noqa: F401  (import 시 앵커 자기검증)
 import molit
 import m33
@@ -47,6 +54,24 @@ _SRC_LABEL = {
     "login": "앱 로그인 세션",
     "paste": "붙여넣은 세션",
 }
+
+# 새 UI(Claude Design 산출물)의 정적 자산 루트 — C:\Users\User\test\report-selfservice\
+# 없어도 서버는 뜬다(요청 시 404).
+STATIC_ROOT = os.path.join(config.REPO_ROOT, "report-selfservice")
+
+_STATIC_MIME = {
+    ".svg": "image/svg+xml",
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".png": "image/png",
+    ".css": "text/css; charset=utf-8",
+    ".js": "text/javascript; charset=utf-8",
+}
+
+# 진행률 추정 상수(아래 _job_pct 주석 참조)
+_PCT_TAU = 90.0     # 초. 이 시간쯤에 63% 부근을 지나도록 하는 시정수
+_PCT_CEIL = 95.0    # 실제 완료 전에는 절대 넘지 않는 상한
+_JOB_TTL = 3600.0   # 완료(done/error) 후 이만큼 지난 잡은 정리
 
 
 # --------------------------------------------------------------------------- #
@@ -197,10 +222,111 @@ def run_analysis(region: str, radius: float, window: str = "future"):
         "locate_evidence": locate_evidence,
     }
     ctx["caveats"] = build_caveats(ctx)
+
+    # 지도 이미지(분석 반경 + 매물 마커) — 실패해도 리포트는 정상 생성
+    map_path = mapimg.render_for_report(region_name, ctx["date"], lat, lon,
+                                        radius, supply, occupancy)
+    if map_path:
+        ctx["map_path"] = map_path
+
     ctx["analysis"] = rules.analyze(ctx)
 
     md_path, html_path = report.write_reports(ctx)
     return os.path.basename(html_path)
+
+
+# --------------------------------------------------------------------------- #
+# 비동기 잡 러너 (분석이 수 분 걸려서 HTTP 요청을 붙잡아 둘 수 없다)
+# --------------------------------------------------------------------------- #
+# 잡 레코드: {"status": "running"|"done"|"error", "pct": int, "stage_idx": int,
+#             "report": str|None, "error": str|None, "started": float, "region": str}
+_JOBS: dict = {}
+_JOBS_LOCK = threading.Lock()
+
+_STAGE_COUNT = 5
+
+
+def _job_pct(started: float) -> int:
+    """경과 시간으로 진행률을 '추정'한다.
+
+    ⚠ 이것은 어디까지나 추정치다. run_analysis()는 진행 콜백을 지원하지 않아
+    실제 단계 진행을 알 방법이 없다. 그래서 경과 시간 t에 대해
+    95*(1-exp(-t/90)) 로 0→95%를 점근적으로 채우기만 한다.
+    이 값은 절대 95%를 넘지 않으며, 100%는 잡이 실제로 끝났을 때만 기록한다
+    (사용자가 '100%인데 안 끝남'을 보는 일이 없도록).
+    """
+    t = max(0.0, time.time() - started)
+    return int(_PCT_CEIL * (1.0 - math.exp(-t / _PCT_TAU)))
+
+
+def _stage_idx(pct: int) -> int:
+    """pct(0~100)를 5단계 인덱스(0~4)로 매핑."""
+    idx = int(pct * _STAGE_COUNT / 100)
+    return max(0, min(_STAGE_COUNT - 1, idx))
+
+
+def _prune_jobs_locked() -> None:
+    """완료 후 1시간 지난 잡 제거(메모리 무한 증식 방지). _JOBS_LOCK 보유 상태에서 호출."""
+    now = time.time()
+    for jid in [j for j, r in _JOBS.items()
+                if r["status"] in ("done", "error")
+                and now - r.get("finished", r["started"]) > _JOB_TTL]:
+        _JOBS.pop(jid, None)
+
+
+def _job_worker(job_id: str, region: str, radius: float) -> None:
+    """백그라운드 스레드: run_analysis를 그대로 호출하고 결과만 잡에 기록한다."""
+    try:
+        fname = run_analysis(region, radius)
+        result = {"status": "done", "pct": 100, "stage_idx": _STAGE_COUNT - 1,
+                  "report": fname, "error": None}
+    except ValueError as e:                  # 사람이 읽는 메시지
+        result = {"status": "error", "report": None, "error": str(e)}
+    except Exception as e:                   # 예기치 못한 실패
+        traceback.print_exc()
+        result = {"status": "error", "report": None,
+                  "error": f"분석 중 오류가 발생했습니다: {e}"}
+    with _JOBS_LOCK:
+        rec = _JOBS.get(job_id)
+        if rec is not None:
+            rec.update(result)
+            rec["finished"] = time.time()
+
+
+def start_job(region: str, radius: float):
+    """잡 생성 후 job_id 반환. 이미 running 인 잡이 있으면 (None, 사유) 반환."""
+    with _JOBS_LOCK:
+        _prune_jobs_locked()
+        # 동시 실행 1건 제한 — 여러 분석이 겹치면 33m2 API에 부담이 간다.
+        if any(r["status"] == "running" for r in _JOBS.values()):
+            return None, "이미 분석이 진행 중입니다. 끝난 뒤 다시 시도해 주세요."
+        job_id = uuid.uuid4().hex
+        _JOBS[job_id] = {"status": "running", "pct": 0, "stage_idx": 0,
+                         "report": None, "error": None,
+                         "started": time.time(), "region": region}
+    threading.Thread(target=_job_worker, args=(job_id, region, radius),
+                     daemon=True).start()
+    return job_id, None
+
+
+def job_snapshot(job_id: str) -> dict:
+    """프론트가 폴링하는 잡 상태. 없는 id는 error로."""
+    with _JOBS_LOCK:
+        rec = _JOBS.get(job_id)
+        if rec is None:
+            return {"status": "error", "pct": 0, "stage_idx": 0,
+                    "report_url": None, "error": "알 수 없는 작업입니다."}
+        status = rec["status"]
+        if status == "running":
+            pct = _job_pct(rec["started"])
+            rec["pct"] = pct
+            rec["stage_idx"] = _stage_idx(pct)
+        report_url = None
+        if status == "done" and rec.get("report"):
+            report_url = "/report?f=" + urllib.parse.quote(rec["report"])
+        return {"status": status, "pct": rec["pct"],
+                "stage_idx": rec["stage_idx"], "report_url": report_url,
+                "error": rec["error"]}
 
 
 # --------------------------------------------------------------------------- #
@@ -222,6 +348,37 @@ def _recent_reports(limit=20):
     files.sort(key=lambda f: os.path.getmtime(os.path.join(config.OUTPUT_DIR, f)),
                reverse=True)
     return files[:limit]
+
+
+# 리포트 파일명 규칙: <지역>_<YYYY-MM-DD>.html
+_REPORT_RE = re.compile(r"^(?P<region>.+)_(?P<y>\d{4})-(?P<m>\d{2})-(?P<d>\d{2})\.html$")
+
+
+def _report_entries(limit=20):
+    """최신순 리포트 목록. no는 최신이 가장 큰 번호(2자리 zero-pad)."""
+    files = _recent_reports(limit)
+    total = len(files)
+    out = []
+    for i, f in enumerate(files):
+        mo = _REPORT_RE.match(f)
+        if mo:
+            region = mo.group("region")
+            date = f"{mo.group('y')}.{mo.group('m')}.{mo.group('d')}"
+        else:                                   # 규칙에 안 맞는 파일도 버리진 않는다
+            region, date = f[:-5], ""
+        out.append({"no": f"{total - i:02d}", "region": region, "date": date,
+                    "url": "/report?f=" + urllib.parse.quote(f)})
+    return out
+
+
+def bootstrap_payload() -> dict:
+    """새 UI가 최초 렌더에 쓰는 데이터."""
+    return {
+        "cities": {"경기": stations.known_names()},
+        "session": {"ok": _session_headers_or_none() is not None,
+                    "source": _session_source()},
+        "reports": _report_entries(),
+    }
 
 
 def render_form(error: str = "", radius: str = "500", notice: str = "") -> str:
@@ -433,6 +590,23 @@ textarea:focus {{ outline:none; border-color:var(--g-500); box-shadow:0 0 0 3px 
 
 
 # --------------------------------------------------------------------------- #
+# 메인 페이지 — 새 UI(ui.render_page). 실패 시 render_form()으로 폴백
+# --------------------------------------------------------------------------- #
+def render_index(error: str = "", radius: str = "500", notice: str = "") -> str:
+    """ui.py가 아직 없거나 에러가 나도 서버는 계속 뜬다(구 폼으로 폴백).
+
+    error/radius/notice는 폴백 경로(구 폼의 ?error=·?notice= 리다이렉트)에서만 쓰인다.
+    """
+    try:
+        import ui                              # 지연 import — 모듈 로드 시점에 의존 안 함
+        return ui.render_page()
+    except Exception as e:
+        sys.stderr.write(f"[경고] ui.render_page() 사용 불가 → 구 폼으로 폴백: "
+                         f"{type(e).__name__}: {e}\n")
+        return render_form(error, radius, notice)
+
+
+# --------------------------------------------------------------------------- #
 # HTTP 핸들러
 # --------------------------------------------------------------------------- #
 class Handler(BaseHTTPRequestHandler):
@@ -443,6 +617,14 @@ class Handler(BaseHTTPRequestHandler):
         data = body.encode("utf-8")
         self.send_response(code)
         self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", str(len(data)))
+        self.end_headers()
+        self.wfile.write(data)
+
+    def _send_json(self, payload: dict, code: int = 200):
+        data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+        self.send_response(code)
+        self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(data)))
         self.end_headers()
         self.wfile.write(data)
@@ -458,10 +640,21 @@ class Handler(BaseHTTPRequestHandler):
         qs = urllib.parse.parse_qs(parsed.query)
 
         if path == "/" or path == "/index.html":
-            err = qs.get("error", [""])[0]
-            radius = qs.get("radius", ["500"])[0]
-            notice = qs.get("notice", [""])[0]
-            self._send_html(render_form(err, radius, notice))
+            self._send_html(render_index(qs.get("error", [""])[0],
+                                         qs.get("radius", ["500"])[0],
+                                         qs.get("notice", [""])[0]))
+            return
+
+        if path == "/api/bootstrap":
+            self._send_json(bootstrap_payload())
+            return
+
+        if path == "/api/job":
+            self._send_json(job_snapshot(qs.get("id", [""])[0]))
+            return
+
+        if path.startswith("/static/"):
+            self._serve_static(path[len("/static/"):])
             return
 
         if path == "/report":
@@ -471,6 +664,29 @@ class Handler(BaseHTTPRequestHandler):
 
         self._send_html("<h1>404</h1>", 404)
 
+    def _serve_static(self, rel: str):
+        """report-selfservice/ 아래 정적 파일 서빙 (경로 탐색 방지)."""
+        rel = urllib.parse.unquote(rel)
+        static_root = os.path.realpath(STATIC_ROOT)
+        full = os.path.realpath(os.path.join(static_root, rel))
+        # realpath 정규화 후 루트 밖(또는 루트 자신)이면 거부. 심볼릭 링크 탈출도 막힌다.
+        if not full.startswith(static_root + os.sep) or not os.path.isfile(full):
+            self._send_html("<h1>404</h1>", 404)
+            return
+        ctype = _STATIC_MIME.get(os.path.splitext(full)[1].lower(),
+                                 "application/octet-stream")
+        try:
+            with open(full, "rb") as f:
+                data = f.read()
+        except OSError:
+            self._send_html("<h1>404</h1>", 404)
+            return
+        self.send_response(200)
+        self.send_header("Content-Type", ctype)
+        self.send_header("Content-Length", str(len(data)))
+        self.end_headers()
+        self.wfile.write(data)
+
     def _serve_output(self, fname: str):
         # 경로 탐색 방지: basename만 취하고 OUTPUT_DIR 내부인지 재확인
         safe = os.path.basename(fname)
@@ -479,8 +695,12 @@ class Handler(BaseHTTPRequestHandler):
         if not full.startswith(out_root + os.sep) or not os.path.isfile(full):
             self._send_html("<h1>404 리포트를 찾을 수 없습니다</h1>", 404)
             return
-        ctype = "text/html; charset=utf-8" if full.endswith(".html") \
-            else "text/plain; charset=utf-8"
+        if full.endswith(".html"):
+            ctype = "text/html; charset=utf-8"
+        elif full.endswith(".png"):
+            ctype = "image/png"
+        else:
+            ctype = "text/plain; charset=utf-8"
         with open(full, "rb") as f:
             data = f.read()
         self.send_response(200)
@@ -489,14 +709,18 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(data)
 
-    def _read_form(self):
+    def _read_body(self) -> str:
         length = int(self.headers.get("Content-Length", 0))
-        body = self.rfile.read(length).decode("utf-8")
-        return urllib.parse.parse_qs(body)
+        return self.rfile.read(length).decode("utf-8") if length else ""
+
+    def _read_form(self):
+        return urllib.parse.parse_qs(self._read_body())
 
     def do_POST(self):
         path = urllib.parse.urlparse(self.path).path
-        if path == "/analyze":
+        if path == "/api/analyze":
+            self._api_analyze()
+        elif path == "/analyze":
             self._post_analyze()
         elif path == "/login":
             self._post_login()
@@ -634,7 +858,36 @@ class Handler(BaseHTTPRequestHandler):
                 pass
         self._redirect("/?notice=" + urllib.parse.quote("세션을 지웠습니다."))
 
+    def _api_analyze(self):
+        """JSON {"region": "상현역", "radius": 500} → {"job_id"} 또는 {"error"}."""
+        try:
+            body = json.loads(self._read_body() or "{}")
+            if not isinstance(body, dict):
+                raise ValueError
+        except (ValueError, UnicodeDecodeError):
+            self._send_json({"error": "요청 형식이 올바르지 않습니다."})
+            return
+
+        region = str(body.get("region") or "").strip()
+        if not region:
+            self._send_json({"error": "지역명을 입력하세요."})
+            return
+        try:
+            radius = float(body.get("radius") or config.DEFAULT_RADIUS_M)
+        except (TypeError, ValueError):
+            self._send_json({"error": "반경은 숫자여야 합니다."})
+            return
+
+        job_id, reason = start_job(region, radius)
+        if job_id is None:
+            self._send_json({"error": reason})
+            return
+        sys.stderr.write(f"[분석] job={job_id[:8]} region={region!r} radius={radius} "
+                         f"session={'있음' if os.path.exists(SESSION_FILE) else '없음'}\n")
+        self._send_json({"job_id": job_id})
+
     def _post_analyze(self):
+        """구 폼 방식(동기) — ui.py 폴백용으로 남겨둔다."""
         form = self._read_form()
         region = form.get("region", [""])[0]
         radius_raw = form.get("radius", ["500"])[0].strip()

@@ -14,3 +14,15 @@ danielstay-plan-en.html
 danielstay-plan-en.pdf
 report-product/
 admin-dashboard-*.md
+routine/kakao_token.json
+routine/email_config.json
+
+# VWorld 지도 API 키 (커밋 금지)
+market-analyzer/.vworld_key
+
+# 생성 산출물 (커밋 금지)
+routine/out/
+*.bak
+sanghyeon-report.jpg
+sanghyeon_*.jpg
+다니엘스테이_*.pdf

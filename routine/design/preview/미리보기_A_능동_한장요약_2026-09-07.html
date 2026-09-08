@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>다니엘스테이 · 능동 단기임대 실측 한 장 요약 2026-09-07</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/* ============================================================
+   다니엘스테이 — 보고서 디자인 시안 3종 (제안용)
+   토큰은 sanghyeon-report.html 딥그린 시스템을 그대로 승계.
+   순수 HTML/CSS/SVG. JS 없음. 렌더 기준폭 1280px.
+
+   [치환 규약] build_report.py 에서 값만 갈아끼우는 지점은
+   HTML 주석 {{KEY}} 로 표시했다. 레이아웃은 하드코딩.
+   도넛은 stroke-dasharray="{길이} {둘레-길이}" 형태이므로
+   길이 = 둘레 * 비율/100 로 계산해 치환하면 된다.
+   둘레: r=110 → 691.15 / r=100 → 628.32 / r=54 → 339.29
+         r=40 → 251.33 / r=36 → 226.19
+   ============================================================ */
+
+:root{
+  --g-50:#ECF6F1; --g-100:#D2EBE0; --g-200:#A6D8C2; --g-300:#6FBF9E;
+  --g-400:#3DA37C; --g-500:#1E8A63; --g-600:#16704F; --g-700:#115A40;
+  --g-800:#0E4633; --g-900:#0A3526;
+  --paper:#FAF8F5; --n-100:#F2EEE8; --n-200:#E6E0D7; --n-300:#D2C9BB;
+  --n-400:#A89E8E; --n-500:#7E7567; --n-600:#5C5447; --n-700:#423C32;
+  --n-800:#2B271F; --n-900:#1A1712;
+  --terra-100:#FBE3DC; --terra-300:#F2A795; --terra-500:#E8674C;
+  --terra-600:#D24E33; --terra-700:#AE3C25;
+  --warn:#E0A526; --warn-bg:#FBF1D9;
+  --font-sans:"Pretendard Variable","Pretendard",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --font-data:"JetBrains Mono","SF Mono",Consolas,"Malgun Gothic",monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font-sans);background:var(--paper);color:var(--n-800);
+     line-height:1.65;font-size:16px;-webkit-font-smoothing:antialiased;width:1280px}
+img,svg{max-width:100%;display:block}
+
+/* ---------- 시안 구분 헤더 (제안 문서 전용, 실제 보고서에는 미포함) ---------- */
+.concept-bar{background:var(--n-900);color:#fff;padding:22px 48px;display:flex;
+  align-items:baseline;gap:18px;flex-wrap:wrap}
+.concept-bar .cb-tag{font-family:var(--font-data);font-size:12px;font-weight:700;
+  letter-spacing:.18em;color:var(--g-300)}
+.concept-bar .cb-name{font-size:24px;font-weight:800;letter-spacing:-.02em}
+.concept-bar .cb-desc{font-size:13.5px;color:#B8B2A6;margin-left:auto}
+
+/* ---------- 도넛 공통 ---------- */
+.donut{transform:rotate(-90deg)}
+.donut circle{fill:none;stroke-linecap:butt}
+.dtrack{stroke:var(--n-200)}
+.dwrap{position:relative;display:inline-block}
+.dcenter{position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;line-height:1.15}
+.dcenter .dv{font-family:var(--font-data);font-weight:800;color:var(--g-800);
+  letter-spacing:-.02em}
+.dcenter .dl{font-size:12px;color:var(--n-500);margin-top:2px}
+
+.legend{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:13px;color:var(--n-600)}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;
+  margin-right:7px;vertical-align:-1px}
+.sw-a{background:var(--g-800)} .sw-b{background:var(--g-400)} .sw-c{background:var(--n-200)}
+
+.note{font-size:12.5px;color:var(--n-500);line-height:1.75}
+.caveat{background:var(--warn-bg);border:1px solid #EBD9A8;border-left:4px solid var(--warn);
+  border-radius:10px;padding:14px 20px;font-size:13px;color:#6f5210}
+.caveat b{color:#4d3907}
+
+/* ============================================================
+   A안 — 한 장 요약
+   ============================================================ */
+.A{padding:56px 0 72px;background:var(--paper)}
+.A .col{width:820px;margin:0 auto}
+.A .eyebrow{font-family:var(--font-data);font-size:12px;font-weight:700;
+  letter-spacing:.16em;color:var(--g-500);text-align:center}
+.A h1{font-size:34px;font-weight:800;letter-spacing:-.03em;color:var(--g-800);
+  text-align:center;margin-top:10px;line-height:1.25}
+.A .meta{display:flex;justify-content:center;gap:8px;margin-top:16px;flex-wrap:wrap}
+.A .meta span{background:#fff;border:1px solid var(--n-200);border-radius:999px;
+  padding:4px 14px;font-size:12.5px;color:var(--n-500)}
+.A .hero{display:flex;justify-content:center;margin-top:34px}
+.A .verdict{margin-top:26px;background:var(--g-800);color:#EAF4EF;border-radius:14px;
+  padding:22px 28px;text-align:center;font-size:19px;line-height:1.5;font-weight:500}
+.A .verdict b{color:#fff;font-weight:800}
+.A .duo{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.A .box{background:#fff;border:1px solid var(--n-200);border-radius:14px;padding:24px}
+.A .box h3{font-size:14px;font-weight:700;color:var(--g-700);margin-bottom:16px}
+.A .box .inner{display:flex;align-items:center;gap:20px}
+.A .kv{display:flex;justify-content:space-between;font-size:13px;color:var(--n-600);
+  padding:5px 0;border-bottom:1px dashed var(--n-200)}
+.A .kv:last-child{border-bottom:none}
+.A .kv b{font-family:var(--font-data);color:var(--g-800)}
+.A .figs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
+.A .fig{background:#fff;border:1px solid var(--n-200);border-radius:12px;
+  padding:18px 16px;text-align:center}
+.A .fig .fv{font-family:var(--font-data);font-size:24px;font-weight:800;color:var(--g-800)}
+.A .fig .fl{font-size:12px;color:var(--n-500);margin-top:2px}
+.A .foot{margin-top:18px}
+
+/* ============================================================
+   B안 — 매거진
+   ============================================================ */
+.B{background:var(--g-900);color:#EAF4EF;position:relative;overflow:hidden}
+.B .hero{position:relative;padding:78px 88px 64px;min-height:560px}
+.B .deco{position:absolute;top:-150px;right:-190px;opacity:.5}
+.B .deco2{position:absolute;bottom:-260px;left:-180px;opacity:.28}
+.B .kicker{font-family:var(--font-data);font-size:12px;font-weight:700;
+  letter-spacing:.22em;color:var(--g-300)}
+.B h1{font-size:62px;font-weight:800;letter-spacing:-.045em;line-height:1.12;
+  margin-top:22px;color:#fff;max-width:640px}
+.B h1 em{font-style:normal;color:var(--g-300)}
+.B .lede{margin-top:26px;max-width:520px;font-size:17px;line-height:1.75;color:#B9D6C8}
+.B .bignum{position:relative;margin-top:52px;display:flex;align-items:flex-end;gap:28px}
+.B .bignum .n{font-family:var(--font-data);font-size:168px;font-weight:800;
+  line-height:.86;letter-spacing:-.06em;color:#fff}
+.B .bignum .n sup{font-size:56px;font-weight:700;letter-spacing:-.02em;
+  vertical-align:top;color:var(--g-300)}
+.B .bignum .cap{padding-bottom:14px;font-size:14px;line-height:1.7;color:#9CC0AE;
+  border-left:1px solid rgba(255,255,255,.2);padding-left:22px;max-width:260px}
+.B .strip{display:flex;border-top:1px solid rgba(255,255,255,.14)}
+.B .strip .cell{flex:1;padding:26px 32px;border-right:1px solid rgba(255,255,255,.14)}
+.B .strip .cell:last-child{border-right:none}
+.B .strip .sv{font-family:var(--font-data);font-size:28px;font-weight:800;color:#fff}
+.B .strip .sl{font-size:12.5px;color:#8FB3A1;margin-top:4px}
+
+.Bp{background:var(--paper);padding:72px 88px}
+.Bp .row{display:flex;align-items:center;gap:66px}
+.Bp h2{font-size:34px;font-weight:800;letter-spacing:-.03em;color:var(--g-800);
+  line-height:1.3}
+.Bp .quote{margin-top:20px;font-size:18px;line-height:1.8;color:var(--n-600);max-width:460px}
+.Bp .quote b{color:var(--g-700)}
+.Bp .lg{margin-top:26px}
+.Bp .rule{height:1px;background:var(--n-200);margin:52px 0 30px}
+.Bp .foot{display:flex;gap:36px;align-items:flex-start}
+.Bp .foot .fh{font-family:var(--font-data);font-size:11px;font-weight:700;
+  letter-spacing:.16em;color:var(--g-500);white-space:nowrap;padding-top:3px}
+
+/* ============================================================
+   C안 — 컨설팅 리포트
+   ============================================================ */
+.C{background:#fff;padding:52px 64px 72px}
+.C .head{display:flex;align-items:flex-end;justify-content:space-between;
+  border-bottom:2px solid var(--g-800);padding-bottom:18px}
+.C .head .eyebrow{font-family:var(--font-data);font-size:11px;font-weight:700;
+  letter-spacing:.16em;color:var(--g-500)}
+.C .head h1{font-size:30px;font-weight:800;letter-spacing:-.03em;color:var(--g-800);margin-top:8px}
+.C .head .meta{font-family:var(--font-data);font-size:11.5px;color:var(--n-500);
+  text-align:right;line-height:1.9}
+.C .sec-head{display:flex;align-items:baseline;gap:14px;margin:44px 0 20px}
+.C .sec-num{font-family:var(--font-data);font-size:13px;font-weight:600;
+  color:var(--g-500);letter-spacing:.08em}
+.C .sec-title{font-size:21px;font-weight:700;color:var(--g-800);letter-spacing:-.02em}
+.C .finding{display:grid;grid-template-columns:200px 1fr;gap:32px;align-items:center;
+  background:var(--paper);border:1px solid var(--n-200);border-radius:12px;
+  padding:24px 28px}
+.C .finding + .finding{margin-top:12px}
+.C .finding .fd{display:flex;justify-content:center}
+.C .finding h3{font-size:17px;font-weight:700;color:var(--g-800);letter-spacing:-.01em}
+.C .finding p{font-size:14px;color:var(--n-600);margin-top:8px;line-height:1.8}
+.C .finding p b{color:var(--g-700)}
+.C .minis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+.C .mini{border:1px solid var(--n-200);border-radius:12px;padding:18px 10px 16px;
+  text-align:center;background:#fff}
+.C .mini.self{background:var(--g-50);border-color:var(--g-200)}
+.C .mini .mn{font-size:13px;font-weight:700;color:var(--n-700);margin-top:10px}
+.C .mini.self .mn{color:var(--g-800)}
+.C .mini .ms{font-family:var(--font-data);font-size:11px;color:var(--n-400)}
+.C .dist{border:1px solid var(--n-200);border-radius:12px;padding:26px 28px 20px;background:var(--paper)}
+.C .bars{display:flex;align-items:flex-end;gap:6px;height:150px}
+.C .bars .b{flex:1;background:var(--g-600);border-radius:3px 3px 0 0;position:relative}
+.C .bars .b.hi{background:var(--g-800)}
+.C .bars .b.lo{background:var(--terra-300)}
+.C .bars .b span{position:absolute;top:-19px;left:0;right:0;text-align:center;
+  font-family:var(--font-data);font-size:10.5px;color:var(--n-500)}
+.C .axis{display:flex;justify-content:space-between;font-size:11.5px;color:var(--n-400);
+  margin-top:10px;border-top:1px solid var(--n-200);padding-top:8px}
+.C table{width:100%;border-collapse:collapse;font-size:13.5px}
+.C table th{text-align:left;font-weight:600;color:var(--n-600);background:var(--n-100);
+  padding:9px 14px;border-bottom:2px solid var(--n-300);white-space:nowrap}
+.C table td{padding:9px 14px;border-bottom:1px solid var(--n-200)}
+.C table td.num{font-family:var(--font-data);text-align:right;color:var(--g-800)}
+.C table tr.total td{font-weight:700;background:var(--g-50);border-top:2px solid var(--n-300)}
+.C .two{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+.C .footnotes{margin-top:34px;border-top:1px dashed var(--n-300);padding-top:14px}
+.C .footnotes li{list-style:none;font-size:12.5px;color:var(--n-500);line-height:1.9}
+.C .footnotes li b{color:var(--n-600)}
+</style>
+<style>
+/* 배포본 전용 추가(시안 원본 CSS 는 그대로 승계) */
+.mapbox{background:#fff;border:1px solid var(--n-200);border-radius:12px;overflow:hidden}
+.mapbox img{width:100%;display:block}
+.mapcap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 16px;
+  font-size:12.5px;color:var(--n-500);padding:12px 16px;
+  border-top:1px solid var(--n-200);background:var(--n-100)}
+.docfoot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;
+  font-size:12px;color:var(--n-400);border-top:1px solid var(--n-200);
+  margin-top:36px;padding-top:18px}
+</style>
+</head>
+<body>
+<section class="A">
+  <div class="col">
+    <div class="eyebrow">DANIELSTAY MARKET CHECK</div>
+    <!-- {{REGION}} / {{SPOT}} -->
+    <h1>경기 화성시 · 능동(동탄)<br>단기임대 시장 실측</h1>
+    <div class="meta">
+      <!-- {{WINDOW_FROM}}~{{WINDOW_TO}} / {{WINDOW_DAYS}} / {{UNITS}} / {{LOTS}} -->
+      <span>조사창 2026-09-07 ~ 11-01 (56일)</span>
+      <span>전수 20실</span>
+      <span>지번 7곳 분산</span>
+    </div>
+
+    <!-- 주인공 도넛: 통합 가동률 74.0%  (r=110, C=691.15 → 74.0% = 511.45) -->
+    <div class="hero">
+      <div class="dwrap" style="width:260px;height:260px">
+        <svg class="donut" width="260" height="260" viewBox="0 0 260 260">
+          <circle class="dtrack" cx="130" cy="130" r="110" stroke-width="26"></circle>
+          <circle cx="130" cy="130" r="110" stroke-width="26" stroke="var(--g-800)"
+                  stroke-dasharray="511.45 179.70"></circle>
+        </svg>
+        <div class="dcenter">
+          <!-- {{OCC_COMBINED}} -->
+          <div class="dv" style="font-size:56px">74.0<span style="font-size:26px">%</span></div>
+          <div class="dl">통합 가동률</div>
+          <div class="dl" style="font-size:11px;color:var(--n-400)">56일 중 실제로 찬 날의 비율</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="verdict">
+      조사한 <b>20실</b>이 56일 동안 평균 <b>74%</b> 차 있었습니다.<br>
+      절반 이상(중앙값 <b>80.4%</b>)은 그보다 더 잘 돌았습니다.
+    </div>
+
+    <div class="duo">
+      <!-- 채널 구성 도넛 (r=54, C=339.29) 59.1%=200.52 / 14.9%=50.55 / 26.0%=88.22 -->
+      <div class="box">
+        <h3>총 1,120일(20실×56일)은 이렇게 채워졌습니다</h3>
+        <div class="inner">
+          <div class="dwrap" style="width:140px;height:140px;flex:none">
+            <svg class="donut" width="140" height="140" viewBox="0 0 140 140">
+              <circle cx="70" cy="70" r="54" stroke-width="22" stroke="var(--g-800)"
+                      stroke-dasharray="200.52 138.77" stroke-dashoffset="0"></circle>
+              <circle cx="70" cy="70" r="54" stroke-width="22" stroke="var(--g-400)"
+                      stroke-dasharray="50.55 288.74" stroke-dashoffset="-200.52"></circle>
+              <circle cx="70" cy="70" r="54" stroke-width="22" stroke="var(--n-200)"
+                      stroke-dasharray="88.22 251.07" stroke-dashoffset="-251.07"></circle>
+            </svg>
+            <div class="dcenter"><div class="dv" style="font-size:20px">1,120</div>
+              <div class="dl" style="font-size:11px">총 객실일</div></div>
+          </div>
+          <div style="flex:1">
+            <!-- {{CH_MAIN}} / {{CH_OTHER}} / {{CH_VACANT}} -->
+            <div class="kv"><span><i style="display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--g-800);margin-right:7px"></i>삼삼엠투 예약</span><b>662일 · 59.1%</b></div>
+            <div class="kv"><span><i style="display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--g-400);margin-right:7px"></i>타 플랫폼</span><b>167일 · 14.9%</b></div>
+            <div class="kv"><span><i style="display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--n-300);margin-right:7px"></i>공실</span><b>291일 · 26.0%</b></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 권역 비교 미니 도넛 2개 (r=40, C=251.33) 74.0=185.98 / 55.8=140.24 -->
+      <div class="box">
+        <h3>같은 화성시 안에서의 위치</h3>
+        <div class="inner" style="justify-content:space-around">
+          <div style="text-align:center">
+            <div class="dwrap" style="width:104px;height:104px">
+              <svg class="donut" width="104" height="104" viewBox="0 0 104 104">
+                <circle class="dtrack" cx="52" cy="52" r="40" stroke-width="15"></circle>
+                <circle cx="52" cy="52" r="40" stroke-width="15" stroke="var(--g-800)"
+                        stroke-dasharray="185.98 65.35"></circle>
+              </svg>
+              <div class="dcenter"><div class="dv" style="font-size:20px">74.0%</div></div>
+            </div>
+            <div style="font-size:13px;font-weight:700;color:var(--g-800);margin-top:8px">능동 (이번 지점)</div>
+            <div class="note">시 전체 6개 권역 중 1위</div>
+          </div>
+          <div style="text-align:center">
+            <div class="dwrap" style="width:104px;height:104px">
+              <svg class="donut" width="104" height="104" viewBox="0 0 104 104">
+                <circle class="dtrack" cx="52" cy="52" r="40" stroke-width="15"></circle>
+                <circle cx="52" cy="52" r="40" stroke-width="15" stroke="var(--n-400)"
+                        stroke-dasharray="140.24 111.09"></circle>
+              </svg>
+              <div class="dcenter"><div class="dv" style="font-size:20px;color:var(--n-600)">55.8%</div></div>
+            </div>
+            <div style="font-size:13px;font-weight:700;color:var(--n-600);margin-top:8px">반송동 (최하위)</div>
+            <div class="note">같은 시, 18.2%p 차이</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="figs">
+      <!-- {{MEDIAN_OCC}} {{PRICE_MED}} {{UNITS}} {{LOTS}} -->
+      <div class="fig"><div class="fv">80.4%</div><div class="fl">가동률 중앙값</div></div>
+      <div class="fig"><div class="fv">21.5<span style="font-size:14px">만원</span></div><div class="fl">주간가 중위</div></div>
+      <div class="fig"><div class="fv">20<span style="font-size:14px">실</span></div><div class="fl">전수 조사</div></div>
+      <div class="fig"><div class="fv">7<span style="font-size:14px">곳</span></div><div class="fl">지번 분산</div></div>
+    </div>
+
+    <div class="caveat foot">
+      <!-- {{SAMPLE_CAVEAT}} -->
+      <b>표본 유의</b> — 이번 지점은 20실·지번 7곳으로 표본이 넓어 대표성이 양호합니다.
+      단, 조사창(56일) 안의 실측 점유일 기준이며 향후 실적을 보장하지 않습니다.
+      3~5실 규모 지점은 한두 실의 편차가 전체 가동률을 크게 흔들 수 있어 별도 해석이 필요합니다.
+    </div>
+    <div class="docfoot"><span>다니엘스테이 · 능동 시장검증 요약 (전수 조사)</span><span>조사기준일 2026-09-07 · 측정 창 2026-09-07 ~ 11-01(56일) · 반경 500m 전수 20실 · 출처: 33m2 실측</span></div>
+  </div>
+</section>
+</body>
+</html>
